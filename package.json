@@ -1,0 +1,21 @@
+{
+  "name": "smartpark",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Original SmartPark web platform and parking services",
+  "workspaces": [
+    "apps/web",
+    "services/api"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n API,WEB -c blue,magenta \"npm run dev --workspace @smartpark/api\" \"npm run dev --workspace @smartpark/web\"",
+    "build": "npm run build --workspace @smartpark/web",
+    "start": "npm run start --workspace @smartpark/api",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "test:api": "npm run test --workspace @smartpark/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

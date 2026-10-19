@@ -1,0 +1,14 @@
+node_modules/
+**/node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+services/vision/.venv/
+services/vision/__pycache__/
