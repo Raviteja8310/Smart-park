@@ -33,5 +33,5 @@ Build an original, responsive web-first smart parking platform that unifies publ
 - Computer vision and real-time occupancy events
 - Administration, notifications, testing and deployment
 
-## UI demo note
-The initial dashboard includes illustrative sample values solely to establish layout. It is not connected to production facility data yet and must be replaced with API-backed data before real use.
+## UI data status
+The Phase 3 dashboard inventory metrics, facility discovery and slot inventory are connected to the API. Recent booking rows remain illustrative placeholders until the reservation phase is implemented. The optional `seed:demo` command creates clearly named local test data; do not keep that fixture in production.
