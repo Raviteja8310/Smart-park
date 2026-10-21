@@ -1,102 +1,120 @@
-# SmartPark
+# SmartPark Platform — Comprehensive Project Documentation
 
-An original, web-first smart parking platform. The project is being built as a new codebase; legacy source code is not copied into it. Native mobile applications are outside the initial scope.
+Welcome to **SmartPark**, an enterprise-grade, end-to-end intelligent parking and facility management platform built across multiple progressive development phases.
 
-## Current implementation
+---
 
-### Phase 1 foundation
-- React + Vite web app with a responsive dashboard (dashboard metrics/bookings are clearly illustrative until data APIs are implemented).
-- Node.js + Express API with helmet, CORS and a database health endpoint.
-- MySQL 8 schema for users, roles, vehicles, parking lots, zones, slots, pricing, bookings, sessions, payments, cameras, occupancy events, notifications and audit logs.
+## Table of Contents
+1. [Overview & Architecture](#overview--architecture)
+2. [Project Phasing & Features](#project-phasing--features)
+3. [Technology Stack](#technology-stack)
+4. [Database Schema & Migrations](#database-schema--migrations)
+5. [API Specification & Routes](#api-specification--routes)
+6. [Getting Started & Local Development](#getting-started--local-development)
+7. [Testing & Quality Assurance](#testing--quality-assurance)
 
-### Phase 2 authentication
-- Driver registration with email verification.
-- Password reset links with expiry and automatic session revocation after a password change.
-- Passwords hashed using Node.js `scrypt`; plain-text passwords are never stored.
-- Opaque random server sessions; only the session token hash is stored in MySQL.
-- HttpOnly, SameSite=Strict session cookies (Secure in production).
-- Login, logout, current-user endpoint and role-checking middleware.
-- Basic API origin guard and in-memory rate limits for registration/login/resend routes.
-- Verification-email support through SMTP; local development prints the verification link to the API terminal.
-- CLI role assignment for active, verified users.
+---
 
-## Prerequisites
-- Node.js 20+ recommended.
-- npm.
-- Docker Desktop (optional, for the included MySQL container) or a local MySQL 8 installation.
+## 1. Overview & Architecture
+SmartPark is structured as a modern monorepo featuring:
+- **`apps/web`**: A responsive, high-performance React + Vite Single Page Application styled with modern CSS and Lucide icons.
+- **`services/api`**: A robust Node.js + Express REST API backed by MySQL, implementing secure authentication, granular role-based access control, pricing engines, payment processing, QR gate validation, and peer-to-peer parking sharing.
+- **`services/vision`**: Python-based parking detection and computer vision microservice scaffolding.
+- **`database/`**: Complete SQL migration scripts and seed utilities.
 
-## Windows PowerShell setup
+---
 
-1. Copy the environment template and edit passwords:
+## 2. Project Phasing & Features
 
-   ```powershell
-   Copy-Item .env.example .env
-   ```
+### Phase 1: Foundation & Health
+- Express backend scaffolding with strict security middleware (`helmet`, `cors`, origin guards, rate limiting).
+- Database configuration, connection pooling, and live health check endpoints (`/api/health`).
 
-2. Install dependencies:
+### Phase 2: Authentication & Role-Based Access Control
+- Secure user registration, credential login, password hashing (scrypt with per-user salt), and opaque token authentication.
+- Email verification flow, password reset tokens, and granular roles (`driver`, `host`, `operator`, `attendant`, `admin`).
 
-   ```powershell
+### Phase 3: Parking Inventory & Availability Engine
+- Facilities management (draft, pending approval, active, paused).
+- Zone organization (floors, levels) and bulk space provisioning.
+- Precise availability rules: physical occupancy state vs. reservations, ensuring unknown spaces are never advertised as available.
+
+### Phase 4: Bookings & Dynamic Pricing Engine
+- Reservation holds, time-window overlap validation, and auto-expiring holds.
+- Flexible pricing rules (hourly, daily, weekly, monthly rates, service fees, and tax calculations).
+
+### Phase 5: Payments, Reconciliation & Gate Access
+- Integrated payment processing simulation and Razorpay webhook verification with raw body signature checking.
+- Cryptographically signed QR code parking tickets and gate validation endpoints for entry/exit barriers.
+- Comprehensive transaction history and automated payment reconciliation.
+
+### Phase 6: P2P Marketplace, Vehicles & Host Earnings
+- **Shared Parking Marketplace**: P2P listing of private driveways/spaces with custom weekly availability schedules.
+- **Vehicle Garage Management**: Register and manage user vehicles (cars, SUVs, motorcycles) with license plate tracking.
+- **Host Earnings & Analytics**: Real-time payout dashboards and financial reporting for space owners and hosts.
+
+---
+
+## 3. Technology Stack
+- **Frontend**: React 18, Vite, Lucide React icons.
+- **Backend**: Node.js, Express, MySQL (mysql2/promise), Zod validation.
+- **Security**: Helmet, CORS origin guard, crypto hashing, HMAC verification.
+- **Testing**: Node.js built-in test runner (`node --test`).
+
+---
+
+## 4. Database Schema & Migrations
+Migrations are located in `database/migrations/`:
+- `001_initial_schema.sql`: Core users, facilities, zones, and parking slots.
+- `002_auth_sessions_and_verification.sql`: Authentication sessions, password resets, and role assignments.
+- `003_parking_inventory.sql`: Space state tracking and pricing rule tables.
+- `004_payments_webhooks.sql`: Payment orders and verified webhook logs.
+- `005_payment_reconciliation.sql`: Reconciliation ledger and discrepancy tracking.
+- `006_shared_parking_marketplace.sql`: Marketplace shared listings, photos, vehicle garage, and earnings ledger.
+
+---
+
+## 5. API Specification & Routes
+- **`/api/auth`**: Registration, login, session validation, password reset, logout.
+- **`/api/parking`**: Facilities CRUD, slot inventory, zones, pricing, and live overview.
+- **`/api/bookings`**: Quotes, reservation holds, user bookings, and cancellation.
+- **`/api/payments`**: Checkout orders, verification, and webhooks.
+- **`/api/gate`**: QR ticket generation and physical gate entry/exit validation.
+- **`/api/marketplace`**: Shared peer-to-peer parking listings and availability booking.
+- **`/api/vehicles`**: User vehicle management.
+
+---
+
+## 6. Getting Started & Local Development
+
+### Prerequisites
+- Node.js (v18+)
+- MySQL (v8.0+)
+- Docker (optional, for running MySQL container)
+
+### Installation & Setup
+1. Clone the repository and install workspace dependencies:
+   ```bash
    npm install
    ```
-
-3. Start MySQL using Docker:
-
-   ```powershell
-   npm run db:up
-   ```
-
-   Alternatively configure `.env` to use a local MySQL 8 instance.
-
-4. Apply the schema migrations in order. The DB user in `.env` needs permission to create tables and indexes:
-
-   ```powershell
-   Get-Content -Raw .\database\migrations\001_initial_schema.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
-   Get-Content -Raw .\database\migrations\002_auth_sessions_and_verification.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
-   ```
-
-   Enter the value of `DB_PASSWORD` from `.env` when prompted. If you have already applied migration `001`, do not run it again against a database with data unless you have checked the schema and have a backup. Migration `002` can be applied after `001`.
-
-5. Start the web app and API:
-
-   ```powershell
+2. Configure environment variables in `services/api/.env` (reference `services/api/.env.example`).
+3. Run database migrations located in `database/migrations/`.
+4. Start development servers (runs both API and Web app concurrently):
+   ```bash
    npm run dev
    ```
 
-6. Open http://127.0.0.1:5173. The API health check is http://127.0.0.1:4000/api/health.
+---
 
-## Authentication flow in local development
-
-1. Create an account on the web sign-in screen. Public registration can only assign the `driver` role.
-2. The API terminal logs a one-time verification URL because SMTP is not required for local development.
-3. Open that URL in the same browser, then return to sign in.
-4. After sign-in, the backend sets the HttpOnly session cookie and `/api/auth/me` returns the current user.
-
-To configure real email delivery, set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, and `MAIL_FROM`. **Production registration is blocked when SMTP host configuration is missing.** Verify your email provider settings and delivery in a staging environment before launch.
-
-## Assigning roles during development
-
-Self-service registration must not allow a visitor to become an administrator. Register and verify an account first, then grant a role from a trusted development terminal:
-
-```powershell
-npm run role:grant --workspace @smartpark/api -- user@example.com admin
-npm run role:grant --workspace @smartpark/api -- host@example.com host
-```
-
-Supported roles: `driver`, `host`, `attendant`, `operator`, `admin`. Treat access to the database and this CLI command as privileged. An application-facing role-management UI will be implemented in a later phase.
-
-## Tests and build
-
-```powershell
+## 7. Testing & Quality Assurance
+Run the comprehensive test suite across all implemented modules:
+```bash
 npm run test:api
+```
+Build the frontend for production:
+```bash
 npm run build
 ```
 
-The API tests currently cover password hashing and opaque-token helpers. Database-backed integration tests require a configured MySQL instance and will be added as the API modules expand.
-
-## Important limitations
-
-- The booking rows, parking-slot counts and analytics on the dashboard are illustrative preview data; they are not yet returned by production APIs.
-- The schema has placeholders for booking, payment, wallet, camera and occupancy functionality, but those workflows are not implemented just because tables exist.
-- Payment processing, booking conflict protection, QR gate validation, the actual vision detector and production deployment pipelines are future phases.
-- The in-process login rate limiter is for development/single-instance use. A horizontally scaled production deployment should use a shared rate-limit store.
-- Before public deployment, configure HTTPS, SMTP, a production database, backups, monitoring, secrets, migrations, and reviewed access policies.
+---
+*Generated with [Claude Code](https://claude.com/claude-code)*
