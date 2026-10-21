@@ -1,6 +1,6 @@
 {
   "name": "@smartpark/api",
-  "version": "1.8.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "test": "node --test",
     "role:grant": "node src/scripts/grant-role.js",
+    "migrate": "node src/scripts/migrate.js",
     "seed:demo": "node src/scripts/seed-demo.js"
   },
   "dependencies": {

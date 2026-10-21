@@ -25,7 +25,7 @@ services:
       - "127.0.0.1:8000:8000"
     volumes:
       - ./services/vision/sample-videos:/data/videos:ro
-      - smartpark_yolo_cache:/root/.config/Ultralytics
+      - smartpark_yolo_cache:/home/smartpark/.config/Ultralytics
     extra_hosts:
       - "host.docker.internal:host-gateway"
 

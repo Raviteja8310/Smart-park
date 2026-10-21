@@ -1,0 +1,151 @@
+name: smartpark-production
+
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set a unique MYSQL_ROOT_PASSWORD in .env}
+      MYSQL_DATABASE: ${DB_NAME:?Set DB_NAME in .env}
+      MYSQL_USER: ${DB_USER:?Set DB_USER in .env}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set a unique DB_PASSWORD in .env}
+    volumes:
+      - smartpark_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$${MYSQL_ROOT_PASSWORD}\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - database
+
+  api:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      API_PORT: "4000"
+      WEB_ORIGIN: ${WEB_ORIGIN:?Set WEB_ORIGIN to the exact https://APP_DOMAIN origin}
+      SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-168}
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:?Set DB_NAME in .env}
+      DB_USER: ${DB_USER:?Set DB_USER in .env}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      SMTP_HOST: ${SMTP_HOST:?Set SMTP_HOST in .env}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:?Set SMTP_USER in .env}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?Set SMTP_PASSWORD in .env}
+      MAIL_FROM: ${MAIL_FROM:?Set MAIL_FROM to a verified sender address}
+      PAYMENT_PROVIDER: razorpay
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:?Set RAZORPAY_KEY_ID in .env}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:?Set RAZORPAY_KEY_SECRET in .env}
+      RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:?Set RAZORPAY_WEBHOOK_SECRET in .env}
+      QR_SIGNING_SECRET: ${QR_SIGNING_SECRET:?Set a unique QR_SIGNING_SECRET in .env}
+      VISION_API_TOKEN: ${VISION_API_TOKEN:?Set a unique VISION_API_TOKEN in .env}
+      TRUST_PROXY_HOPS: "2"
+    volumes:
+      - smartpark_marketplace_uploads:/app/services/api/uploads/marketplace
+    expose:
+      - "4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - database
+      - application
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  web:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.web
+    restart: unless-stopped
+    expose:
+      - "8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - application
+      - edge
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/healthz || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?Set APP_DOMAIN to a real DNS name pointing at this server}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deployment/Caddyfile:/etc/caddy/Caddyfile:ro
+      - smartpark_caddy_data:/data
+      - smartpark_caddy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+    networks:
+      - edge
+
+  vision:
+    profiles: ["vision"]
+    build:
+      context: ./services/vision
+      dockerfile: Dockerfile
+      args:
+        INSTALL_YOLO: ${VISION_INSTALL_YOLO:-true}
+    restart: unless-stopped
+    environment:
+      VISION_API_TOKEN: ${VISION_API_TOKEN:?Set VISION_API_TOKEN in .env}
+      VISION_API_URL: http://api:4000/api/vision/service
+      VISION_HOST: 0.0.0.0
+      VISION_PORT: "8000"
+      VISION_MODEL_PATH: ${VISION_MODEL_PATH:-yolov8n.pt}
+      VISION_MEDIA_ROOT: /data/videos
+      VISION_ALLOW_RTSP: ${VISION_ALLOW_RTSP:-false}
+      VISION_POLL_SECONDS: ${VISION_POLL_SECONDS:-10}
+      VISION_HEARTBEAT_SECONDS: ${VISION_HEARTBEAT_SECONDS:-10}
+      VISION_DETECTION_EVERY_N_FRAMES: ${VISION_DETECTION_EVERY_N_FRAMES:-3}
+      VISION_STABLE_FRAMES: ${VISION_STABLE_FRAMES:-3}
+      VISION_MAX_WORKERS: ${VISION_MAX_WORKERS:-6}
+      SMARTPARK_PROJECT_ROOT: /app
+    volumes:
+      - ./services/vision/sample-videos:/data/videos:ro
+      - smartpark_yolo_cache:/home/smartpark/.config/Ultralytics
+    expose:
+      - "8000"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - application
+
+networks:
+  database:
+    internal: true
+  application:
+  edge:
+
+volumes:
+  smartpark_mysql_data:
+  smartpark_marketplace_uploads:
+  smartpark_caddy_data:
+  smartpark_caddy_config:
+  smartpark_yolo_cache:

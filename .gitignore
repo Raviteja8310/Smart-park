@@ -12,6 +12,14 @@ Thumbs.db
 .vscode/
 services/vision/.venv/
 services/vision/__pycache__/
+services/vision/**/__pycache__/
 
 # User-submitted marketplace photos are runtime data, not source assets.
 services/api/uploads/marketplace/
+
+# Containerized deployment artifacts and downloaded detector models.
+services/vision/*.pt
+services/vision/runs/
+*.tar
+*.dump
+*.sql.gz

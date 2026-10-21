@@ -1,0 +1,27 @@
+FROM node:22-alpine
+
+ENV NODE_ENV=production \
+    API_PORT=4000 \
+    NPM_CONFIG_UPDATE_NOTIFIER=false \
+    NPM_CONFIG_FUND=false
+
+WORKDIR /app
+COPY package*.json ./
+COPY apps/web/package*.json ./apps/web/
+COPY services/api/package*.json ./services/api/
+RUN if [ -f package-lock.json ]; then \
+      npm ci --omit=dev --workspace @smartpark/api --include-workspace-root=false --no-audit --no-fund; \
+    else \
+      npm install --omit=dev --workspace @smartpark/api --include-workspace-root=false --no-audit --no-fund; \
+    fi
+
+COPY services/api/src ./services/api/src
+COPY database/migrations ./database/migrations
+RUN mkdir -p /app/services/api/uploads/marketplace \
+    && chown -R node:node /app/services/api
+
+USER node
+EXPOSE 4000
+HEALTHCHECK --interval=20s --timeout=5s --start-period=30s --retries=5 \
+  CMD node -e "fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+CMD ["npm", "run", "start", "--workspace", "@smartpark/api"]

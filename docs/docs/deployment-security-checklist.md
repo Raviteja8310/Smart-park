@@ -5,6 +5,9 @@ Use this checklist before exposing a SmartPark deployment to real customers. Pas
 ## 1. Secrets and environment
 
 - [ ] Set `NODE_ENV=production` and a production-only environment file/secret manager.
+- [ ] Run `npm run preflight:production` and `docker compose -f docker-compose.production.yml config --quiet` before release.
+- [ ] Use the migration runner on a new database; for a manually migrated database, verify expected schema objects and baseline existing migrations rather than replaying them.
+- [ ] Review `docs/production-deployment.md` and record each item in `docs/release-checklist.md`.
 - [ ] Set a unique, high-entropy `DB_PASSWORD` and `MYSQL_ROOT_PASSWORD`; do not reuse development passwords.
 - [ ] Set a unique `QR_SIGNING_SECRET` (at least 32 random characters) and `VISION_API_TOKEN` (at least 32 random characters).
 - [ ] Set `PAYMENT_PROVIDER=razorpay`; configure production keys and a webhook secret only in the hosting secret manager.
@@ -25,7 +28,7 @@ Use this checklist before exposing a SmartPark deployment to real customers. Pas
 ## 3. Database and storage
 
 - [ ] Back up MySQL and test a restore before running migrations against production data.
-- [ ] Apply migrations 001–008 in order on a fresh database, or only the migrations not yet applied on an existing database.
+- [ ] Use `npm run migrate` on a new database. On an existing database manually migrated before the history table was introduced, back up first and use the checked baseline path in `docs/production-deployment.md`. Never blindly replay migrations.
 - [ ] Use the least-privilege application database account; reserve schema migration credentials for deployment jobs.
 - [ ] Enable automated encrypted backups and define retention/recovery objectives.
 - [ ] Persist `services/api/uploads/marketplace/` or move photo storage to a private object-storage service; do not rely on ephemeral container disk.

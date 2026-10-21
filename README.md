@@ -1,8 +1,28 @@
 # SmartPark
 
-An original, web-first smart parking platform. The project is being built as a new codebase; legacy source code is not copied into it. Native mobile applications are outside the initial scope.
+An original, web-first smart-parking platform combining facility inventory, shared parking listings, bookings, payment verification, QR access, operator workflows and camera-based occupancy detection.
+
+## Phase 9: release hardening and deployment
+
+Production deployment files are provided under `deployment/` and in `docker-compose.production.yml`. Read `docs/production-deployment.md` before deploying. Production requires a real public DNS name, HTTPS, SMTP, live Razorpay configuration, strong independent secrets, a backup plan, and a tested database migration path. Do not use mock payments with `NODE_ENV=production`.
+
+The included production stack uses Caddy for public HTTPS, Nginx for static frontend/reverse-proxy routing, Express for the API, MySQL on a private Docker network, and an optional vision profile. The vision service is optional because its YOLO/PyTorch image is large; enable it only after preparing the required compute and validating the camera layout.
+
+Before deployment, run `npm run preflight:production`, then validate Compose using `docker compose -f docker-compose.production.yml config --quiet`. The preflight checks configuration only; it cannot prove DNS, SMTP, Razorpay credentials, database connectivity, or camera accuracy.
+
+## Current implementation status
+
+- The responsive web application, API, database migrations and Python vision service are included in this project.
+- Automated API helper tests and Python unit tests cover selected logic paths. They do not replace full MySQL-backed integration and browser tests.
+- Payment checkout needs provider-specific staging verification. Host earnings are an internal ledger, not an automated bank payout.
+- Computer vision requires a YOLO model, supported camera source, calibrated per-space polygons and on-site validation before it can be trusted.
+- Production deployment has not been certified in this workspace; follow the checklist and record the result of every release test.
+
+---
 
 ## Current implementation
+
+Release hardening and production deployment instructions: `docs/production-deployment.md`, `docs/release-checklist.md`, and `docs/deployment-security-checklist.md`.
 
 ### Phase 1 foundation
 - React + Vite web app with a responsive dashboard, parking discovery and slot reservation flow.
@@ -38,7 +58,7 @@ An original, web-first smart parking platform. The project is being built as a n
 - Reservation UI with start date/time, duration, price breakdown and hold confirmation.
 
 ## Prerequisites
-- Node.js 20+ recommended.
+- Node.js 22+ recommended (required by the production container images).
 - npm.
 - Docker Desktop (optional, for the included MySQL container) or a local MySQL 8 installation.
 
@@ -64,7 +84,15 @@ An original, web-first smart parking platform. The project is being built as a n
 
    Alternatively configure `.env` to use a local MySQL 8 instance.
 
-4. Apply the schema migrations in order. The DB user in `.env` needs permission to create tables and indexes:
+4. Apply the schema migrations in order. For a fresh development database, use the migration runner:
+
+   ```powershell
+   npm run migrate
+   ```
+
+   The DB user in `.env` needs permission to create tables and indexes. On an existing database where migrations were applied manually before the runner was introduced, see `docs/production-deployment.md` for the schema-checking baseline command. Do not run the full migration chain against a manually migrated database without baselining it first.
+
+   The SQL files remain available for inspection and controlled manual recovery:
 
    ```powershell
    Get-Content -Raw .\database\migrations\001_initial_schema.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
@@ -74,9 +102,10 @@ An original, web-first smart parking platform. The project is being built as a n
    Get-Content -Raw .\database\migrations\005_payment_reconciliation.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    Get-Content -Raw .\database\migrations\006_shared_parking_marketplace.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    Get-Content -Raw .\database\migrations\007_vision_detection.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
+   Get-Content -Raw .\database\migrations\008_operations_analytics_alerts.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    ```
 
-   Enter the value of `DB_PASSWORD` from `.env` when prompted. On a new database, apply migrations `001`–`007` exactly once and in numeric order. On an existing database, run only migrations not yet applied, in order. In particular, a Phase 6 database needs only migration `007_vision_detection.sql` for Phase 7. Do not re-run any migration that has already succeeded. Back up a database with data before schema changes.
+   Enter the value of `DB_PASSWORD` from `.env` when prompted. On a new database, apply migrations `001`–`008` exactly once and in numeric order. On an existing database, run only migrations not yet applied, in order. In particular, a Phase 6 database needs only migration `007_vision_detection.sql` for Phase 7. Do not re-run any migration that has already succeeded. Back up a database with data before schema changes.
 
 5. Start the web app and API:
 
@@ -201,10 +230,10 @@ Authorized facility managers can configure hourly, daily, weekly and monthly pri
 Near-term bookings (starting in less than 30 minutes) require the latest physical state to be `empty`. For later starts, the current camera observation does not by itself prove what the space's state will be at the future time; overlapping reservations are checked by interval. Operationally disabled or maintenance slots are never bookable.
 
 ### Phase 4 verification
-Run:
+Run the API and vision helper tests, then build the web app:
 
 ```powershell
-npm run test:api
+npm run test:all
 npm run build
 ```
 

@@ -1,0 +1,15 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+**/node_modules
+**/dist
+**/coverage
+**/.venv
+**/__pycache__
+**/*.pyc
+**/*.log
+services/api/uploads/marketplace/**
+services/vision/sample-videos/**
+!services/vision/sample-videos/.gitkeep

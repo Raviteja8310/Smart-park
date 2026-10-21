@@ -1,7 +1,8 @@
 {
   "name": "smartpark",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "private": true,
+  "engines": { "node": ">=22" },
   "description": "Original SmartPark web platform and parking services",
   "workspaces": [
     "apps/web",
@@ -14,6 +15,13 @@
     "db:up": "docker compose up -d db",
     "db:down": "docker compose down",
     "test:api": "npm run test --workspace @smartpark/api",
+    "test:vision": "cd services/vision && python -m unittest discover -s tests -v",
+    "test:all": "npm run test:api && npm run test:vision",
+    "migrate": "npm run migrate --workspace @smartpark/api",
+    "preflight:production": "node scripts/preflight-production.mjs",
+    "deploy:build": "npm run preflight:production && docker compose -f docker-compose.production.yml build api web",
+    "deploy:up": "npm run preflight:production && docker compose -f docker-compose.production.yml build api web && docker compose -f docker-compose.production.yml up -d db && docker compose -f docker-compose.production.yml run --rm api npm run migrate && docker compose -f docker-compose.production.yml up -d api web caddy",
+    "deploy:vision": "npm run deploy:up && docker compose -f docker-compose.production.yml --profile vision up -d --build vision",
     "seed:demo": "npm run seed:demo --workspace @smartpark/api",
     "vision:dev": "cd services/vision && python -m uvicorn smartpark_vision.main:app --host 127.0.0.1 --port 8000"
   },
