@@ -16,6 +16,7 @@ import EarningsPage from './components/EarningsPage.jsx';
 import VisionPage from './components/VisionPage.jsx';
 import OperationsPage from './components/OperationsPage.jsx';
 import NotificationsPage from './components/NotificationsPage.jsx';
+import FinancialOperationsPage from './components/FinancialOperationsPage.jsx';
 
 
 function StatCard({ icon: Icon, label, value, note, trend, tint = 'mint' }) {
@@ -126,7 +127,7 @@ export default function App() {
   const canOperate = (currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role));
   const navGroups = [
     { title: 'WORKSPACE', items: [{ label: 'Overview', icon: LayoutDashboard }, { label: 'Find parking', icon: MapPin }, { label: 'My bookings', icon: CalendarDays }, { label: 'Vehicles', icon: CarFront }] },
-    { title: 'MANAGE', items: [{ label: 'Parking spaces', icon: Gauge }, ...(canHost ? [{ label: 'My listings', icon: Store }, { label: 'Owner earnings', icon: Wallet }] : []), ...((currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role)) ? [{ label: 'Camera detection', icon: Activity }] : []), ...(canOperate ? [{ label: 'Operations', icon: Activity }] : []), { label: 'Transactions', icon: CreditCard }, ...((currentUser?.roles ?? []).some((role) => ['attendant', 'operator', 'admin'].includes(role)) ? [{ label: 'Gate access', icon: QrCode }] : [])] },
+    { title: 'MANAGE', items: [{ label: 'Parking spaces', icon: Gauge }, ...(canHost ? [{ label: 'My listings', icon: Store }, { label: 'Owner earnings', icon: Wallet }] : []), ...((currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role)) ? [{ label: 'Camera detection', icon: Activity }] : []), ...(canOperate ? [{ label: 'Operations', icon: Activity }] : []), ...(currentUser?.roles?.includes('admin') ? [{ label: 'Finance review', icon: ShieldCheck }] : []), { label: 'Transactions', icon: CreditCard }, ...((currentUser?.roles ?? []).some((role) => ['attendant', 'operator', 'admin'].includes(role)) ? [{ label: 'Gate access', icon: QrCode }] : [])] },
     { title: 'PREFERENCES', items: [{ label: 'Notifications', icon: Bell }, { label: 'Settings', icon: Settings }, { label: 'Help & support', icon: CircleHelp }] }
   ];
 
@@ -199,6 +200,7 @@ export default function App() {
             : activeNav === 'Gate access' ? <GatePage currentUser={currentUser} />
             : activeNav === 'Camera detection' && (currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role)) ? <VisionPage currentUser={currentUser} />
             : activeNav === 'Operations' && canOperate ? <OperationsPage currentUser={currentUser} />
+            : activeNav === 'Finance review' && currentUser?.roles?.includes('admin') ? <FinancialOperationsPage currentUser={currentUser} />
             : activeNav === 'Notifications' ? <NotificationsPage /> : <>
           <section className="welcome-row">
             <div><div className="eyebrow"><span className="eyebrow-line" /> YOUR PARKING OVERVIEW</div><h1>Welcome back, {displayName.split(/\s+/)[0]} <span className="wave">✳</span></h1><p className="welcome-subtitle">Everything you need for a smoother parking experience.</p></div>

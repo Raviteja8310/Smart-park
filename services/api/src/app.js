@@ -14,6 +14,7 @@ import vehiclesRouter from './routes/vehicles.routes.js';
 import visionRouter from './routes/vision.routes.js';
 import operationsRouter from './routes/operations.routes.js';
 import notificationsRouter from './routes/notifications.routes.js';
+import financialRouter from './routes/financial.routes.js';
 import { originGuard } from './middleware/origin-guard.js';
 
 const app = express();
@@ -30,7 +31,7 @@ app.use(originGuard);
 app.get('/', (_req, res) => {
   res.json({
     name: 'SmartPark API',
-    version: '1.9.0',
+    version: '2.0.0',
     message: 'API is running. Use /api/health for service health.'
   });
 });
@@ -46,6 +47,7 @@ app.use('/api/vehicles', vehiclesRouter);
 app.use('/api/vision', visionRouter);
 app.use('/api/operations', operationsRouter);
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/financial', financialRouter);
 // Shared listing photos are public assets; upload permissions are enforced by the API routes.
 app.use('/uploads/marketplace', express.static(fileURLToPath(new URL('../uploads/marketplace/', import.meta.url)), { maxAge: '1d', index: false, dotfiles: 'deny' }));
 

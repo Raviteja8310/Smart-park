@@ -104,9 +104,10 @@ Release hardening and production deployment instructions: `docs/production-deplo
    Get-Content -Raw .\database\migrations\007_vision_detection.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    Get-Content -Raw .\database\migrations\008_operations_analytics_alerts.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    Get-Content -Raw .\database\migrations\009_transactional_email_outbox.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
+   Get-Content -Raw .\database\migrations\010_refunds_and_host_payouts.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    ```
 
-   Enter the value of `DB_PASSWORD` from `.env` when prompted. On a new database, apply migrations `001`–`009` exactly once and in numeric order. On an existing database, run only migrations not yet applied, in order. In particular, a Phase 6 database needs only migration `007_vision_detection.sql` for Phase 7. Do not re-run any migration that has already succeeded. Back up a database with data before schema changes.
+   Enter the value of `DB_PASSWORD` from `.env` when prompted. On a new database, apply migrations `001`–`010` exactly once and in numeric order. On an existing database, run only migrations not yet applied, in order. In particular, a Phase 6 database needs only migration `007_vision_detection.sql` for Phase 7. Do not re-run any migration that has already succeeded. Back up a database with data before schema changes.
 
 5. Start the web app and API:
 
@@ -481,7 +482,7 @@ If migrations `001` through `007` have already been applied, back up your databa
 Get-Content -Raw .\database\migrations\008_operations_analytics_alerts.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
 ```
 
-Migration 008 creates `operational_alerts` and adds analytics indexes to existing notification, payment and booking tables. Migration 009 adds the transactional email outbox. Do not rerun either migration after it has succeeded. On a fresh database, apply migrations `001`–`009` in order.
+Migration 008 creates `operational_alerts` and adds analytics indexes to existing notification, payment and booking tables. Migration 009 adds the transactional email outbox. Do not rerun either migration after it has succeeded. On a fresh database, apply migrations `001`–`010` in order.
 
 ### Operations and notification endpoints
 
@@ -514,7 +515,7 @@ Phase 10 adds a database-backed transactional email outbox and a separate worker
 
 ### Migration 009
 
-If migrations 001–008 are already applied, apply `database/migrations/009_transactional_email_outbox.sql` once, or use the migration runner after verifying/baselining the existing schema.
+If migrations 001–008 are already applied, apply `database/migrations/009_transactional_email_outbox.sql` once, then migration 010 for audited refunds and host payouts, or use the migration runner after verifying/baselining the existing schema.
 
 ### Local worker
 
@@ -536,3 +537,14 @@ With `NODE_ENV=development` and no SMTP host, the worker logs email content as a
 Production Compose starts `email-worker` as a private service with no published ports. Monitor it with `docker compose -f docker-compose.production.yml logs --tail=100 email-worker`.
 
 SMTP delivery is at-least-once, not exactly-once. The outbox idempotency key prevents duplicate queue inserts for the same event; if the SMTP provider accepts a message and the worker crashes before saving the delivery result, a later retry can deliver a duplicate. Consumers should treat these event emails as notifications, not as proof of payment or authorization.
+
+
+## Phase 11: refunds, host payouts and financial controls
+
+Phase 11 adds audited customer refund requests and manual host-payout processing. Customers can request a refund for an eligible upcoming booking. Administrators can approve or reject the request, start processing, record a failed outcome, or record a completed provider refund using an external refund reference. The booking is cancelled and the QR credential invalidated only after a refund completion is recorded. Entry is blocked while a refund is being processed or is under manual review.
+
+Host earnings are only eligible for approval after the booking is completed and payment is captured and reconciled. Hosts can request payout of their approved earnings. An administrator must perform the actual external bank/provider action, then record the transfer reference in SmartPark. **SmartPark does not initiate refunds or bank transfers in Phase 11.** These actions must be confirmed in the external provider first.
+
+Apply `database/migrations/010_refunds_and_host_payouts.sql` after migrations 001–009, or run `npm run migrate` once the existing schema migration history has been verified. If the existing database was migrated manually with no `schema_migrations` history, follow the baseline instructions in `docs/production-deployment.md`; baseline 010 only after confirming all its tables and enum values already exist.
+
+Read `docs/financial-operations.md` for the status transitions, role responsibilities, operational steps and testing checklist. A successful build and full MySQL/provider integration test still must be completed in your deployment environment before public launch.

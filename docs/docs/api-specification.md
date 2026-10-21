@@ -236,3 +236,19 @@ All facility-scoped data is restricted by host ownership or operator/attendant a
 ## Phase 10: transactional email worker
 
 The worker is not exposed as a public API. It consumes due rows from `transactional_email_outbox`. `npm run worker:email` runs continuously; `npm run worker:email:once` processes due messages then exits. Lifecycle email templates are generated server-side from allowlisted data and HTML-escaped fields. The signed-in user's email must be verified and account status active before an event email can be queued.
+
+
+## Phase 11: refund and host payout operations
+
+Customer endpoints:
+- `POST /api/financial/refunds` — create a full refund request for an eligible upcoming paid booking.
+- `GET /api/financial/refunds/mine` — view the customer's own refund requests.
+- `GET /api/financial/payouts/mine` — view a host's own payout requests.
+- `POST /api/financial/payouts` — reserve the host's approved earning balance into a payout request.
+
+Administrator endpoints:
+- `GET /api/financial/refunds/queue`, `POST /api/financial/refunds/:refundId/approve`, `/reject`, `/start-processing`, `/mark-refunded`, `/mark-failed`, `/manual-review`.
+- `GET /api/financial/earnings/queue`, `POST /api/financial/earnings/:earningId/approve`, `/reverse`.
+- `GET /api/financial/payouts/queue`, `POST /api/financial/payouts/:payoutId/approve`, `/reject`, `/mark-paid`, `/mark-failed`, `/manual-review`.
+
+All mutating financial endpoints require authenticated role permissions and an audit trail. External payment-provider and bank actions are not automatically executed by these endpoints; completed refunds and payouts must be externally confirmed before an administrator records their reference. Amounts use server-side payment/earning data, not client-submitted totals.

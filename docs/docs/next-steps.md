@@ -12,6 +12,7 @@
 - **Phase 8:** Operations dashboard, date-filtered verified revenue reports, per-facility occupancy reports, operational alert lifecycle and in-app notification inbox.
 - **Phase 9:** Release hardening, production configuration validation, Docker deployment, proxy/TLS configuration and migration runner.
 - **Phase 10:** Transactional email outbox, retrying SMTP worker, lifecycle email templates and production worker container.
+- **Phase 11:** Customer refund requests, host payout requests, admin financial review, external reference tracking and audit records.
 
 ## Database migration sequence
 
@@ -24,19 +25,20 @@
 7. `database/migrations/007_vision_detection.sql`
 8. `database/migrations/008_operations_analytics_alerts.sql`
 9. `database/migrations/009_transactional_email_outbox.sql`
+10. `database/migrations/010_refunds_and_host_payouts.sql`
 
 Use `npm run migrate` for a fresh database; it tracks migration checksums and applied state. For an existing database that was migrated manually before the runner existed, back up and follow the baseline procedure in `docs/production-deployment.md`. Do not re-run successful SQL migrations manually.
 
 ## Phase 9 release hardening
 
 1. Run a full dependency installation and frontend production build on the target machine.
-2. Test migrations 001–009 against a disposable MySQL 8.4 database and a copy of representative data.
+2. Test migrations 001–010 against a disposable MySQL 8.4 database and a copy of representative data.
 3. Add integration tests for role/facility isolation, bookings under concurrency, payment webhook idempotency, alert lifecycle and notification ownership.
 4. Exercise real Razorpay test-mode orders/webhooks and document provider reconciliation procedure.
 5. Complete deployment for API/web, durable image storage, reverse proxy, database backups, secrets and logging.
 6. Complete real-camera inference validation at the target site, including darkness, glare, occlusion and camera outage.
 7. Test Phase 10 transactional email deliverability, retry behavior, sender reputation and privacy on the chosen SMTP provider; SMS/push are still future integrations.
-8. Add audited refund-provider execution and host payouts only when the payment provider integration and business policy are ready.
+8. Phase 11 provides an audited manual refund and host-payout workflow. Automated provider refunds and bank payouts remain unimplemented; validate the external-reference process and reconcile every record with provider/bank reports.
 
 ## Known release limitations
 
@@ -64,3 +66,15 @@ Use `npm run migrate` for a fresh database; it tracks migration checksums and ap
 - Python vision tests continue to pass.
 - The database-backed outbox claim/lock/retry path still requires integration testing against MySQL 8.4; this workspace has not executed it against a running database.
 - SMTP acceptance, delayed/retried messages and duplicate-delivery behavior must be verified using the configured SMTP provider before public launch.
+
+
+## Phase 11: financial operations
+
+- Added migration 010 for refund requests, payout requests and earning allocations.
+- Added explicit state transitions and audit notes for refund review, external completion, failures, and manual reconciliation.
+- Added host payout request allocation and administrator review, with actual transfers intentionally external.
+- Added customer transaction/refund UI, host earnings/payout history, and an admin financial operations queue.
+
+## Phase 11 validation and release gaps
+
+Pure API/helper tests cover refund and payout eligibility, status transitions, decimal arithmetic and external reference validation. A live MySQL migration test, concurrent booking/refund regression test, provider-side refund/payout verification, and full frontend production build remain required before public launch.

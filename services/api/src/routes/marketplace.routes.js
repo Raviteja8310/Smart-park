@@ -471,12 +471,12 @@ router.get('/earnings/mine', requireAuth, requireRole('host', 'admin'), asyncHan
     status: row.status, settlementReference: row.settlement_reference ?? null, settledAt: row.settled_at ?? null,
     providerPaymentId: row.provider_payment_id ?? null, createdAt: row.created_at }));
   const summary = earnings.reduce((acc, item) => {
-    if (!acc[item.currency]) acc[item.currency] = { pending: 0, approved: 0, paid: 0, reversed: 0, totalNet: 0 };
-    acc[item.currency][item.status] += item.netAmount;
+    if (!acc[item.currency]) acc[item.currency] = { pending: 0, approved: 0, payout_requested: 0, refund_hold: 0, paid: 0, reversed: 0, totalNet: 0 };
+    if (Object.hasOwn(acc[item.currency], item.status)) acc[item.currency][item.status] += item.netAmount;
     if (item.status !== 'reversed') acc[item.currency].totalNet += item.netAmount;
     return acc;
   }, {});
-  return res.json({ earnings, summary, settlementEnabled: false, message: 'Earnings reflect verified payments for owned listings. No bank payout is initiated by this report.' });
+  return res.json({ earnings, summary, settlementEnabled: true, message: 'Eligible approved earnings can be requested for payout. Actual bank transfers are performed externally and recorded by an administrator.' });
 }));
 
 

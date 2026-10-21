@@ -9,7 +9,7 @@
 - [ ] No `.env`, database dump, credentials, camera URL credentials, uploaded photos or model weights are tracked in Git.
 
 ## Database and deployment
-- [ ] Fresh database migration path tested from 001 through 009.
+- [ ] Fresh database migration path tested from 001 through 010.
 - [ ] Existing-database baseline path tested only on a verified backup/schema.
 - [ ] MySQL has no public host port.
 - [ ] Web/API containers run non-root where supported and have health checks.
@@ -33,3 +33,7 @@
 - [ ] All mandatory checks above have a recorded pass/fail result and owner.
 - [ ] No unresolved critical security/payment/booking issue remains.
 - [ ] Monitoring, on-call contact and rollback decision are documented.
+
+- [ ] Refund processing has been tested against provider sandbox; every successful refund has an externally verified reference.
+- [ ] Host payout requests reconcile to allocated earning rows; transfer references are verified against bank/provider records.
+- [ ] Refund-processing entry lock, failure/recovery and manual-review paths tested using a real disposable MySQL 8 instance.

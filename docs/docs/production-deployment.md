@@ -91,13 +91,13 @@ docker compose -f docker-compose.production.yml logs --tail=100 api web caddy db
 
 ### Existing database whose migrations were applied manually
 
-Take and verify a backup first. The migration runner needs a history table so it can detect already-applied SQL files. If migrations 001 through 008 were fully applied to this database before the runner was introduced, baseline them through 008 without re-executing their SQL; the normal migration run then applies 009:
+Take and verify a backup first. The migration runner needs a history table so it can detect already-applied SQL files. If migrations 001 through 008 were fully applied to this database before the runner was introduced, baseline them through 008 without re-executing their SQL; the normal migration run then applies 009 and 010:
 
 ```bash
 docker compose -f docker-compose.production.yml run --rm api npm run migrate -- --baseline 008 --confirm-existing-schema
 ```
 
-The baseline command checks for expected tables/columns, records the migration checksums, and executes no migration SQL. It intentionally fails if the schema looks incomplete. If migration 009 was also applied manually, use `--baseline 009` instead so the outbox table is included in the schema check. Do not use it to hide a failed or partially applied migration.
+The baseline command checks for expected tables/columns, records the migration checksums, and executes no migration SQL. It intentionally fails if the schema looks incomplete. If migrations through 009 were also applied manually, use `--baseline 009` so the outbox table is included, then run the migration runner to apply 010. If migration 010 was also applied manually, use `--baseline 010`; the baseline validator checks the financial tables and required enum values, but it executes no SQL. Do not use it to hide a failed or partially applied migration.
 
 The migration runner tracks checksums and refuses to replay a file that is already applied, has changed, or has an incomplete state. MySQL DDL is not fully transactional; if a migration fails, inspect its error and schema and repair it deliberately before changing migration history. Never edit a migration file that has already been applied; create a new numbered migration instead.
 
@@ -159,4 +159,9 @@ The production Compose stack runs `email-worker` privately, without a published 
 docker compose -f docker-compose.production.yml logs --tail=100 email-worker
 ```
 
-For local development, run `npm run worker:email` in a separate terminal after migrations 001–009 have been applied. With no SMTP host in development, messages are logged as `simulated` and are not delivered. To process the due queue once and exit, use `npm run worker:email:once`.
+For local development, run `npm run worker:email` in a separate terminal after migrations 001–010 have been applied. With no SMTP host in development, messages are logged as `simulated` and are not delivered. To process the due queue once and exit, use `npm run worker:email:once`.
+
+
+## Phase 11 financial operations
+
+Refund and host-payout controls require a named administrator to confirm actions in the configured external provider/bank portal. SmartPark stores the case, audit note, and external reference; it does not itself send money or initiate a provider refund in this release. Never record a refund or payout as completed before the external provider confirms it. Review `docs/financial-operations.md` before enabling the workflow for real customers.

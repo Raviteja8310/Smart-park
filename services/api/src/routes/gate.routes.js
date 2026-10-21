@@ -64,6 +64,14 @@ router.post('/scan', requireAuth, requireRole('attendant', 'operator', 'admin'),
     if (booking.booking_code == null || booking.status === 'cancelled') throw new GateError(409, 'BOOKING_INACTIVE', 'This reservation is not active.');
     await requireAssignedGateAccess(connection, req.user, booking.parking_lot_id);
 
+    if (action === 'entry') {
+      const [refundRows] = await connection.execute(
+        "SELECT id FROM refund_requests WHERE booking_id=? AND status IN ('processing','manual_review') LIMIT 1",
+        [booking.id]
+      );
+      if (refundRows.length) throw new GateError(409, 'REFUND_PROCESSING', 'A refund is being reconciled for this booking. Entry is temporarily blocked; contact the facility operator.');
+    }
+
     const now = Date.now();
     if (action === 'entry') {
       if (booking.status === 'checked_in') throw new GateError(409, 'ALREADY_CHECKED_IN', 'This booking already has a recorded entry. Use the exit action when the vehicle leaves.');

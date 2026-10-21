@@ -49,6 +49,8 @@ function mapPayment(row) {
     bookingCode: row.booking_code ?? null,
     parkingLotName: row.parking_lot_name ?? null,
     bookingStatus: row.booking_status ?? null,
+    bookingStartAt: row.booking_start_at ? new Date(row.booking_start_at).toISOString() : null,
+    bookingEndAt: row.booking_end_at ? new Date(row.booking_end_at).toISOString() : null,
     provider: row.provider,
     providerOrderId: row.provider_order_id,
     providerPaymentId: row.provider_payment_id,
@@ -505,7 +507,7 @@ ${reconciled ? '<div class="notice">The payment was captured but the reservation
 
 router.get('/mine', requireAuth, asyncHandler(async (req, res) => {
   const [rows] = await pool.execute(
-    `SELECT p.*, b.booking_code, b.status AS booking_status, l.name AS parking_lot_name
+    `SELECT p.*, b.booking_code, b.status AS booking_status, b.start_at AS booking_start_at, b.end_at AS booking_end_at, l.name AS parking_lot_name
        FROM payments p JOIN bookings b ON b.id = p.booking_id
        JOIN parking_lots l ON l.id = b.parking_lot_id
       WHERE b.user_id = ? ORDER BY p.created_at DESC LIMIT 100`,

@@ -3,7 +3,7 @@
 ## Services
 - `apps/web`: responsive React application and role-aware workspace UI.
 - `services/api`: Express REST API; owns authentication, authorization, booking/pricing transactions, payment verification, notifications, operational analytics and alerts.
-- `database`: ordered MySQL 8 migrations (001–009).
+- `database`: ordered MySQL 8 migrations (001–010).
 - `services/vision`: Python FastAPI/OpenCV/YOLO service; sends authenticated time-stamped occupancy observations to the API.
 - `services/api/uploads/marketplace`: local development storage for public parking listing photos; production should use durable shared/object storage.
 
@@ -32,12 +32,12 @@ An alert's `condition_active` field tracks whether the monitored incident is sti
 
 ## Notifications
 
-`notifications` is a user-owned in-app event history. Booking holds/cancellations, paid booking confirmations, gate entry/exit and first detection of system alerts create records. The API supports user-owned inbox retrieval and read status changes. Email verification/password reset use the configured mail pathway. Phase 10 adds a separate transactional email outbox worker for booking and gate lifecycle events; SMS/push dispatch is not included.
+`notifications` is a user-owned in-app event history. Booking holds/cancellations, paid booking confirmations, gate entry/exit and first detection of system alerts create records. The API supports user-owned inbox retrieval and read status changes. Email verification/password reset use the configured mail pathway. Phase 10 adds a separate transactional email outbox worker for booking and gate lifecycle events; SMS/push dispatch is not included. Phase 11 adds audited refund and host-payout workflows; actual provider refunds and bank transfers are carried out externally and recorded by an administrator.
 
 ## Production dependencies
 
 - Web/API: Node.js, npm workspace install, React/Vite production build and Express API.
-- Database: MySQL 8.4 with migrations 001–009 applied once.
+- Database: MySQL 8.4 with migrations 001–010 applied once.
 - Vision: supported Python runtime, OpenCV, optional Ultralytics/PyTorch model and configured cameras/slot polygons.
 - Payments: configured provider keys, verified signatures/webhooks and operational reconciliation.
 - Infra: HTTPS reverse proxy, private database/vision network paths, strong secrets, durable uploads/model files, tested backups and monitored logs.

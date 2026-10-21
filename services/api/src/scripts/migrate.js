@@ -19,7 +19,11 @@ const BASELINE_REQUIREMENTS = [
   { version: 6, tables: ['parking_listing_photos', 'parking_availability_rules', 'host_earnings'], columns: [{ table: 'parking_lots', column: 'listing_kind' }] },
   { version: 7, columns: [{ table: 'cameras', column: 'detector_mode' }, { table: 'cameras', column: 'last_frame_at' }, { table: 'camera_slot_regions', column: 'is_active' }] },
   { version: 8, tables: ['operational_alerts'], columns: [{ table: 'payments', column: 'needs_reconciliation' }] },
-  { version: 9, tables: ['transactional_email_outbox'] }
+  { version: 9, tables: ['transactional_email_outbox'] },
+  { version: 10, tables: ['refund_requests', 'host_payout_requests', 'host_payout_allocations'], enumValues: [
+    { table: 'refund_requests', column: 'status', values: ['processing'] },
+    { table: 'host_earnings', column: 'status', values: ['payout_requested', 'refund_hold'] }
+  ] }
 ];
 
 function migrationVersion(name) {
@@ -65,13 +69,18 @@ async function assertBaselineSchema(connection, targetVersion) {
   );
   const tables = new Set(tableRows.map((row) => row.TABLE_NAME));
   const [columnRows] = await connection.execute(
-    `SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()`
+    `SELECT TABLE_NAME, COLUMN_NAME, COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()`
   );
   const columns = new Set(columnRows.map((row) => `${row.TABLE_NAME}.${row.COLUMN_NAME}`));
+  const columnTypes = new Map(columnRows.map((row) => [`${row.TABLE_NAME}.${row.COLUMN_NAME}`, String(row.COLUMN_TYPE ?? '')]));
   const missing = [];
   for (const requirement of BASELINE_REQUIREMENTS.filter((item) => item.version <= targetVersion)) {
     for (const table of requirement.tables ?? []) if (!tables.has(table)) missing.push(`table ${table} (migration ${String(requirement.version).padStart(3, '0')})`);
     for (const item of requirement.columns ?? []) if (!columns.has(`${item.table}.${item.column}`)) missing.push(`column ${item.table}.${item.column} (migration ${String(requirement.version).padStart(3, '0')})`);
+    for (const item of requirement.enumValues ?? []) {
+      const type = columnTypes.get(`${item.table}.${item.column}`) ?? '';
+      for (const enumValue of item.values) if (!type.includes(`'${enumValue}'`)) missing.push(`enum value '${enumValue}' on ${item.table}.${item.column} (migration ${String(requirement.version).padStart(3, '0')})`);
+    }
   }
   if (missing.length) {
     throw new Error(`Schema baseline refused because expected objects are missing:\n- ${missing.join('\n- ')}\nApply the missing migrations before baselining.`);
@@ -80,7 +89,7 @@ async function assertBaselineSchema(connection, targetVersion) {
 
 async function baseline(connection, migrations, targetText) {
   const targetVersion = Number(targetText);
-  if (!Number.isInteger(targetVersion) || targetVersion < 1) throw new Error('Usage: npm run migrate -- --baseline 009 --confirm-existing-schema');
+  if (!Number.isInteger(targetVersion) || targetVersion < 1) throw new Error('Usage: npm run migrate -- --baseline 010 --confirm-existing-schema');
   const upto = migrations.filter((migration) => migration.version <= targetVersion);
   if (!upto.length || upto.at(-1).version !== targetVersion) throw new Error(`Migration version ${targetText} was not found.`);
   if (!process.argv.includes('--confirm-existing-schema')) {
