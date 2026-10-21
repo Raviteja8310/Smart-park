@@ -1,32 +1,31 @@
 import { useEffect, useState } from 'react';
 import {
-  Activity, ArrowDownRight, ArrowUpRight, Bell, CarFront, CalendarDays,
+  Activity, ArrowDownRight, ArrowUpRight, Bell, CarFront, CalendarDays, Building2,
   CheckCircle2, ChevronDown, CircleHelp, Clock3, CreditCard, Gauge,
   LayoutDashboard, LogOut, MapPin, MoreHorizontal, Plus, Search, Settings,
-  ShieldCheck, SlidersHorizontal, Sparkles, Users, Wallet, Wifi, Zap
+  ShieldCheck, SlidersHorizontal, Sparkles, Users, Wallet, Wifi, Zap, SquareParking, QrCode, Store
 } from 'lucide-react';
 import AuthPage from './components/AuthPage.jsx';
+import ParkingPage from './components/ParkingPage.jsx';
+import BookingsPage from './components/BookingsPage.jsx';
+import TransactionsPage from './components/TransactionsPage.jsx';
+import GatePage from './components/GatePage.jsx';
+import MarketplacePage from './components/MarketplacePage.jsx';
+import VehiclesPage from './components/VehiclesPage.jsx';
+import EarningsPage from './components/EarningsPage.jsx';
+import VisionPage from './components/VisionPage.jsx';
+import OperationsPage from './components/OperationsPage.jsx';
+import NotificationsPage from './components/NotificationsPage.jsx';
 
-const demoBookings = [
-  { code: 'SP-20481', place: 'Central Square Parking', slot: 'B-12', time: 'Today, 10:30 AM', duration: '2 hours', state: 'Confirmed', amount: '₹120' },
-  { code: 'SP-20463', place: 'Orchid Business Park', slot: 'C-08', time: 'Today, 1:00 PM', duration: '3 hours', state: 'Awaiting entry', amount: '₹180' },
-  { code: 'SP-20398', place: 'Metro Point Garage', slot: 'A-04', time: 'Yesterday, 6:15 PM', duration: '1 hour', state: 'Completed', amount: '₹60' }
-];
-
-const demoSpaces = [
-  { code: 'A1', state: 'occupied' }, { code: 'A2', state: 'available' }, { code: 'A3', state: 'available' }, { code: 'A4', state: 'reserved' }, { code: 'A5', state: 'occupied' },
-  { code: 'B1', state: 'available' }, { code: 'B2', state: 'occupied' }, { code: 'B3', state: 'available' }, { code: 'B4', state: 'available' }, { code: 'B5', state: 'available' },
-  { code: 'C1', state: 'reserved' }, { code: 'C2', state: 'available' }, { code: 'C3', state: 'occupied' }, { code: 'C4', state: 'available' }, { code: 'C5', state: 'available' }
-];
 
 function StatCard({ icon: Icon, label, value, note, trend, tint = 'mint' }) {
   return (
     <article className="stat-card">
       <div className="stat-top">
         <span className={`stat-icon ${tint}`}><Icon size={18} /></span>
-        <span className={`trend ${trend?.startsWith('-') ? 'negative' : ''}`}>
-          {trend?.startsWith('-') ? <ArrowDownRight size={14} /> : <ArrowUpRight size={14} />}{trend}
-        </span>
+        {trend && <span className={`trend ${trend.startsWith('-') ? 'negative' : ''}`}>
+          {trend.startsWith('-') ? <ArrowDownRight size={14} /> : <ArrowUpRight size={14} />}{trend}
+        </span>}
       </div>
       <p className="stat-label">{label}</p>
       <div className="stat-value">{value}</div>
@@ -47,6 +46,11 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [parkingOverview, setParkingOverview] = useState(null);
+  const [overviewError, setOverviewError] = useState('');
+  const [recentBookings, setRecentBookings] = useState([]);
+  const [recentBookingsLoading, setRecentBookingsLoading] = useState(false);
+  const [recentBookingsError, setRecentBookingsError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -84,10 +88,46 @@ export default function App() {
     return () => { cancelled = true; window.clearInterval(id); };
   }, []);
 
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadParkingOverview() {
+      try {
+        const response = await fetch('/api/parking/overview');
+        const data = await response.json();
+        if (!response.ok) throw new Error(data?.error?.message ?? 'Unable to load parking overview.');
+        if (!cancelled) { setParkingOverview(data); setOverviewError(''); }
+      } catch (error) {
+        if (!cancelled) setOverviewError(error.message || 'Parking overview is unavailable.');
+      }
+    }
+    loadParkingOverview();
+    const id = window.setInterval(loadParkingOverview, 30000);
+    return () => { cancelled = true; window.clearInterval(id); };
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser) { setRecentBookings([]); return undefined; }
+    let cancelled = false;
+    setRecentBookingsLoading(true);
+    fetch('/api/bookings/mine?limit=5', { credentials: 'same-origin' })
+      .then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data?.error?.message ?? 'Unable to load recent bookings.');
+        return data;
+      })
+      .then((data) => { if (!cancelled) { setRecentBookings(data.bookings ?? []); setRecentBookingsError(''); } })
+      .catch((error) => { if (!cancelled) { setRecentBookings([]); setRecentBookingsError(error.message || 'Unable to load recent bookings.'); } })
+      .finally(() => { if (!cancelled) setRecentBookingsLoading(false); });
+    return () => { cancelled = true; };
+  }, [currentUser?.id]);
+
+  const canHost = (currentUser?.roles ?? []).some((role) => ['host', 'admin'].includes(role));
+  const canOperate = (currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role));
   const navGroups = [
     { title: 'WORKSPACE', items: [{ label: 'Overview', icon: LayoutDashboard }, { label: 'Find parking', icon: MapPin }, { label: 'My bookings', icon: CalendarDays }, { label: 'Vehicles', icon: CarFront }] },
-    { title: 'MANAGE', items: [{ label: 'Parking spaces', icon: Gauge }, { label: 'Transactions', icon: CreditCard }, { label: 'Owner earnings', icon: Wallet }] },
-    { title: 'PREFERENCES', items: [{ label: 'Settings', icon: Settings }, { label: 'Help & support', icon: CircleHelp }] }
+    { title: 'MANAGE', items: [{ label: 'Parking spaces', icon: Gauge }, ...(canHost ? [{ label: 'My listings', icon: Store }, { label: 'Owner earnings', icon: Wallet }] : []), ...((currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role)) ? [{ label: 'Camera detection', icon: Activity }] : []), ...(canOperate ? [{ label: 'Operations', icon: Activity }] : []), { label: 'Transactions', icon: CreditCard }, ...((currentUser?.roles ?? []).some((role) => ['attendant', 'operator', 'admin'].includes(role)) ? [{ label: 'Gate access', icon: QrCode }] : [])] },
+    { title: 'PREFERENCES', items: [{ label: 'Notifications', icon: Bell }, { label: 'Settings', icon: Settings }, { label: 'Help & support', icon: CircleHelp }] }
   ];
 
   const displayName = currentUser?.fullName || currentUser?.email || 'SmartPark user';
@@ -111,7 +151,11 @@ export default function App() {
     }
   }
 
-  const filteredBookings = demoBookings.filter((booking) => `${booking.code} ${booking.place} ${booking.slot}`.toLowerCase().includes(search.toLowerCase()));
+  const filteredBookings = recentBookings.filter((booking) => `${booking.bookingCode} ${booking.parkingLotName ?? ''} ${booking.slotCode ?? ''}`.toLowerCase().includes(search.toLowerCase()));
+  const bookingStatusLabel = (status) => ({ held: 'Awaiting payment', pending_payment: 'Pending payment', confirmed: 'Confirmed', checked_in: 'Checked in', completed: 'Completed', cancelled: 'Cancelled', expired: 'Expired', payment_failed: 'Payment failed' }[status] ?? status);
+  const bookingDateLabel = (value) => { const date = new Date(value); return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }); };
+  const bookingDurationLabel = (startValue, endValue) => { const minutes = Math.max(0, Math.round((new Date(endValue).getTime() - new Date(startValue).getTime()) / 60000)); const hours = Math.floor(minutes / 60); const remainder = minutes % 60; return [hours ? `${hours}h` : '', remainder ? `${remainder}m` : ''].filter(Boolean).join(' ') || '—'; };
+  const bookingMoney = (amount, currency = 'INR') => new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 2 }).format(Number(amount ?? 0));
 
   if (authLoading) {
     return <div className="auth-loading-screen"><div className="auth-loading-mark"><CarFront size={22} /></div><p>Loading your SmartPark workspace…</p></div>;
@@ -129,7 +173,7 @@ export default function App() {
         <nav className="side-nav" aria-label="Main navigation">
           {navGroups.map((group) => <div className="nav-group" key={group.title}>
             <p className="nav-group-title">{group.title}</p>
-            {group.items.map(({ label, icon: Icon }) => <button key={label} onClick={() => setActiveNav(label)} className={`nav-link ${activeNav === label ? 'active' : ''}`}><Icon size={17} /><span>{label}</span>{label === 'My bookings' && <span className="nav-count">3</span>}</button>)}
+            {group.items.map(({ label, icon: Icon }) => <button key={label} onClick={() => setActiveNav(label)} className={`nav-link ${activeNav === label ? 'active' : ''}`}><Icon size={17} /><span>{label}</span></button>)}
           </div>)}
         </nav>
         <div className="sidebar-bottom">
@@ -141,31 +185,41 @@ export default function App() {
       <main className="main-area">
         <header className="topbar">
           <div className="breadcrumb"><span>Workspace</span><span className="crumb-slash">/</span><strong>{activeNav}</strong></div>
-          <div className="top-actions"><div className={`connection-status ${apiStatus.state === 'ok' ? 'connected' : ''}`} title={`API: ${apiStatus.state}; database: ${apiStatus.database}`}><span className="connection-dot" />{apiStatus.checking ? 'Checking system' : apiStatus.state === 'ok' ? 'System connected' : apiStatus.state === 'degraded' ? 'Database offline' : 'API offline'}</div><button className="icon-button" aria-label="Notifications"><Bell size={18} /><i /></button><div className="top-avatar" title={displayName}>{userInitials}</div><button className="logout-button" onClick={handleLogout} disabled={loggingOut} title="Sign out"><LogOut size={15} /><span>{loggingOut ? 'Signing out…' : 'Sign out'}</span></button></div>
+          <div className="top-actions"><div className={`connection-status ${apiStatus.state === 'ok' ? 'connected' : ''}`} title={`API: ${apiStatus.state}; database: ${apiStatus.database}`}><span className="connection-dot" />{apiStatus.checking ? 'Checking system' : apiStatus.state === 'ok' ? 'System connected' : apiStatus.state === 'degraded' ? 'Database offline' : 'API offline'}</div><button className="icon-button" aria-label="Notifications" onClick={() => setActiveNav('Notifications')}><Bell size={18} /><i /></button><div className="top-avatar" title={displayName}>{userInitials}</div><button className="logout-button" onClick={handleLogout} disabled={loggingOut} title="Sign out"><LogOut size={15} /><span>{loggingOut ? 'Signing out…' : 'Sign out'}</span></button></div>
         </header>
 
         <div className="page-content">
+          {activeNav === 'Find parking' ? <ParkingPage mode="discover" currentUser={currentUser} onViewBookings={() => setActiveNav('My bookings')} />
+            : activeNav === 'Parking spaces' ? <ParkingPage mode="manage" currentUser={currentUser} />
+            : activeNav === 'My bookings' ? <BookingsPage currentUser={currentUser} />
+            : activeNav === 'Vehicles' ? <VehiclesPage currentUser={currentUser} />
+            : activeNav === 'My listings' && canHost ? <MarketplacePage currentUser={currentUser} />
+            : activeNav === 'Owner earnings' && canHost ? <EarningsPage currentUser={currentUser} />
+            : activeNav === 'Transactions' ? <TransactionsPage currentUser={currentUser} />
+            : activeNav === 'Gate access' ? <GatePage currentUser={currentUser} />
+            : activeNav === 'Camera detection' && (currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role)) ? <VisionPage currentUser={currentUser} />
+            : activeNav === 'Operations' && canOperate ? <OperationsPage currentUser={currentUser} />
+            : activeNav === 'Notifications' ? <NotificationsPage /> : <>
           <section className="welcome-row">
             <div><div className="eyebrow"><span className="eyebrow-line" /> YOUR PARKING OVERVIEW</div><h1>Welcome back, {displayName.split(/\s+/)[0]} <span className="wave">✳</span></h1><p className="welcome-subtitle">Everything you need for a smoother parking experience.</p></div>
             <button className="primary-button" onClick={() => setActiveNav('Find parking')}><Plus size={17} /> Find a parking spot</button>
           </section>
 
-          <section className="stat-grid" aria-label="Dashboard preview statistics">
-            <StatCard icon={CalendarDays} label="Total bookings" value="24" note="Across all time" trend="12.8%" tint="mint" />
-            <StatCard icon={Clock3} label="Hours parked" value="48.5" note="This month" trend="8.2%" tint="blue" />
-            <StatCard icon={Wallet} label="Total spent" value="₹3,240" note="Across all bookings" trend="5.4%" tint="violet" />
-            <StatCard icon={MapPin} label="Saved locations" value="6" note="Your favourite spots" trend="2 new" tint="amber" />
+          <section className="stat-grid" aria-label="Live parking inventory overview">
+            <StatCard icon={Building2} label="Active locations" value={parkingOverview ? parkingOverview.overview.activeLots : '—'} note="Published facilities" tint="mint" />
+            <StatCard icon={Gauge} label="Total spaces" value={parkingOverview ? parkingOverview.overview.totalSpaces : '—'} note="Across active locations" tint="blue" />
+            <StatCard icon={CheckCircle2} label="Available now" value={parkingOverview ? parkingOverview.overview.availableNow : '—'} note="Known empty and unreserved" tint="violet" />
+            <StatCard icon={CarFront} label="Occupied now" value={parkingOverview ? parkingOverview.overview.occupiedNow : '—'} note="Latest recorded physical state" tint="amber" />
           </section>
 
           <section className="content-grid">
             <article className="panel occupancy-panel">
-              <div className="panel-heading"><div><p className="section-kicker">PARKING AVAILABILITY</p><h2>Spaces at a glance</h2><p className="muted-copy">Illustrative dashboard preview · not live facility data</p></div><button className="quiet-button" onClick={() => setActiveNav('Find parking')}>Explore locations <span>↗</span></button></div>
-              <div className="availability-summary"><div><span className="availability-number">45</span><span className="availability-label">spaces available</span></div><div className="occupancy-total"><span className="mini-live-dot" /> 120 total spaces</div></div>
-              <div className="progress-track"><span style={{ width: '62.5%' }} /></div>
-              <div className="progress-caption"><span><i className="legend-dot green" /> Available <strong>45</strong></span><span><i className="legend-dot red" /> Occupied <strong>65</strong></span><span><i className="legend-dot yellow" /> Reserved <strong>10</strong></span></div>
-              <div className="slot-map-heading"><strong>Sample slot layout</strong><span>15 sample spaces</span></div>
-              <div className="slot-grid" aria-label="Illustrative parking slot grid">{demoSpaces.map((space) => <div key={space.code} className={`slot ${space.state}`} title={`${space.code}: ${space.state}`}><span>{space.code}</span>{space.state === 'available' && <CheckCircle2 size={12} />}{space.state === 'occupied' && <CarFront size={13} />}{space.state === 'reserved' && <Clock3 size={12} />}</div>)}</div>
-              <div className="slot-legend"><span><i className="legend-dot green" /> Available</span><span><i className="legend-dot red" /> Occupied</span><span><i className="legend-dot yellow" /> Reserved</span></div>
+              <div className="panel-heading"><div><p className="section-kicker">PARKING AVAILABILITY</p><h2>Spaces at a glance</h2><p className="muted-copy">{overviewError || 'Live summary of published facilities · refreshes every 30 seconds'}</p></div><button className="quiet-button" onClick={() => setActiveNav('Find parking')}>Explore locations <span>↗</span></button></div>
+              <div className="availability-summary"><div><span className="availability-number">{parkingOverview ? parkingOverview.overview.availableNow : '—'}</span><span className="availability-label">spaces available</span></div><div className="occupancy-total"><span className="mini-live-dot" /> {parkingOverview ? parkingOverview.overview.totalSpaces : '—'} total spaces</div></div>
+              <div className="progress-track"><span style={{ width: `${parkingOverview?.overview.totalSpaces ? Math.min(100, (parkingOverview.overview.availableNow / parkingOverview.overview.totalSpaces) * 100) : 0}%` }} /></div>
+              <div className="progress-caption"><span><i className="legend-dot green" /> Available <strong>{parkingOverview?.overview.availableNow ?? '—'}</strong></span><span><i className="legend-dot red" /> Occupied <strong>{parkingOverview?.overview.occupiedNow ?? '—'}</strong></span><span><i className="legend-dot yellow" /> Unknown <strong>{parkingOverview?.overview.unknownSpaces ?? '—'}</strong></span></div>
+              <div className="slot-map-heading"><strong>Published facilities</strong><span>{parkingOverview?.overview.activeLots ?? '—'} active locations</span></div>
+              {parkingOverview?.featuredLots?.length ? <div className="sp-featured-lots">{parkingOverview.featuredLots.slice(0, 4).map((lot) => <button className="sp-featured-lot" key={lot.id} onClick={() => setActiveNav('Find parking')}><span className="sp-featured-lot-icon"><MapPin size={15} /></span><span className="sp-featured-lot-copy"><strong>{lot.name}</strong><small>{lot.city} · {lot.availableNow} available of {lot.totalSpaces}</small></span><span className="sp-featured-lot-rate">{lot.hourlyRate == null ? 'Rate unset' : new Intl.NumberFormat('en-IN', { style: 'currency', currency: lot.currency || 'INR', maximumFractionDigits: 0 }).format(lot.hourlyRate)}<small>/hr</small></span></button>)}</div> : <div className="sp-overview-empty"><SquareParking size={22} /><span>No published facilities yet. Add a facility and publish it to see live inventory here.</span><button onClick={() => setActiveNav('Parking spaces')}>Manage facilities</button></div>}
             </article>
 
             <article className="panel quick-actions-panel">
@@ -181,12 +235,13 @@ export default function App() {
           </section>
 
           <section className="panel bookings-panel">
-            <div className="panel-heading bookings-heading"><div><p className="section-kicker">YOUR ACTIVITY</p><h2>Recent bookings</h2><p className="muted-copy">Illustrative entries for the initial UI build</p></div><button className="quiet-button" onClick={() => setActiveNav('My bookings')}>View all bookings <span>↗</span></button></div>
+            <div className="panel-heading bookings-heading"><div><p className="section-kicker">YOUR ACTIVITY</p><h2>Recent bookings</h2><p className="muted-copy">Your latest reservations from SmartPark. Reservation holds are not paid bookings.</p></div><button className="quiet-button" onClick={() => setActiveNav('My bookings')}>View all bookings <span>↗</span></button></div>
             <div className="table-toolbar"><div className="search-box"><Search size={16} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search bookings..." aria-label="Search bookings" /></div><button className="filter-button" onClick={() => setSearch('')}><SlidersHorizontal size={15} /> Clear search</button></div>
-            <div className="table-wrap"><table><thead><tr><th>BOOKING</th><th>PARKING LOCATION</th><th>DATE & TIME</th><th>STATUS</th><th>AMOUNT</th><th aria-label="Actions" /></tr></thead><tbody>{filteredBookings.map((booking) => <tr key={booking.code}><td><span className="booking-code">{booking.code}</span><small className="table-subline">Slot {booking.slot} · {booking.duration}</small></td><td><span className="location-cell"><span className="location-icon"><MapPin size={15} /></span>{booking.place}</span></td><td><span>{booking.time}</span><small className="table-subline">Local time</small></td><td><StatusPill state={booking.state} /></td><td className="amount-cell">{booking.amount}</td><td><button className="row-more" aria-label={`More actions for ${booking.code}`}><MoreHorizontal size={18} /></button></td></tr>)}</tbody></table>{filteredBookings.length === 0 && <div className="empty-state">No sample bookings match “{search}”. Try another search.</div>}</div>
-            <div className="table-footer"><span>Showing {filteredBookings.length} sample bookings</span><span className="sample-label"><Activity size={13} /> Preview data</span></div>
+            <div className="table-wrap"><table><thead><tr><th>BOOKING</th><th>PARKING LOCATION</th><th>DATE & TIME</th><th>STATUS</th><th>AMOUNT</th><th aria-label="Actions" /></tr></thead><tbody>{filteredBookings.map((booking) => <tr key={booking.id}><td><span className="booking-code">{booking.bookingCode}</span><small className="table-subline">Slot {booking.slotCode ?? '—'} · {bookingDurationLabel(booking.startAt, booking.endAt)}</small></td><td><span className="location-cell"><span className="location-icon"><MapPin size={15} /></span>{booking.parkingLotName}</span></td><td><span>{bookingDateLabel(booking.startAt)}</span><small className="table-subline">Local time</small></td><td><StatusPill state={bookingStatusLabel(booking.status)} /></td><td className="amount-cell">{bookingMoney(booking.totalAmount, booking.currency)}</td><td><button className="row-more" aria-label={`Open ${booking.bookingCode}`} onClick={() => setActiveNav('My bookings')}><MoreHorizontal size={18} /></button></td></tr>)}</tbody></table>{filteredBookings.length === 0 && <div className="empty-state">{recentBookingsLoading ? 'Loading your bookings…' : recentBookingsError || (search ? `No bookings match “${search}”. Try another search.` : 'No bookings yet. Find a parking space to create your first reservation.')}</div>}</div>
+            <div className="table-footer"><span>Showing {filteredBookings.length} recent bookings</span><span className="sample-label"><Activity size={13} /> Account data</span></div>
           </section>
 
+          </>}
           <footer className="page-footer"><span>© 2026 SmartPark · Original project build</span><span><span className="footer-status" /> Designed for a reliable parking experience</span></footer>
         </div>
       </main>

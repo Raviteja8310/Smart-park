@@ -1,6 +1,9 @@
 import app from './app.js';
 import { env } from './config/env.js';
 import { pool } from './config/database.js';
+import { startVisionStaleMonitor } from './vision/stale-monitor.js';
+
+const stopVisionStaleMonitor = startVisionStaleMonitor(pool);
 
 const server = app.listen(env.API_PORT, () => {
   console.log(`SmartPark API listening at http://localhost:${env.API_PORT}`);
@@ -9,6 +12,7 @@ const server = app.listen(env.API_PORT, () => {
 
 async function shutdown(signal) {
   console.log(`${signal} received; shutting down SmartPark API...`);
+  stopVisionStaleMonitor();
   server.close(async () => {
     try {
       await pool.end();

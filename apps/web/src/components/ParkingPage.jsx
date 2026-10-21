@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  ArrowLeft, ArrowUpRight, Building2, Check, CircleAlert, Clock3,
+  ArrowLeft, ArrowUpRight, Building2, CalendarClock, Check, CircleAlert, Clock3,
   Layers3, LoaderCircle, MapPin, Plus, RefreshCw, Search, ShieldCheck,
   SlidersHorizontal, SquareParking, X
 } from 'lucide-react';
@@ -25,6 +25,58 @@ function facilityLocation(lot) {
   return [lot.addressLine, lot.city, lot.region].filter(Boolean).join(', ');
 }
 
+function localPartsInZone(date, timeZone) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
+    timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  }).formatToParts(date).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+  return parts;
+}
+
+function defaultBookingStart(timeZone = 'Asia/Kolkata') {
+  const value = new Date(Date.now() + 45 * 60 * 1000);
+  const parts = localPartsInZone(value, timeZone);
+  return {
+    date: `${parts.year}-${parts.month}-${parts.day}`,
+    time: `${parts.hour}:${parts.minute}`
+  };
+}
+
+function zonedLocalDateTimeToUtc(dateValue, timeValue, timeZone) {
+  const dateParts = dateValue.split('-').map(Number);
+  const timeParts = timeValue.split(':').map(Number);
+  if (dateParts.length !== 3 || timeParts.length < 2 || [...dateParts, ...timeParts].some((part) => !Number.isInteger(part))) {
+    throw new Error('Select a valid booking date and start time.');
+  }
+  const [year, month, day] = dateParts;
+  const [hour, minute] = timeParts;
+  if (month < 1 || month > 12 || day < 1 || day > 31 || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+    throw new Error('Select a valid booking date and start time.');
+  }
+  const desiredWallTime = Date.UTC(year, month - 1, day, hour, minute, 0);
+  let timestamp = desiredWallTime;
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const parts = localPartsInZone(new Date(timestamp), timeZone);
+    const observedWallTime = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour), Number(parts.minute), 0);
+    const difference = desiredWallTime - observedWallTime;
+    if (difference === 0) break;
+    timestamp += difference;
+  }
+  const result = new Date(timestamp);
+  const check = localPartsInZone(result, timeZone);
+  if (`${check.year}-${check.month}-${check.day}` !== dateValue || `${check.hour}:${check.minute}` !== timeValue) {
+    throw new Error('That local time is not valid in the parking location time zone. Choose another time.');
+  }
+  return result;
+}
+
+function bookingPayload(slotId, startFields, durationHours, vehicleId = null, timeZone = 'Asia/Kolkata') {
+  if (!startFields.date || !startFields.time) throw new Error('Select a booking date and start time.');
+  const start = zonedLocalDateTimeToUtc(startFields.date, startFields.time, timeZone);
+  const end = new Date(start.getTime() + Number(durationHours) * 60 * 60 * 1000);
+  return { slotId, vehicleId: vehicleId || null, startAt: start.toISOString(), endAt: end.toISOString() };
+}
+
 function StatePill({ state }) {
   const labels = { available: 'Available', occupied: 'Occupied', reserved: 'Reserved', unknown: 'Unknown', disabled: 'Disabled', maintenance: 'Maintenance' };
   return <span className={`sp-state-pill ${state}`}><i />{labels[state] ?? state}</span>;
@@ -34,7 +86,7 @@ function LotCard({ lot, mode, onOpen, onSubmitForApproval, onSetStatus, isAdmin,
   return (
     <article className="sp-lot-card">
       <div className="sp-lot-card-top">
-        <div className="sp-lot-icon"><Building2 size={20} /></div>
+        <div className={`sp-lot-icon ${lot.coverPhoto ? 'has-photo' : ''}`}>{lot.coverPhoto ? <img src={lot.coverPhoto} alt={`${lot.name} parking`} /> : <Building2 size={20} />}</div>
         <div className="sp-lot-status-wrap">
           <span className={`sp-facility-status ${lot.facilityStatus}`}>{lot.facilityStatus.replaceAll('_', ' ')}</span>
           <span className="sp-lot-id">{lot.id.slice(0, 8).toUpperCase()}</span>
@@ -71,7 +123,7 @@ function LotCard({ lot, mode, onOpen, onSubmitForApproval, onSetStatus, isAdmin,
   );
 }
 
-export default function ParkingPage({ mode = 'discover', currentUser }) {
+export default function ParkingPage({ mode = 'discover', currentUser, onViewBookings }) {
   const isManager = mode === 'manage';
   const roles = currentUser?.roles ?? [];
   const isAdmin = roles.includes('admin');
@@ -91,8 +143,18 @@ export default function ParkingPage({ mode = 'discover', currentUser }) {
   const [slots, setSlots] = useState([]);
   const [slotSummary, setSlotSummary] = useState(null);
   const [zones, setZones] = useState([]);
+  const [pricingRules, setPricingRules] = useState([]);
+  const [pricingForm, setPricingForm] = useState({ rateType: 'hourly', amount: '40', serviceFee: '5', taxRatePercent: '0', slotId: '' });
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [busyAction, setBusyAction] = useState(false);
+  const [bookingSlot, setBookingSlot] = useState(null);
+  const [vehicles, setVehicles] = useState([]);
+  const [bookingVehicleId, setBookingVehicleId] = useState('');
+  const [bookingStart, setBookingStart] = useState(() => defaultBookingStart('Asia/Kolkata'));
+  const [bookingDuration, setBookingDuration] = useState('2');
+  const [bookingQuote, setBookingQuote] = useState(null);
+  const [activeHold, setActiveHold] = useState(null);
+  const [bookingBusy, setBookingBusy] = useState(false);
   const [newZoneName, setNewZoneName] = useState('');
   const [newZoneLevel, setNewZoneLevel] = useState('');
   const [newSlotCodes, setNewSlotCodes] = useState('');
@@ -121,27 +183,48 @@ export default function ParkingPage({ mode = 'discover', currentUser }) {
 
   useEffect(() => { reloadLots(isManager ? { q: '', city: '' } : submittedQuery); }, [isManager, submittedQuery, reloadLots]);
 
+  useEffect(() => {
+    let active = true;
+    apiRequest('/api/vehicles/mine')
+      .then((data) => {
+        if (!active) return;
+        const list = data.vehicles ?? [];
+        setVehicles(list);
+        setBookingVehicleId((current) => current || list.find((vehicle) => vehicle.isDefault)?.id || list[0]?.id || '');
+      })
+      .catch(() => { /* Vehicle selection is optional; booking validation remains server-side. */ });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    if (bookingVehicleId || !vehicles.length) return;
+    setBookingVehicleId(vehicles.find((vehicle) => vehicle.isDefault)?.id || vehicles[0].id);
+  }, [vehicles, bookingVehicleId]);
+
   const loadLotDetails = useCallback(async (lot) => {
     setSelectedLot(lot);
     setLoadingDetails(true);
     setError('');
     setNotice('');
     try {
-      const [lotData, slotData, zoneData] = await Promise.all([
+      const [lotData, slotData, zoneData, pricingData] = await Promise.all([
         apiRequest(`/api/parking/lots/${lot.id}`),
         apiRequest(`/api/parking/lots/${lot.id}/slots`),
-        apiRequest(`/api/parking/lots/${lot.id}/zones`)
+        apiRequest(`/api/parking/lots/${lot.id}/zones`),
+        apiRequest(`/api/parking/lots/${lot.id}/pricing`)
       ]);
       setSelectedLot(lotData.lot ?? lot);
       setSlots(slotData.slots ?? []);
       setSlotSummary(slotData.summary ?? null);
       setZones(zoneData.zones ?? []);
+      setPricingRules(pricingData.pricingRules ?? []);
       setNewSlotZone(zoneData.zones?.[0]?.id ?? '');
     } catch (requestError) {
       setError(requestError.message);
       setSlots([]);
       setSlotSummary(null);
       setZones([]);
+      setPricingRules([]);
     } finally {
       setLoadingDetails(false);
     }
@@ -237,6 +320,25 @@ export default function ParkingPage({ mode = 'discover', currentUser }) {
     finally { setBusyAction(false); }
   }
 
+  async function createPricingRule(event) {
+    event.preventDefault();
+    if (!selectedLot) return;
+    setBusyAction(true); setError(''); setNotice('');
+    try {
+      const payload = {
+        rateType: pricingForm.rateType,
+        amount: Number(pricingForm.amount),
+        serviceFee: Number(pricingForm.serviceFee || 0),
+        taxRatePercent: Number(pricingForm.taxRatePercent || 0),
+        slotId: pricingForm.slotId || null
+      };
+      const data = await apiRequest(`/api/parking/lots/${selectedLot.id}/pricing`, { method: 'POST', body: JSON.stringify(payload) });
+      setPricingRules((old) => [data.pricingRule, ...old.filter((rule) => !(rule.rateType === data.pricingRule.rateType && rule.slotId === data.pricingRule.slotId && rule.isActive))]);
+      setNotice(`The ${data.pricingRule.rateType} pricing rule is now active.`);
+    } catch (requestError) { setError(requestError.message || 'Unable to save the pricing rule.'); }
+    finally { setBusyAction(false); }
+  }
+
   async function updateSlot(slot, patch) {
     setError(''); setNotice('');
     try {
@@ -246,6 +348,47 @@ export default function ParkingPage({ mode = 'discover', currentUser }) {
       setNotice(`${slot.code} updated.`);
       await reloadLots({ q: '', city: '' });
     } catch (requestError) { setError(requestError.message); }
+  }
+
+  function openBooking(slot) {
+    setBookingSlot(slot);
+    setBookingStart(defaultBookingStart(selectedLot?.timezone || 'Asia/Kolkata'));
+    setBookingDuration('2');
+    setBookingVehicleId(vehicles.find((vehicle) => vehicle.isDefault)?.id || vehicles[0]?.id || '');
+    setBookingQuote(null);
+    setActiveHold(null);
+    setError('');
+    setNotice('');
+  }
+
+  async function requestBookingQuote() {
+    if (!bookingSlot) return;
+    setBookingBusy(true); setError(''); setNotice(''); setBookingQuote(null);
+    try {
+      const payload = bookingPayload(bookingSlot.id, bookingStart, bookingDuration, bookingVehicleId, selectedLot?.timezone || 'Asia/Kolkata');
+      const data = await apiRequest('/api/bookings/quote', { method: 'POST', body: JSON.stringify(payload) });
+      setBookingQuote(data);
+    } catch (requestError) { setError(requestError.message || 'Unable to calculate the booking price.'); }
+    finally { setBookingBusy(false); }
+  }
+
+  async function createBookingHold() {
+    if (!bookingSlot || !bookingQuote) return;
+    setBookingBusy(true); setError(''); setNotice('');
+    try {
+      const payload = bookingPayload(bookingSlot.id, bookingStart, bookingDuration, bookingVehicleId, selectedLot?.timezone || 'Asia/Kolkata');
+      const data = await apiRequest('/api/bookings', { method: 'POST', body: JSON.stringify(payload) });
+      setActiveHold(data.booking);
+      setBookingQuote(null);
+      setNotice(`Temporary hold ${data.booking.bookingCode} created. Payment is not complete.`);
+      const [slotData, lotData] = await Promise.all([
+        apiRequest(`/api/parking/lots/${selectedLot.id}/slots`),
+        apiRequest(`/api/parking/lots/${selectedLot.id}`)
+      ]);
+      setSlots(slotData.slots ?? []); setSlotSummary(slotData.summary ?? null); setSelectedLot(lotData.lot ?? selectedLot);
+      await reloadLots({ q: '', city: '' });
+    } catch (requestError) { setError(requestError.message || 'Unable to reserve this space.'); }
+    finally { setBookingBusy(false); }
   }
 
   const availableSlots = useMemo(() => slots.filter((slot) => slot.availabilityState === 'available').length, [slots]);
@@ -261,6 +404,32 @@ export default function ParkingPage({ mode = 'discover', currentUser }) {
         {error && <div className="sp-alert error"><CircleAlert size={17} /><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error"><X size={14} /></button></div>}
         {notice && <div className="sp-alert success"><Check size={17} /><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss notice"><X size={14} /></button></div>}
 
+        {bookingSlot && !isManager && <article className="sp-panel sp-booking-builder">
+          <div className="sp-panel-header"><div><p className="sp-kicker">RESERVE A SPACE</p><h2>{bookingSlot.code} · {selectedLot.name}</h2><p>Choose your arrival time and duration to get a server-calculated price. Times use {selectedLot.timezone || 'Asia/Kolkata'}.</p></div><button className="sp-button ghost" onClick={() => { setBookingSlot(null); setBookingQuote(null); setActiveHold(null); }}><X size={14} /> Close</button></div>
+          {activeHold ? <div className="sp-hold-confirmation">
+            <div className="sp-hold-check"><Check size={20} /></div>
+            <div><strong>Temporary reservation created</strong><p>Booking code: <b>{activeHold.bookingCode}</b></p><p>Hold expires: {activeHold.holdExpiresAt ? new Date(activeHold.holdExpiresAt).toLocaleString() : 'in approximately 10 minutes'}</p><small>This is an unpaid temporary hold. It becomes confirmed only after the payment provider verifies checkout.</small></div>
+            <button className="sp-button primary" onClick={() => onViewBookings?.()}>View my bookings <ArrowUpRight size={14} /></button>
+          </div> : <>
+            <div className="sp-booking-form-grid">
+              <label>Start date<input type="date" value={bookingStart.date} min={defaultBookingStart(selectedLot.timezone || 'Asia/Kolkata').date} onChange={(event) => { setBookingStart((old) => ({ ...old, date: event.target.value })); setBookingQuote(null); }} required /></label>
+              <label>Start time<input type="time" value={bookingStart.time} onChange={(event) => { setBookingStart((old) => ({ ...old, time: event.target.value })); setBookingQuote(null); }} required /></label>
+              <label>Duration<select value={bookingDuration} onChange={(event) => { setBookingDuration(event.target.value); setBookingQuote(null); }}><option value="1">1 hour</option><option value="2">2 hours</option><option value="3">3 hours</option><option value="4">4 hours</option><option value="8">8 hours</option><option value="24">24 hours</option><option value="48">2 days</option><option value="168">7 days</option></select></label>
+              <label>Vehicle <span className="sp-optional">Optional</span><select value={bookingVehicleId} onChange={(event) => { setBookingVehicleId(event.target.value); setBookingQuote(null); }}><option value="">No vehicle selected</option>{vehicles.filter((vehicle) => bookingSlot.vehicleType === 'any' || vehicle.vehicleType === bookingSlot.vehicleType).map((vehicle) => <option key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber} · {[vehicle.make, vehicle.model].filter(Boolean).join(' ') || vehicle.vehicleType}</option>)}</select></label>
+            </div>
+            {!vehicles.length && <p className="sp-form-hint">You can add vehicles under My vehicles. Adding a vehicle helps parking staff match your reservation.</p>}
+            <div className="sp-booking-builder-actions"><p>Holds expire after 10 minutes. Once held, open My bookings to continue to secure checkout.</p><button className="sp-button primary" onClick={requestBookingQuote} disabled={bookingBusy}><CalendarClock size={15} /> {bookingBusy ? 'Calculating…' : 'Check price'}</button></div>
+            {bookingQuote && <div className="sp-quote-card">
+              <div className="sp-quote-header"><div><span>Price estimate</span><strong>{formatMoney(bookingQuote.quote.totalAmount, bookingQuote.quote.currency)}</strong></div><span className="sp-quote-rate">{bookingQuote.quote.rateType} rate · {bookingQuote.quote.units} unit(s)</span></div>
+              <div className="sp-quote-line"><span>Parking charge</span><strong>{formatMoney(bookingQuote.quote.baseAmount, bookingQuote.quote.currency)}</strong></div>
+              <div className="sp-quote-line"><span>Service fee</span><strong>{formatMoney(bookingQuote.quote.serviceFee, bookingQuote.quote.currency)}</strong></div>
+              <div className="sp-quote-line"><span>Tax ({bookingQuote.quote.taxRatePercent}%)</span><strong>{formatMoney(bookingQuote.quote.taxAmount, bookingQuote.quote.currency)}</strong></div>
+              <div className="sp-quote-total"><span>Total due at checkout</span><strong>{formatMoney(bookingQuote.quote.totalAmount, bookingQuote.quote.currency)}</strong></div>
+              <button className="sp-button primary" onClick={createBookingHold} disabled={bookingBusy}><Check size={15} /> {bookingBusy ? 'Reserving…' : 'Hold this parking space'}</button>
+            </div>}
+          </>}
+        </article>}
+
         {loadingDetails ? <div className="sp-loading"><LoaderCircle className="sp-spin" size={20} /> Loading parking inventory…</div> : <>
           <div className="sp-detail-stats">
             <div><span>Total spaces</span><strong>{slotSummary?.total ?? selectedLot.totalSpaces ?? 0}</strong></div>
@@ -268,6 +437,8 @@ export default function ParkingPage({ mode = 'discover', currentUser }) {
             <div><span>Occupied</span><strong className="red-text">{slotSummary?.occupied ?? selectedLot.occupiedNow ?? 0}</strong></div>
             <div><span>Unknown status</span><strong>{slotSummary?.unknown ?? selectedLot.unknownSpaces ?? 0}</strong></div>
           </div>
+
+          {(selectedLot.listingKind === 'shared_space' || selectedLot.amenities?.length || selectedLot.specialInstructions || selectedLot.contactPhone) && <article className="sp-panel sp-shared-listing-information"><div className="sp-panel-header"><div><p className="sp-kicker">PARKING LISTING</p><h2>{selectedLot.listingKind === 'shared_space' ? 'Shared parking space' : 'Facility details'}</h2><p>{selectedLot.parkingType ? selectedLot.parkingType.replaceAll('_', ' ') : 'Parking facility'}{selectedLot.contactPhone ? ` · Contact ${selectedLot.contactPhone}` : ''}</p></div>{selectedLot.coverPhoto && <img className="sp-shared-cover" src={selectedLot.coverPhoto} alt={`${selectedLot.name} parking`} />}</div>{selectedLot.amenities?.length > 0 && <div className="sp-shared-amenities">{selectedLot.amenities.map((amenity) => <span key={amenity}>{amenity.replaceAll(/([A-Z])/g, ' $1').replace(/^./, (char) => char.toUpperCase())}</span>)}</div>}{selectedLot.specialInstructions && <p className="sp-shared-instructions">{selectedLot.specialInstructions}</p>}</article>}
 
           <article className="sp-panel">
             <div className="sp-panel-header"><div><p className="sp-kicker">SPACE MAP</p><h2>Parking spaces</h2><p>Unknown spaces are never advertised as available.</p></div><button className="sp-button ghost" onClick={() => loadLotDetails(selectedLot)}><RefreshCw size={14} /> Refresh</button></div>
@@ -279,6 +450,7 @@ export default function ParkingPage({ mode = 'discover', currentUser }) {
                 {isManager && canChangePhysicalState && <label className="sp-inline-control"><span>Physical state</span><select value={slot.physicalState} onChange={(event) => updateSlot(slot, { physicalState: event.target.value })}><option value="unknown">Unknown</option><option value="empty">Empty</option><option value="occupied">Occupied</option></select></label>}
                 {isManager && canManageInventory && <label className="sp-inline-control"><span>Operational status</span><select value={slot.operationalStatus} onChange={(event) => updateSlot(slot, { operationalStatus: event.target.value })}><option value="open">Open</option><option value="disabled">Disabled</option><option value="maintenance">Maintenance</option></select></label>}
                 {slot.physicalStateUpdatedAt && <small className="sp-updated-at">Updated {new Date(slot.physicalStateUpdatedAt).toLocaleString()}</small>}
+                {!isManager && slot.operationalStatus === 'open' && <button className="sp-button secondary sp-slot-book-button" onClick={() => openBooking(slot)}>{slot.availabilityState === 'available' ? 'Choose time' : 'Check another time'}</button>}
               </article>
             ))}</div> : <div className="sp-empty-state"><SquareParking size={28} /><strong>No parking spaces configured yet</strong><span>Create zones and spaces to set up this facility's inventory.</span></div>}
           </article>
@@ -304,6 +476,23 @@ export default function ParkingPage({ mode = 'discover', currentUser }) {
                   <label>Vehicle type<select value={newVehicleType} onChange={(event) => setNewVehicleType(event.target.value)}><option value="any">Any vehicle</option><option value="motorcycle">Motorcycle</option><option value="car">Car</option><option value="suv">SUV</option><option value="van">Van</option><option value="truck">Truck</option><option value="other">Other</option></select></label>
                   <div className="sp-checkbox-row"><label><input type="checkbox" checked={newCovered} onChange={(event) => setNewCovered(event.target.checked)} /> Covered</label><label><input type="checkbox" checked={newAccessible} onChange={(event) => setNewAccessible(event.target.checked)} /> Accessible</label></div>
                   <button className="sp-button primary" disabled={busyAction}><Plus size={15} /> Create parking spaces</button>
+                </form>
+              </article>
+              <article className="sp-panel">
+                <div className="sp-panel-header"><div><p className="sp-kicker">PRICING</p><h2>Rates and fees</h2><p>Configure active hourly, daily, weekly or monthly rates. New rules replace the active rule for the same rate type and scope.</p></div><CalendarClock size={19} /></div>
+                <div className="sp-pricing-rule-list">
+                  {pricingRules.filter((rule) => rule.isActive).map((rule) => <div className="sp-pricing-rule-row" key={rule.id}><div><strong>{rule.rateType.charAt(0).toUpperCase() + rule.rateType.slice(1)}</strong><small>{rule.slotCode ? `Only ${rule.slotCode}` : 'All spaces'} · Fee {formatMoney(rule.serviceFee, rule.currency)} · Tax {rule.taxRatePercent}%</small></div><b>{formatMoney(rule.amount, rule.currency)} <small>/ {rule.rateType === 'hourly' ? 'hour' : rule.rateType === 'daily' ? 'day' : rule.rateType === 'weekly' ? 'week' : 'month'}</small></b></div>)}
+                  {!pricingRules.some((rule) => rule.isActive) && <p className="sp-muted">No active pricing yet. Add a rate before accepting bookings.</p>}
+                </div>
+                <form className="sp-form" onSubmit={createPricingRule}>
+                  <div className="sp-form-grid">
+                    <label>Rate type<select value={pricingForm.rateType} onChange={(event) => setPricingForm((old) => ({ ...old, rateType: event.target.value }))}><option value="hourly">Hourly</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
+                    <label>Amount ({selectedLot.currency})<input type="number" min="0" max="10000000" step="0.01" required value={pricingForm.amount} onChange={(event) => setPricingForm((old) => ({ ...old, amount: event.target.value }))} /></label>
+                    <label>Service fee<input type="number" min="0" max="1000000" step="0.01" value={pricingForm.serviceFee} onChange={(event) => setPricingForm((old) => ({ ...old, serviceFee: event.target.value }))} /></label>
+                    <label>Tax rate (%)<input type="number" min="0" max="100" step="0.01" value={pricingForm.taxRatePercent} onChange={(event) => setPricingForm((old) => ({ ...old, taxRatePercent: event.target.value }))} /></label>
+                    <label className="sp-span-full">Scope<select value={pricingForm.slotId} onChange={(event) => setPricingForm((old) => ({ ...old, slotId: event.target.value }))}><option value="">All spaces in this facility</option>{slots.map((slot) => <option key={slot.id} value={slot.id}>Only {slot.code}</option>)}</select></label>
+                  </div>
+                  <button className="sp-button primary" disabled={busyAction}><Plus size={15} /> Save pricing rule</button>
                 </form>
               </article>
             </div>

@@ -55,6 +55,13 @@ const updateSlotSchema = z.object({
 }).refine((value) => Object.keys(value).length > 0, 'Provide at least one field to update.');
 const lotStaffSchema = z.object({ email: z.string().trim().email().max(254), role: roleSchema });
 const statusSchema = z.object({ facilityStatus: facilityStatusSchema });
+const pricingRuleSchema = z.object({
+  slotId: z.string().uuid().nullable().optional(),
+  rateType: z.enum(['hourly', 'daily', 'weekly', 'monthly']),
+  amount: z.coerce.number().finite().min(0).max(10000000),
+  serviceFee: z.coerce.number().finite().min(0).max(1000000).default(0),
+  taxRatePercent: z.coerce.number().finite().min(0).max(100).default(0)
+});
 const listQuerySchema = z.object({
   q: z.string().trim().max(100).optional(),
   city: z.string().trim().max(100).optional(),
@@ -68,12 +75,12 @@ const ACTIVE_BOOKING = `EXISTS (
      AND b.end_at > UTC_TIMESTAMP()
      AND (
        b.status IN ('confirmed', 'checked_in')
-       OR (b.status IN ('held', 'pending_payment') AND (b.hold_expires_at IS NULL OR b.hold_expires_at > UTC_TIMESTAMP()))
+       OR (b.status IN ('held', 'pending_payment') AND b.hold_expires_at > UTC_TIMESTAMP())
      )
 )`;
 
 const LOT_SUMMARY_SELECT = `
-SELECT l.id, l.owner_user_id, l.name, l.description, l.address_line, l.city, l.region,
+SELECT l.id, l.owner_user_id, l.name, l.description, l.listing_kind, l.parking_type, l.contact_phone, l.special_instructions, l.amenities, l.address_line, l.city, l.region,
        l.postal_code, l.country_code, l.latitude, l.longitude, l.timezone, l.currency,
        l.opening_time, l.closing_time, l.facility_status, l.created_at,
        COUNT(s.id) AS total_spaces,
@@ -82,6 +89,7 @@ SELECT l.id, l.owner_user_id, l.name, l.description, l.address_line, l.city, l.r
        COALESCE(SUM(CASE WHEN s.operational_status = 'open' AND s.physical_state = 'unknown' THEN 1 ELSE 0 END), 0) AS unknown_spaces,
        COALESCE(SUM(CASE WHEN s.operational_status = 'open' AND ${ACTIVE_BOOKING} THEN 1 ELSE 0 END), 0) AS reserved_now,
        COALESCE(SUM(CASE WHEN s.operational_status = 'open' AND s.physical_state = 'empty' AND NOT ${ACTIVE_BOOKING} THEN 1 ELSE 0 END), 0) AS available_now,
+       (SELECT ph.public_url FROM parking_listing_photos ph WHERE ph.parking_lot_id = l.id ORDER BY ph.sort_order, ph.created_at LIMIT 1) AS cover_photo,
        (SELECT MIN(pr.amount) FROM pricing_rules pr
          WHERE pr.parking_lot_id = l.id AND pr.is_active = TRUE AND pr.rate_type = 'hourly'
            AND (pr.valid_from IS NULL OR pr.valid_from <= UTC_TIMESTAMP())
@@ -111,7 +119,7 @@ async function audit(executor, actorId, action, entityType, entityId, metadata =
   );
 }
 async function getLot(executor, lotId) {
-  const [rows] = await executor.execute('SELECT id, owner_user_id, facility_status FROM parking_lots WHERE id = ? LIMIT 1', [lotId]);
+  const [rows] = await executor.execute('SELECT id, owner_user_id, facility_status, currency FROM parking_lots WHERE id = ? LIMIT 1', [lotId]);
   return rows[0] ?? null;
 }
 async function getAssignments(executor, userId, lotId) {
@@ -289,6 +297,94 @@ router.get('/lots/:lotId', requireAuth, asyncHandler(async (req, res) => {
   const rows = await fetchLotSummaries('WHERE l.id = ?', [lotId], 1);
   if (!rows.length) return fail(res, 404, 'LOT_NOT_FOUND', 'The parking facility was not found.');
   return res.json({ lot: rows[0] });
+}));
+
+router.get('/lots/:lotId/pricing', requireAuth, asyncHandler(async (req, res) => {
+  const lotId = readLotId(req.params.lotId, res);
+  if (!lotId) return;
+  const lot = await requireLotRead(req, res, lotId);
+  if (!lot) return;
+  const [rows] = await pool.execute(
+    `SELECT pr.id, pr.parking_lot_id, pr.slot_id, pr.rate_type, pr.amount, pr.currency,
+            pr.service_fee, pr.tax_rate_percent, pr.valid_from, pr.valid_until, pr.is_active, pr.created_at,
+            s.slot_code
+       FROM pricing_rules pr
+       LEFT JOIN parking_slots s ON s.id = pr.slot_id
+      WHERE pr.parking_lot_id = ?
+      ORDER BY pr.is_active DESC, pr.rate_type, pr.created_at DESC LIMIT 100`,
+    [lotId]
+  );
+  return res.json({ pricingRules: rows.map((row) => ({
+    id: row.id,
+    parkingLotId: row.parking_lot_id,
+    slotId: row.slot_id,
+    slotCode: row.slot_code ?? null,
+    rateType: row.rate_type,
+    amount: Number(row.amount),
+    currency: row.currency,
+    serviceFee: Number(row.service_fee),
+    taxRatePercent: Number(row.tax_rate_percent),
+    validFrom: row.valid_from ?? null,
+    validUntil: row.valid_until ?? null,
+    isActive: Boolean(row.is_active),
+    createdAt: row.created_at
+  })) });
+}));
+
+router.post('/lots/:lotId/pricing', requireAuth, asyncHandler(async (req, res) => {
+  const lotId = readLotId(req.params.lotId, res);
+  if (!lotId) return;
+  const lot = await requireLotInventoryManager(req, res, lotId);
+  if (!lot) return;
+  const parsed = pricingRuleSchema.safeParse(req.body);
+  if (!parsed.success) return validationFail(res, parsed);
+  const input = parsed.data;
+  if (input.slotId) {
+    const [slotRows] = await pool.execute('SELECT id FROM parking_slots WHERE id = ? AND parking_lot_id = ? LIMIT 1', [input.slotId, lotId]);
+    if (!slotRows.length) return fail(res, 400, 'INVALID_SLOT', 'The selected space does not belong to this facility.');
+  }
+  const connection = await pool.getConnection();
+  const ruleId = randomUUID();
+  try {
+    await connection.beginTransaction();
+    // For a given scope and rate type, replace the active current rule while retaining history.
+    await connection.execute(
+      `UPDATE pricing_rules SET is_active = FALSE
+        WHERE parking_lot_id = ? AND rate_type = ? AND slot_id <=> ? AND is_active = TRUE`,
+      [lotId, input.rateType, input.slotId ?? null]
+    );
+    await connection.execute(
+      `INSERT INTO pricing_rules
+        (id, parking_lot_id, slot_id, rate_type, amount, currency, service_fee, tax_rate_percent, is_active)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE)`,
+      [ruleId, lotId, input.slotId ?? null, input.rateType, input.amount, (await getLot(connection, lotId)).currency ?? 'INR', input.serviceFee, input.taxRatePercent]
+    );
+    await audit(connection, req.user.id, 'pricing_rule.created', 'pricing_rule', ruleId, {
+      parkingLotId: lotId, slotId: input.slotId ?? null, rateType: input.rateType,
+      amount: input.amount, serviceFee: input.serviceFee, taxRatePercent: input.taxRatePercent
+    });
+    await connection.commit();
+  } catch (error) {
+    await connection.rollback().catch(() => {});
+    throw error;
+  } finally {
+    connection.release();
+  }
+  const [rows] = await pool.execute(
+    `SELECT pr.id, pr.parking_lot_id, pr.slot_id, pr.rate_type, pr.amount, pr.currency,
+            pr.service_fee, pr.tax_rate_percent, pr.valid_from, pr.valid_until, pr.is_active, pr.created_at,
+            s.slot_code
+       FROM pricing_rules pr LEFT JOIN parking_slots s ON s.id = pr.slot_id WHERE pr.id = ? LIMIT 1`,
+    [ruleId]
+  );
+  const row = rows[0];
+  return res.status(201).json({ pricingRule: {
+    id: row.id, parkingLotId: row.parking_lot_id, slotId: row.slot_id, slotCode: row.slot_code ?? null,
+    rateType: row.rate_type, amount: Number(row.amount), currency: row.currency,
+    serviceFee: Number(row.service_fee), taxRatePercent: Number(row.tax_rate_percent),
+    validFrom: row.valid_from ?? null, validUntil: row.valid_until ?? null,
+    isActive: Boolean(row.is_active), createdAt: row.created_at
+  } });
 }));
 
 router.get('/lots/:lotId/zones', requireAuth, asyncHandler(async (req, res) => {

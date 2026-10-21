@@ -22,7 +22,28 @@ const envSchema = z.object({
   SMTP_SECURE: z.enum(['true', 'false']).default('false').transform((value) => value === 'true'),
   SMTP_USER: z.string().default(''),
   SMTP_PASSWORD: z.string().default(''),
-  MAIL_FROM: z.string().default('SmartPark <no-reply@smartpark.local>')
+  MAIL_FROM: z.string().default('SmartPark <no-reply@smartpark.local>'),
+  PAYMENT_PROVIDER: z.enum(['mock', 'razorpay']).default('mock'),
+  RAZORPAY_KEY_ID: z.string().default(''),
+  RAZORPAY_KEY_SECRET: z.string().default(''),
+  RAZORPAY_WEBHOOK_SECRET: z.string().default(''),
+  QR_SIGNING_SECRET: z.string().min(32).default('local-development-only-smartpark-qr-secret-change-before-deployment'),
+  VISION_API_TOKEN: z.string().default('')
+}).superRefine((value, ctx) => {
+  if (value.NODE_ENV === 'production' && value.PAYMENT_PROVIDER !== 'razorpay') {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['PAYMENT_PROVIDER'], message: 'Production requires PAYMENT_PROVIDER=razorpay; the mock payment path is development-only.' });
+  }
+  if (value.PAYMENT_PROVIDER === 'razorpay') {
+    if (!value.RAZORPAY_KEY_ID) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['RAZORPAY_KEY_ID'], message: 'RAZORPAY_KEY_ID is required when Razorpay is enabled.' });
+    if (!value.RAZORPAY_KEY_SECRET) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['RAZORPAY_KEY_SECRET'], message: 'RAZORPAY_KEY_SECRET is required when Razorpay is enabled.' });
+    if (value.NODE_ENV === 'production' && !value.RAZORPAY_WEBHOOK_SECRET) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['RAZORPAY_WEBHOOK_SECRET'], message: 'Configure a webhook secret in production.' });
+  }
+  if (value.NODE_ENV === 'production' && (value.VISION_API_TOKEN.length < 32 || /replace-with|change_this|example/i.test(value.VISION_API_TOKEN))) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['VISION_API_TOKEN'], message: 'Set a unique random VISION_API_TOKEN of at least 32 characters in production.' });
+  }
+  if (value.NODE_ENV === 'production' && value.QR_SIGNING_SECRET === 'local-development-only-smartpark-qr-secret-change-before-deployment') {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['QR_SIGNING_SECRET'], message: 'Set a unique QR_SIGNING_SECRET in production.' });
+  }
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -1,0 +1,33 @@
+# Optional vision service. Build can be large because YOLO installs PyTorch.
+# Configure VISION_API_TOKEN in root .env before starting.
+services:
+  vision:
+    build:
+      context: ./services/vision
+      dockerfile: Dockerfile
+      args:
+        INSTALL_YOLO: ${VISION_INSTALL_YOLO:-true}
+    restart: unless-stopped
+    environment:
+      VISION_API_TOKEN: ${VISION_API_TOKEN:?Set VISION_API_TOKEN in .env}
+      VISION_API_URL: ${VISION_API_URL:-http://host.docker.internal:4000/api/vision/service}
+      VISION_HOST: 0.0.0.0
+      VISION_PORT: 8000
+      VISION_MODEL_PATH: ${VISION_MODEL_PATH:-yolov8n.pt}
+      VISION_MEDIA_ROOT: /data/videos
+      VISION_ALLOW_RTSP: ${VISION_ALLOW_RTSP:-false}
+      VISION_POLL_SECONDS: ${VISION_POLL_SECONDS:-10}
+      VISION_HEARTBEAT_SECONDS: ${VISION_HEARTBEAT_SECONDS:-10}
+      VISION_DETECTION_EVERY_N_FRAMES: ${VISION_DETECTION_EVERY_N_FRAMES:-3}
+      VISION_STABLE_FRAMES: ${VISION_STABLE_FRAMES:-3}
+      VISION_MAX_WORKERS: ${VISION_MAX_WORKERS:-6}
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./services/vision/sample-videos:/data/videos:ro
+      - smartpark_yolo_cache:/root/.config/Ultralytics
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  smartpark_yolo_cache:

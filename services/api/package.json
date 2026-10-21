@@ -1,13 +1,14 @@
 {
   "name": "@smartpark/api",
-  "version": "1.1.0",
+  "version": "1.8.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "test": "node --test",
-    "role:grant": "node src/scripts/grant-role.js"
+    "role:grant": "node src/scripts/grant-role.js",
+    "seed:demo": "node src/scripts/seed-demo.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -16,7 +17,9 @@
     "helmet": "^8.0.0",
     "mysql2": "^3.12.0",
     "zod": "^3.24.1",
-    "nodemailer": "^6.10.0"
+    "nodemailer": "^6.10.0",
+    "qrcode": "^1.5.4",
+    "multer": "^2.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

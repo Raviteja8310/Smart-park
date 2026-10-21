@@ -1,6 +1,6 @@
 {
   "name": "smartpark",
-  "version": "1.0.0",
+  "version": "1.9.0",
   "private": true,
   "description": "Original SmartPark web platform and parking services",
   "workspaces": [
@@ -13,7 +13,9 @@
     "start": "npm run start --workspace @smartpark/api",
     "db:up": "docker compose up -d db",
     "db:down": "docker compose down",
-    "test:api": "npm run test --workspace @smartpark/api"
+    "test:api": "npm run test --workspace @smartpark/api",
+    "seed:demo": "npm run seed:demo --workspace @smartpark/api",
+    "vision:dev": "cd services/vision && python -m uvicorn smartpark_vision.main:app --host 127.0.0.1 --port 8000"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

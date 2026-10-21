@@ -12,3 +12,6 @@ Thumbs.db
 .vscode/
 services/vision/.venv/
 services/vision/__pycache__/
+
+# User-submitted marketplace photos are runtime data, not source assets.
+services/api/uploads/marketplace/
