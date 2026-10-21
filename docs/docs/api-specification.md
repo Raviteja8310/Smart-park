@@ -252,3 +252,24 @@ Administrator endpoints:
 - `GET /api/financial/payouts/queue`, `POST /api/financial/payouts/:payoutId/approve`, `/reject`, `/mark-paid`, `/mark-failed`, `/manual-review`.
 
 All mutating financial endpoints require authenticated role permissions and an audit trail. External payment-provider and bank actions are not automatically executed by these endpoints; completed refunds and payouts must be externally confirmed before an administrator records their reference. Amounts use server-side payment/earning data, not client-submitted totals.
+
+
+# Phase 12 — discovery engagement API
+
+Base path: `/api/engagement`. All endpoints require an authenticated session unless noted otherwise.
+
+- `GET /favorites/ids` — current user's saved active parking-lot IDs for fast card rendering.
+- `GET /favorites` — current user's saved active facilities, public listing fields, minimum hourly rate and published review aggregate.
+- `POST /favorites/:lotId` — idempotently save an active facility.
+- `DELETE /favorites/:lotId` — remove a saved facility.
+- `GET /search-history?limit=20` — current user's recent searches.
+- `POST /search-history` — stores normalized query/city text only; empty searches are ignored and GPS coordinates are not accepted.
+- `DELETE /search-history/:searchId` and `DELETE /search-history` — remove one saved search or clear history.
+- `GET /eligible-reviews` — completed bookings that do not yet have a review, excluding the current user's own facility.
+- `GET /my-reviews?limit=20` — current user's reviews and current publication status.
+- `GET /lots/:lotId/reviews?limit=20` — public endpoint for active facilities; returns published reviews, aggregate rating and review count. Public output uses a shortened reviewer label and omits booking IDs.
+- `POST /lots/:lotId/reviews` — authenticated review of a completed booking by its owner; one review per booking, no self-review of an owned facility.
+- `PATCH /reviews/:reviewId` and `DELETE /reviews/:reviewId` — owner can edit or delete their own review.
+- `PATCH /reviews/:reviewId/moderation` — administrator-only `published`/`hidden` moderation with audit event.
+
+Input ratings are integers from 1 to 5, review title is optional up to 120 characters, and review text must be 3–1000 characters. Reviews require booking status `completed`. Ratings on parking summaries use only `published` reviews. Search history stores only query text and city; each account is bounded to 500 retained entries.

@@ -48,3 +48,8 @@ See `docs/deployment-security-checklist.md` and `docs/operations-runbook.md` bef
 ## Transactional email delivery
 
 Booking and gate lifecycle routes enqueue email records in `transactional_email_outbox` within the same MySQL transaction as the business event. A separate Node worker claims due rows with `FOR UPDATE SKIP LOCKED`, renews processing leases, delivers allowlisted templates through SMTP, and applies exponential retry delays up to eight attempts. Event idempotency keys prevent duplicate queue records. SMTP is at-least-once delivery; duplicate emails are possible if the provider accepts an email immediately before a worker crash.
+
+
+## Phase 12 discovery engagement
+
+`/api/engagement` stores per-user favorites and limited recent query/city searches, and accepts reviews only for completed bookings. Public parking summaries include published review averages; public review output shortens reviewer names and omits booking IDs. Admin moderation hides/republishes reviews with an audit event. See `docs/engagement.md` and migration 011.

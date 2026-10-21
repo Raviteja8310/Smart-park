@@ -50,6 +50,8 @@ export function mapLotRow(row) {
     reservedNow: toNumber(row.reserved_now),
     unknownSpaces: toNumber(row.unknown_spaces),
     hourlyRate: row.hourly_rate === null || row.hourly_rate === undefined ? null : Number(row.hourly_rate),
+    averageRating: row.average_rating === null || row.average_rating === undefined ? null : Number(row.average_rating),
+    reviewCount: toNumber(row.review_count),
     createdAt: row.created_at
   };
 }

@@ -13,6 +13,7 @@
 - **Phase 9:** Release hardening, production configuration validation, Docker deployment, proxy/TLS configuration and migration runner.
 - **Phase 10:** Transactional email outbox, retrying SMTP worker, lifecycle email templates and production worker container.
 - **Phase 11:** Customer refund requests, host payout requests, admin financial review, external reference tracking and audit records.
+- **Phase 12:** Favorites, recent search history, completed-booking reviews, rating aggregates and moderation.
 
 ## Database migration sequence
 
@@ -78,3 +79,20 @@ Use `npm run migrate` for a fresh database; it tracks migration checksums and ap
 ## Phase 11 validation and release gaps
 
 Pure API/helper tests cover refund and payout eligibility, status transitions, decimal arithmetic and external reference validation. A live MySQL migration test, concurrent booking/refund regression test, provider-side refund/payout verification, and full frontend production build remain required before public launch.
+
+
+## Phase 12: discovery engagement
+
+- Migration 011 adds per-account favorites, bounded recent search history and reviews unique per completed booking.
+- Public parking cards show aggregate ratings and review count; public review content uses shortened reviewer names and omits booking IDs.
+- The web app exposes a Saved & reviews workspace for managing favorites, reviewing eligible completed stays and returning to prior text/city searches.
+- Before release, run migration 011 against disposable MySQL and verify route-level auth/ownership behavior, public aggregate rating performance and review moderation.
+
+
+## Phase 12 validation and release gaps
+
+- API unit tests cover search normalization, review payload constraints and privacy-safe review mapping.
+- Test migration 011 on a clean/disposable MySQL 8.4 database and test ownership isolation for favorites/history/reviews.
+- Run concurrent review submissions for one booking and verify the unique constraint and API 409 response.
+- Confirm hidden reviews disappear from both review listings and aggregate rating counts, and verify moderator audit entries.
+- Run Vite production build, browser tests and role-based end-to-end tests after `npm install`.

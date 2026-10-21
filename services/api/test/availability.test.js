@@ -32,11 +32,13 @@ test('numeric database fields are safely normalized', () => {
 test('lot row maps database names to the public API contract', () => {
   const mapped = mapLotRow({
     id: 'abc', name: 'Demo', address_line: '1 Road', city: 'Bengaluru', facility_status: 'active',
-    timezone: 'Asia/Kolkata', currency: 'INR', total_spaces: '10', available_now: '4', hourly_rate: '30.00'
+    timezone: 'Asia/Kolkata', currency: 'INR', total_spaces: '10', available_now: '4', hourly_rate: '30.00', average_rating: '4.2500', review_count: '8'
   });
   assert.equal(mapped.name, 'Demo');
   assert.equal(mapped.totalSpaces, 10);
   assert.equal(mapped.availableNow, 4);
   assert.equal(mapped.hourlyRate, 30);
+  assert.equal(mapped.averageRating, 4.25);
+  assert.equal(mapped.reviewCount, 8);
   assert.equal(mapped.latitude, null);
 });

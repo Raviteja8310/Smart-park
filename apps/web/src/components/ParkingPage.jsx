@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft, ArrowUpRight, Building2, CalendarClock, Check, CircleAlert, Clock3,
   Layers3, LoaderCircle, MapPin, Plus, RefreshCw, Search, ShieldCheck,
-  SlidersHorizontal, SquareParking, X
+  SlidersHorizontal, SquareParking, X, Heart, Star, MessageSquareText
 } from 'lucide-react';
 
 async function apiRequest(path, options = {}) {
@@ -82,17 +82,21 @@ function StatePill({ state }) {
   return <span className={`sp-state-pill ${state}`}><i />{labels[state] ?? state}</span>;
 }
 
-function LotCard({ lot, mode, onOpen, onSubmitForApproval, onSetStatus, isAdmin, canCreate }) {
+function LotCard({ lot, mode, onOpen, onSubmitForApproval, onSetStatus, isAdmin, canCreate, isFavorite = false, onToggleFavorite }) {
   return (
     <article className="sp-lot-card">
       <div className="sp-lot-card-top">
         <div className={`sp-lot-icon ${lot.coverPhoto ? 'has-photo' : ''}`}>{lot.coverPhoto ? <img src={lot.coverPhoto} alt={`${lot.name} parking`} /> : <Building2 size={20} />}</div>
-        <div className="sp-lot-status-wrap">
-          <span className={`sp-facility-status ${lot.facilityStatus}`}>{lot.facilityStatus.replaceAll('_', ' ')}</span>
-          <span className="sp-lot-id">{lot.id.slice(0, 8).toUpperCase()}</span>
+        <div className="sp-lot-top-end">
+          {mode === 'discover' && <button type="button" className={`sp-favorite-toggle ${isFavorite ? 'saved' : ''}`} aria-label={isFavorite ? `Remove ${lot.name} from saved parking` : `Save ${lot.name}`} aria-pressed={isFavorite} onClick={() => onToggleFavorite?.(lot)}><Heart size={16} fill={isFavorite ? 'currentColor' : 'none'} /></button>}
+          <div className="sp-lot-status-wrap">
+            <span className={`sp-facility-status ${lot.facilityStatus}`}>{lot.facilityStatus.replaceAll('_', ' ')}</span>
+            <span className="sp-lot-id">{lot.id.slice(0, 8).toUpperCase()}</span>
+          </div>
         </div>
       </div>
       <h3>{lot.name}</h3>
+      <div className="sp-lot-rating-line"><Star size={13} fill={Number(lot.averageRating) > 0 ? 'currentColor' : 'none'} />{lot.averageRating === null || lot.averageRating === undefined ? 'No reviews yet' : `${Number(lot.averageRating).toFixed(1)} · ${Number(lot.reviewCount ?? 0)} review${Number(lot.reviewCount ?? 0) === 1 ? '' : 's'}`}</div>
       <p className="sp-lot-address"><MapPin size={14} />{facilityLocation(lot)}</p>
       {lot.description && <p className="sp-lot-description">{lot.description}</p>}
       <div className="sp-lot-metrics">
@@ -123,7 +127,7 @@ function LotCard({ lot, mode, onOpen, onSubmitForApproval, onSetStatus, isAdmin,
   );
 }
 
-export default function ParkingPage({ mode = 'discover', currentUser, onViewBookings }) {
+export default function ParkingPage({ mode = 'discover', currentUser, onViewBookings, onViewEngagement, initialSearch }) {
   const isManager = mode === 'manage';
   const roles = currentUser?.roles ?? [];
   const isAdmin = roles.includes('admin');
@@ -138,6 +142,9 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
   const [query, setQuery] = useState('');
   const [city, setCity] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState({ q: '', city: '' });
+  const [favoriteLotIds, setFavoriteLotIds] = useState(() => new Set());
+  const [lotReviews, setLotReviews] = useState([]);
+  const [lotReviewSummary, setLotReviewSummary] = useState({ averageRating: null, reviewCount: 0 });
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedLot, setSelectedLot] = useState(null);
   const [slots, setSlots] = useState([]);
@@ -184,6 +191,48 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
   useEffect(() => { reloadLots(isManager ? { q: '', city: '' } : submittedQuery); }, [isManager, submittedQuery, reloadLots]);
 
   useEffect(() => {
+    if (isManager || !currentUser?.id) { setFavoriteLotIds(new Set()); return undefined; }
+    let active = true;
+    apiRequest('/api/engagement/favorites/ids').then((data) => {
+      if (active) setFavoriteLotIds(new Set(data.ids ?? []));
+    }).catch(() => { /* Saving is optional if migration 011 has not been applied yet. */ });
+    return () => { active = false; };
+  }, [isManager, currentUser?.id]);
+
+  useEffect(() => {
+    if (!initialSearch?.nonce || isManager) return;
+    const criteria = { q: initialSearch.q ?? '', city: initialSearch.city ?? '' };
+    setQuery(criteria.q);
+    setCity(criteria.city);
+    setSubmittedQuery(criteria);
+  }, [initialSearch?.nonce, isManager]);
+
+  async function toggleFavorite(lot) {
+    const isSaved = favoriteLotIds.has(lot.id);
+    setError(''); setNotice('');
+    try {
+      if (isSaved) {
+        await apiRequest(`/api/engagement/favorites/${lot.id}`, { method: 'DELETE' });
+        setFavoriteLotIds((current) => { const next = new Set(current); next.delete(lot.id); return next; });
+        setNotice(`Removed ${lot.name} from saved parking.`);
+      } else {
+        await apiRequest(`/api/engagement/favorites/${lot.id}`, { method: 'POST', body: JSON.stringify({}) });
+        setFavoriteLotIds((current) => new Set([...current, lot.id]));
+        setNotice(`Saved ${lot.name} to your parking favourites.`);
+      }
+    } catch (requestError) { setError(requestError.message || 'Unable to update saved parking.'); }
+  }
+
+  function handleSearchSubmit(event) {
+    event.preventDefault();
+    const criteria = { q: query.trim(), city: city.trim() };
+    setSubmittedQuery(criteria);
+    if (criteria.q || criteria.city) {
+      apiRequest('/api/engagement/search-history', { method: 'POST', body: JSON.stringify(criteria) }).catch(() => { /* Search still works if history has not been migrated yet. */ });
+    }
+  }
+
+  useEffect(() => {
     let active = true;
     apiRequest('/api/vehicles/mine')
       .then((data) => {
@@ -207,17 +256,20 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
     setError('');
     setNotice('');
     try {
-      const [lotData, slotData, zoneData, pricingData] = await Promise.all([
+      const [lotData, slotData, zoneData, pricingData, reviewsData] = await Promise.all([
         apiRequest(`/api/parking/lots/${lot.id}`),
         apiRequest(`/api/parking/lots/${lot.id}/slots`),
         apiRequest(`/api/parking/lots/${lot.id}/zones`),
-        apiRequest(`/api/parking/lots/${lot.id}/pricing`)
+        apiRequest(`/api/parking/lots/${lot.id}/pricing`),
+        isManager ? Promise.resolve(null) : apiRequest(`/api/engagement/lots/${lot.id}/reviews?limit=5`).catch(() => null)
       ]);
       setSelectedLot(lotData.lot ?? lot);
       setSlots(slotData.slots ?? []);
       setSlotSummary(slotData.summary ?? null);
       setZones(zoneData.zones ?? []);
       setPricingRules(pricingData.pricingRules ?? []);
+      setLotReviews(reviewsData?.reviews ?? []);
+      setLotReviewSummary(reviewsData?.summary ?? { averageRating: lot.averageRating ?? null, reviewCount: lot.reviewCount ?? 0 });
       setNewSlotZone(zoneData.zones?.[0]?.id ?? '');
     } catch (requestError) {
       setError(requestError.message);
@@ -225,6 +277,8 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
       setSlotSummary(null);
       setZones([]);
       setPricingRules([]);
+      setLotReviews([]);
+      setLotReviewSummary({ averageRating: null, reviewCount: 0 });
     } finally {
       setLoadingDetails(false);
     }
@@ -440,6 +494,12 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
 
           {(selectedLot.listingKind === 'shared_space' || selectedLot.amenities?.length || selectedLot.specialInstructions || selectedLot.contactPhone) && <article className="sp-panel sp-shared-listing-information"><div className="sp-panel-header"><div><p className="sp-kicker">PARKING LISTING</p><h2>{selectedLot.listingKind === 'shared_space' ? 'Shared parking space' : 'Facility details'}</h2><p>{selectedLot.parkingType ? selectedLot.parkingType.replaceAll('_', ' ') : 'Parking facility'}{selectedLot.contactPhone ? ` · Contact ${selectedLot.contactPhone}` : ''}</p></div>{selectedLot.coverPhoto && <img className="sp-shared-cover" src={selectedLot.coverPhoto} alt={`${selectedLot.name} parking`} />}</div>{selectedLot.amenities?.length > 0 && <div className="sp-shared-amenities">{selectedLot.amenities.map((amenity) => <span key={amenity}>{amenity.replaceAll(/([A-Z])/g, ' $1').replace(/^./, (char) => char.toUpperCase())}</span>)}</div>}{selectedLot.specialInstructions && <p className="sp-shared-instructions">{selectedLot.specialInstructions}</p>}</article>}
 
+          {!isManager && <article className="sp-panel sp-lot-reviews-panel">
+            <div className="sp-panel-header"><div><p className="sp-kicker">VERIFIED DRIVER FEEDBACK</p><h2>Reviews {lotReviewSummary.reviewCount > 0 ? `· ${lotReviewSummary.reviewCount}` : ''}</h2><p>{lotReviewSummary.averageRating === null ? 'No reviews yet. Completed visitors can share their experience.' : `${Number(lotReviewSummary.averageRating).toFixed(1)} out of 5 based on completed SmartPark bookings.`}</p></div><div className="sp-lot-rating-summary"><Star size={18} fill={lotReviewSummary.averageRating ? 'currentColor' : 'none'} /> <strong>{lotReviewSummary.averageRating === null ? '—' : Number(lotReviewSummary.averageRating).toFixed(1)}</strong></div></div>
+            {lotReviews.length ? <div className="sp-lot-review-list">{lotReviews.map((review) => <article className="sp-lot-review-item" key={review.id}><div className="sp-lot-review-item-heading"><strong>{review.reviewerName}</strong><span><Star size={12} fill="currentColor" /> {review.rating}/5</span><small>{new Date(review.createdAt).toLocaleDateString()}</small></div>{review.title && <h3>{review.title}</h3>}<p>{review.text}</p></article>)}</div> : <div className="sp-review-empty"><MessageSquareText size={17} /><span>No published reviews yet.</span></div>}
+            <div className="sp-review-footer"><span>Only completed bookings can post a review.</span><button className="sp-button secondary" onClick={() => onViewEngagement?.()}>Write a review <ArrowUpRight size={14} /></button></div>
+          </article>}
+
           <article className="sp-panel">
             <div className="sp-panel-header"><div><p className="sp-kicker">SPACE MAP</p><h2>Parking spaces</h2><p>Unknown spaces are never advertised as available.</p></div><button className="sp-button ghost" onClick={() => loadLotDetails(selectedLot)}><RefreshCw size={14} /> Refresh</button></div>
             {slots.length ? <div className="sp-slot-grid">{slots.map((slot) => (
@@ -533,13 +593,13 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
         </form>
       </article>}
 
-      {!isManager && <form className="sp-search-bar" onSubmit={(event) => { event.preventDefault(); setSubmittedQuery({ q: query, city }); }}>
+      {!isManager && <form className="sp-search-bar" onSubmit={handleSearchSubmit}>
         <label><Search size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search facility, address or landmark" aria-label="Search parking facilities" /></label>
         <label><MapPin size={16} /><input value={city} onChange={(event) => setCity(event.target.value)} placeholder="City" aria-label="Filter by city" /></label>
         <button className="sp-button primary"><SlidersHorizontal size={15} /> Search</button>
       </form>}
 
-      {loading ? <div className="sp-loading"><LoaderCircle className="sp-spin" size={20} /> Loading {isManager ? 'managed facilities' : 'parking facilities'}…</div> : lots.length ? <div className="sp-lot-grid">{lots.map((lot) => <LotCard key={lot.id} lot={lot} mode={mode} onOpen={loadLotDetails} onSubmitForApproval={submitForApproval} onSetStatus={setFacilityStatus} isAdmin={isAdmin} canCreate={canCreateFacility} />)}</div> : <div className="sp-empty-state sp-empty-panel"><SquareParking size={32} /><strong>{isManager ? 'No managed facilities yet' : 'No published parking facilities found'}</strong><span>{isManager ? canCreateFacility ? 'Create your first facility, add zones and configure parking spaces.' : 'A facility owner or administrator can assign a parking facility to your account.' : 'Try another search, or check back after more parking facilities are published.'}</span>{isManager && canCreateFacility && <button className="sp-button primary" onClick={() => setShowCreateForm(true)}><Plus size={15} /> Add your first facility</button>}</div>}
+      {loading ? <div className="sp-loading"><LoaderCircle className="sp-spin" size={20} /> Loading {isManager ? 'managed facilities' : 'parking facilities'}…</div> : lots.length ? <div className="sp-lot-grid">{lots.map((lot) => <LotCard key={lot.id} lot={lot} mode={mode} onOpen={loadLotDetails} onSubmitForApproval={submitForApproval} onSetStatus={setFacilityStatus} isAdmin={isAdmin} canCreate={canCreateFacility} isFavorite={favoriteLotIds.has(lot.id)} onToggleFavorite={toggleFavorite} />)}</div> : <div className="sp-empty-state sp-empty-panel"><SquareParking size={32} /><strong>{isManager ? 'No managed facilities yet' : 'No published parking facilities found'}</strong><span>{isManager ? canCreateFacility ? 'Create your first facility, add zones and configure parking spaces.' : 'A facility owner or administrator can assign a parking facility to your account.' : 'Try another search, or check back after more parking facilities are published.'}</span>{isManager && canCreateFacility && <button className="sp-button primary" onClick={() => setShowCreateForm(true)}><Plus size={15} /> Add your first facility</button>}</div>}
 
       <div className="sp-page-footer"><span><ShieldCheck size={14} /> Availability is based on recorded physical state and active reservations.</span><button className="sp-button ghost" onClick={() => reloadLots(isManager ? { q: '', city: '' } : submittedQuery)}><RefreshCw size={14} /> Refresh</button></div>
     </section>

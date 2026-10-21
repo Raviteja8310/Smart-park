@@ -91,13 +91,13 @@ docker compose -f docker-compose.production.yml logs --tail=100 api web caddy db
 
 ### Existing database whose migrations were applied manually
 
-Take and verify a backup first. The migration runner needs a history table so it can detect already-applied SQL files. If migrations 001 through 008 were fully applied to this database before the runner was introduced, baseline them through 008 without re-executing their SQL; the normal migration run then applies 009 and 010:
+Take and verify a backup first. The migration runner needs a history table so it can detect already-applied SQL files. If migrations 001 through 008 were fully applied to this database before the runner was introduced, baseline them through 008 without re-executing their SQL; the normal migration run then applies 009, 010 and 011:
 
 ```bash
 docker compose -f docker-compose.production.yml run --rm api npm run migrate -- --baseline 008 --confirm-existing-schema
 ```
 
-The baseline command checks for expected tables/columns, records the migration checksums, and executes no migration SQL. It intentionally fails if the schema looks incomplete. If migrations through 009 were also applied manually, use `--baseline 009` so the outbox table is included, then run the migration runner to apply 010. If migration 010 was also applied manually, use `--baseline 010`; the baseline validator checks the financial tables and required enum values, but it executes no SQL. Do not use it to hide a failed or partially applied migration.
+The baseline command checks for expected tables/columns, records the migration checksums, and executes no migration SQL. It intentionally fails if the schema looks incomplete. If migrations through 009 were also applied manually, use `--baseline 009`, then run the migration runner to apply 010 and 011. If migrations through 010 were also applied manually, use `--baseline 010` so the financial tables and enum values are validated before 011 is applied. If migration 011 was applied manually as well, use `--baseline 011`; the baseline validator checks all three engagement tables and key columns, but executes no SQL. Do not use it to hide a failed or partially applied migration.
 
 The migration runner tracks checksums and refuses to replay a file that is already applied, has changed, or has an incomplete state. MySQL DDL is not fully transactional; if a migration fails, inspect its error and schema and repair it deliberately before changing migration history. Never edit a migration file that has already been applied; create a new numbered migration instead.
 

@@ -23,6 +23,24 @@ const BASELINE_REQUIREMENTS = [
   { version: 10, tables: ['refund_requests', 'host_payout_requests', 'host_payout_allocations'], enumValues: [
     { table: 'refund_requests', column: 'status', values: ['processing'] },
     { table: 'host_earnings', column: 'status', values: ['payout_requested', 'refund_hold'] }
+  ] },
+  { version: 11, tables: ['parking_favorites', 'parking_search_history', 'parking_reviews'], columns: [
+    { table: 'parking_favorites', column: 'user_id' },
+    { table: 'parking_favorites', column: 'parking_lot_id' },
+    { table: 'parking_favorites', column: 'created_at' },
+    { table: 'parking_search_history', column: 'query_text' },
+    { table: 'parking_search_history', column: 'city' },
+    { table: 'parking_search_history', column: 'searched_at' },
+    { table: 'parking_reviews', column: 'booking_id' },
+    { table: 'parking_reviews', column: 'user_id' },
+    { table: 'parking_reviews', column: 'rating' },
+    { table: 'parking_reviews', column: 'review_title' },
+    { table: 'parking_reviews', column: 'review_text' },
+    { table: 'parking_reviews', column: 'status' },
+    { table: 'parking_reviews', column: 'created_at' },
+    { table: 'parking_reviews', column: 'updated_at' }
+  ], enumValues: [
+    { table: 'parking_reviews', column: 'status', values: ['published', 'hidden'] }
   ] }
 ];
 
@@ -89,7 +107,7 @@ async function assertBaselineSchema(connection, targetVersion) {
 
 async function baseline(connection, migrations, targetText) {
   const targetVersion = Number(targetText);
-  if (!Number.isInteger(targetVersion) || targetVersion < 1) throw new Error('Usage: npm run migrate -- --baseline 010 --confirm-existing-schema');
+  if (!Number.isInteger(targetVersion) || targetVersion < 1) throw new Error('Usage: npm run migrate -- --baseline 011 --confirm-existing-schema');
   const upto = migrations.filter((migration) => migration.version <= targetVersion);
   if (!upto.length || upto.at(-1).version !== targetVersion) throw new Error(`Migration version ${targetText} was not found.`);
   if (!process.argv.includes('--confirm-existing-schema')) {

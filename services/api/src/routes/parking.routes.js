@@ -93,7 +93,9 @@ SELECT l.id, l.owner_user_id, l.name, l.description, l.listing_kind, l.parking_t
        (SELECT MIN(pr.amount) FROM pricing_rules pr
          WHERE pr.parking_lot_id = l.id AND pr.is_active = TRUE AND pr.rate_type = 'hourly'
            AND (pr.valid_from IS NULL OR pr.valid_from <= UTC_TIMESTAMP())
-           AND (pr.valid_until IS NULL OR pr.valid_until > UTC_TIMESTAMP())) AS hourly_rate
+           AND (pr.valid_until IS NULL OR pr.valid_until > UTC_TIMESTAMP())) AS hourly_rate,
+       (SELECT AVG(rv.rating) FROM parking_reviews rv WHERE rv.parking_lot_id = l.id AND rv.status = 'published') AS average_rating,
+       (SELECT COUNT(*) FROM parking_reviews rv WHERE rv.parking_lot_id = l.id AND rv.status = 'published') AS review_count
   FROM parking_lots l
   LEFT JOIN parking_slots s ON s.parking_lot_id = l.id
 `;

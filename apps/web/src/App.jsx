@@ -3,7 +3,7 @@ import {
   Activity, ArrowDownRight, ArrowUpRight, Bell, CarFront, CalendarDays, Building2,
   CheckCircle2, ChevronDown, CircleHelp, Clock3, CreditCard, Gauge,
   LayoutDashboard, LogOut, MapPin, MoreHorizontal, Plus, Search, Settings,
-  ShieldCheck, SlidersHorizontal, Sparkles, Users, Wallet, Wifi, Zap, SquareParking, QrCode, Store
+  ShieldCheck, SlidersHorizontal, Sparkles, Users, Wallet, Wifi, Zap, SquareParking, QrCode, Store, Heart
 } from 'lucide-react';
 import AuthPage from './components/AuthPage.jsx';
 import ParkingPage from './components/ParkingPage.jsx';
@@ -17,6 +17,7 @@ import VisionPage from './components/VisionPage.jsx';
 import OperationsPage from './components/OperationsPage.jsx';
 import NotificationsPage from './components/NotificationsPage.jsx';
 import FinancialOperationsPage from './components/FinancialOperationsPage.jsx';
+import EngagementPage from './components/EngagementPage.jsx';
 
 
 function StatCard({ icon: Icon, label, value, note, trend, tint = 'mint' }) {
@@ -52,6 +53,8 @@ export default function App() {
   const [recentBookings, setRecentBookings] = useState([]);
   const [recentBookingsLoading, setRecentBookingsLoading] = useState(false);
   const [recentBookingsError, setRecentBookingsError] = useState('');
+  const [initialParkingSearch, setInitialParkingSearch] = useState(null);
+  const [initialEngagementTab, setInitialEngagementTab] = useState('favorites');
 
   useEffect(() => {
     let cancelled = false;
@@ -126,7 +129,7 @@ export default function App() {
   const canHost = (currentUser?.roles ?? []).some((role) => ['host', 'admin'].includes(role));
   const canOperate = (currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role));
   const navGroups = [
-    { title: 'WORKSPACE', items: [{ label: 'Overview', icon: LayoutDashboard }, { label: 'Find parking', icon: MapPin }, { label: 'My bookings', icon: CalendarDays }, { label: 'Vehicles', icon: CarFront }] },
+    { title: 'WORKSPACE', items: [{ label: 'Overview', icon: LayoutDashboard }, { label: 'Find parking', icon: MapPin }, { label: 'My bookings', icon: CalendarDays }, { label: 'Vehicles', icon: CarFront }, { label: 'Saved & reviews', icon: Heart }] },
     { title: 'MANAGE', items: [{ label: 'Parking spaces', icon: Gauge }, ...(canHost ? [{ label: 'My listings', icon: Store }, { label: 'Owner earnings', icon: Wallet }] : []), ...((currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role)) ? [{ label: 'Camera detection', icon: Activity }] : []), ...(canOperate ? [{ label: 'Operations', icon: Activity }] : []), ...(currentUser?.roles?.includes('admin') ? [{ label: 'Finance review', icon: ShieldCheck }] : []), { label: 'Transactions', icon: CreditCard }, ...((currentUser?.roles ?? []).some((role) => ['attendant', 'operator', 'admin'].includes(role)) ? [{ label: 'Gate access', icon: QrCode }] : [])] },
     { title: 'PREFERENCES', items: [{ label: 'Notifications', icon: Bell }, { label: 'Settings', icon: Settings }, { label: 'Help & support', icon: CircleHelp }] }
   ];
@@ -152,6 +155,11 @@ export default function App() {
     }
   }
 
+  function useRecentSearch(search) {
+    setInitialParkingSearch({ q: search.q ?? '', city: search.city ?? '', nonce: Date.now() });
+    setActiveNav('Find parking');
+  }
+
   const filteredBookings = recentBookings.filter((booking) => `${booking.bookingCode} ${booking.parkingLotName ?? ''} ${booking.slotCode ?? ''}`.toLowerCase().includes(search.toLowerCase()));
   const bookingStatusLabel = (status) => ({ held: 'Awaiting payment', pending_payment: 'Pending payment', confirmed: 'Confirmed', checked_in: 'Checked in', completed: 'Completed', cancelled: 'Cancelled', expired: 'Expired', payment_failed: 'Payment failed' }[status] ?? status);
   const bookingDateLabel = (value) => { const date = new Date(value); return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }); };
@@ -174,7 +182,7 @@ export default function App() {
         <nav className="side-nav" aria-label="Main navigation">
           {navGroups.map((group) => <div className="nav-group" key={group.title}>
             <p className="nav-group-title">{group.title}</p>
-            {group.items.map(({ label, icon: Icon }) => <button key={label} onClick={() => setActiveNav(label)} className={`nav-link ${activeNav === label ? 'active' : ''}`}><Icon size={17} /><span>{label}</span></button>)}
+            {group.items.map(({ label, icon: Icon }) => <button key={label} onClick={() => { if (label === 'Saved & reviews') setInitialEngagementTab('favorites'); setActiveNav(label); }} className={`nav-link ${activeNav === label ? 'active' : ''}`}><Icon size={17} /><span>{label}</span></button>)}
           </div>)}
         </nav>
         <div className="sidebar-bottom">
@@ -190,10 +198,11 @@ export default function App() {
         </header>
 
         <div className="page-content">
-          {activeNav === 'Find parking' ? <ParkingPage mode="discover" currentUser={currentUser} onViewBookings={() => setActiveNav('My bookings')} />
+          {activeNav === 'Find parking' ? <ParkingPage mode="discover" currentUser={currentUser} onViewBookings={() => setActiveNav('My bookings')} onViewEngagement={() => { setInitialEngagementTab('reviews'); setActiveNav('Saved & reviews'); }} initialSearch={initialParkingSearch} />
             : activeNav === 'Parking spaces' ? <ParkingPage mode="manage" currentUser={currentUser} />
             : activeNav === 'My bookings' ? <BookingsPage currentUser={currentUser} />
             : activeNav === 'Vehicles' ? <VehiclesPage currentUser={currentUser} />
+            : activeNav === 'Saved & reviews' ? <EngagementPage currentUser={currentUser} initialTab={initialEngagementTab} onUseSearch={useRecentSearch} onBrowseParking={() => setActiveNav('Find parking')} />
             : activeNav === 'My listings' && canHost ? <MarketplacePage currentUser={currentUser} />
             : activeNav === 'Owner earnings' && canHost ? <EarningsPage currentUser={currentUser} />
             : activeNav === 'Transactions' ? <TransactionsPage currentUser={currentUser} />
