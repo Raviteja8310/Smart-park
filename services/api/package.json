@@ -9,7 +9,9 @@
     "test": "node --test",
     "role:grant": "node src/scripts/grant-role.js",
     "migrate": "node src/scripts/migrate.js",
-    "seed:demo": "node src/scripts/seed-demo.js"
+    "seed:demo": "node src/scripts/seed-demo.js",
+    "worker:email": "node src/scripts/email-worker.js",
+    "worker:email:once": "node src/scripts/email-worker.js --once"
   },
   "dependencies": {
     "cors": "^2.8.5",

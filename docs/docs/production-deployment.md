@@ -77,27 +77,27 @@ docker compose -f docker-compose.production.yml run --rm api npm run migrate
 Then start the public site and API:
 
 ```bash
-docker compose -f docker-compose.production.yml up -d --build api web caddy
+docker compose -f docker-compose.production.yml up -d --build api web caddy email-worker
 ```
 
-For a brand-new deployment only, the root convenience command `npm run deploy:up` runs the configuration preflight, builds the API/web images, starts MySQL, runs the migration runner, and then starts API/web/Caddy. For a manually migrated database, baseline it first as described below; do not run the new-database path against an untracked schema.
+For a brand-new deployment only, the root convenience command `npm run deploy:up` runs the configuration preflight, builds the API/web images, starts MySQL, runs the migration runner, and then starts API/web/Caddy and the transactional email worker. For a manually migrated database, baseline it first as described below; do not run the new-database path against an untracked schema.
 
 Caddy will request a TLS certificate once public DNS resolves to this server and the required ports are reachable. Inspect service status and logs:
 
 ```bash
 docker compose -f docker-compose.production.yml ps
-docker compose -f docker-compose.production.yml logs --tail=100 api web caddy db
+docker compose -f docker-compose.production.yml logs --tail=100 api web caddy db email-worker
 ```
 
 ### Existing database whose migrations were applied manually
 
-Take and verify a backup first. The migration runner needs a history table so it can detect already-applied SQL files. If migrations 001 through 008 were fully applied to this database before the runner was introduced, baseline them without re-executing their SQL:
+Take and verify a backup first. The migration runner needs a history table so it can detect already-applied SQL files. If migrations 001 through 008 were fully applied to this database before the runner was introduced, baseline them through 008 without re-executing their SQL; the normal migration run then applies 009:
 
 ```bash
 docker compose -f docker-compose.production.yml run --rm api npm run migrate -- --baseline 008 --confirm-existing-schema
 ```
 
-The baseline command checks for expected tables/columns, records the migration checksums, and executes no migration SQL. It intentionally fails if the schema looks incomplete. Do not use it to hide a failed or partially applied migration.
+The baseline command checks for expected tables/columns, records the migration checksums, and executes no migration SQL. It intentionally fails if the schema looks incomplete. If migration 009 was also applied manually, use `--baseline 009` instead so the outbox table is included in the schema check. Do not use it to hide a failed or partially applied migration.
 
 The migration runner tracks checksums and refuses to replay a file that is already applied, has changed, or has an incomplete state. MySQL DDL is not fully transactional; if a migration fails, inspect its error and schema and repair it deliberately before changing migration history. Never edit a migration file that has already been applied; create a new numbered migration instead.
 
@@ -149,3 +149,14 @@ The named volumes `smartpark_mysql_data`, `smartpark_marketplace_uploads`, `smar
 - Rate limiting uses process-local memory. Use a shared rate-limit store before horizontally scaling API instances.
 - Verify CSP allowlists against the exact Google Maps/Razorpay integrations enabled for the release.
 - Confirm privacy notices, data retention, local payment/tax requirements and CCTV signage/consent for the deployment location.
+
+
+## 10. Transactional email worker
+
+The production Compose stack runs `email-worker` privately, without a published port. To inspect its logs:
+
+```bash
+docker compose -f docker-compose.production.yml logs --tail=100 email-worker
+```
+
+For local development, run `npm run worker:email` in a separate terminal after migrations 001–009 have been applied. With no SMTP host in development, messages are logged as `simulated` and are not delivered. To process the due queue once and exit, use `npm run worker:email:once`.

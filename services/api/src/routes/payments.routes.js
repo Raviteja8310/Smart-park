@@ -394,7 +394,12 @@ export async function settleCapturedPayment({ paymentId, provider, providerOrder
     );
     await createNotification(connection, {
       userId: row.user_id, eventType: 'payment.booking_confirmed', title: 'Payment received — booking confirmed',
-      message: `Your booking ${row.booking_code} is confirmed. Open My bookings to view your parking ticket and QR code.`
+      message: `Your booking ${row.booking_code} is confirmed. Open My bookings to view your parking ticket and QR code.`,
+      email: { templateKey: 'booking_confirmed', idempotencyKey: `booking-confirmed:${row.booking_id}`, data: {
+        bookingCode: row.booking_code, lotName: row.parking_lot_name, slotCode: row.slot_code,
+        startAt: new Date(row.start_at).toISOString(), endAt: new Date(row.end_at).toISOString(),
+        amount: String(row.amount), currency: row.currency
+      } }
     });
     await connection.commit();
     return { paid: true, bookingId: row.booking_id, bookingCode: row.booking_code, bookingStatus: 'confirmed', requiresReview: false, ticketExpiresAt: ticket.expiresAt };

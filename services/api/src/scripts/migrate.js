@@ -18,7 +18,8 @@ const BASELINE_REQUIREMENTS = [
   { version: 5, columns: [{ table: 'payments', column: 'needs_reconciliation' }] },
   { version: 6, tables: ['parking_listing_photos', 'parking_availability_rules', 'host_earnings'], columns: [{ table: 'parking_lots', column: 'listing_kind' }] },
   { version: 7, columns: [{ table: 'cameras', column: 'detector_mode' }, { table: 'cameras', column: 'last_frame_at' }, { table: 'camera_slot_regions', column: 'is_active' }] },
-  { version: 8, tables: ['operational_alerts'], columns: [{ table: 'payments', column: 'needs_reconciliation' }] }
+  { version: 8, tables: ['operational_alerts'], columns: [{ table: 'payments', column: 'needs_reconciliation' }] },
+  { version: 9, tables: ['transactional_email_outbox'] }
 ];
 
 function migrationVersion(name) {
@@ -79,7 +80,7 @@ async function assertBaselineSchema(connection, targetVersion) {
 
 async function baseline(connection, migrations, targetText) {
   const targetVersion = Number(targetText);
-  if (!Number.isInteger(targetVersion) || targetVersion < 1) throw new Error('Usage: npm run migrate -- --baseline 008 --confirm-existing-schema');
+  if (!Number.isInteger(targetVersion) || targetVersion < 1) throw new Error('Usage: npm run migrate -- --baseline 009 --confirm-existing-schema');
   const upto = migrations.filter((migration) => migration.version <= targetVersion);
   if (!upto.length || upto.at(-1).version !== targetVersion) throw new Error(`Migration version ${targetText} was not found.`);
   if (!process.argv.includes('--confirm-existing-schema')) {

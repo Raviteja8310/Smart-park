@@ -233,7 +233,11 @@ router.post('/', requireAuth, asyncHandler(async (req, res, next) => {
     );
     await createNotification(connection, {
       userId: req.user.id, eventType: 'booking.hold_created', title: 'Parking space temporarily held',
-      message: `${slot.parking_lot_name}, space ${slot.slot_code} is held for 10 minutes. Complete checkout before the hold expires.`
+      message: `${slot.parking_lot_name}, space ${slot.slot_code} is held for 10 minutes. Complete checkout before the hold expires.`,
+      email: { templateKey: 'booking_hold_created', idempotencyKey: `booking-hold-created:${bookingId}`, data: {
+        bookingCode: code, lotName: slot.parking_lot_name, slotCode: slot.slot_code,
+        startAt: interval.start.toISOString(), endAt: interval.end.toISOString(), holdMinutes
+      } }
     });
     const row = await fetchBooking(connection, bookingId, req.user.id, false, false);
     await connection.commit();
@@ -350,7 +354,10 @@ router.post('/:bookingId/cancel', requireAuth, asyncHandler(async (req, res, nex
     );
     await createNotification(connection, {
       userId: row.user_id, eventType: 'booking.cancelled', title: 'Parking hold cancelled',
-      message: `Your hold ${row.booking_code} has been cancelled. No payment was captured by this cancellation workflow.`
+      message: `Your hold ${row.booking_code} has been cancelled. No payment was captured by this cancellation workflow.`,
+      email: { templateKey: 'booking_cancelled', idempotencyKey: `booking-cancelled:${row.id}`, data: {
+        bookingCode: row.booking_code, lotName: row.parking_lot_name, slotCode: row.slot_code
+      } }
     });
     const updated = await fetchBooking(connection, row.id, req.user.id, isAdmin, false);
     await connection.commit();

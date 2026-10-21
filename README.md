@@ -103,9 +103,10 @@ Release hardening and production deployment instructions: `docs/production-deplo
    Get-Content -Raw .\database\migrations\006_shared_parking_marketplace.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    Get-Content -Raw .\database\migrations\007_vision_detection.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    Get-Content -Raw .\database\migrations\008_operations_analytics_alerts.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
+   Get-Content -Raw .\database\migrations\009_transactional_email_outbox.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    ```
 
-   Enter the value of `DB_PASSWORD` from `.env` when prompted. On a new database, apply migrations `001`–`008` exactly once and in numeric order. On an existing database, run only migrations not yet applied, in order. In particular, a Phase 6 database needs only migration `007_vision_detection.sql` for Phase 7. Do not re-run any migration that has already succeeded. Back up a database with data before schema changes.
+   Enter the value of `DB_PASSWORD` from `.env` when prompted. On a new database, apply migrations `001`–`009` exactly once and in numeric order. On an existing database, run only migrations not yet applied, in order. In particular, a Phase 6 database needs only migration `007_vision_detection.sql` for Phase 7. Do not re-run any migration that has already succeeded. Back up a database with data before schema changes.
 
 5. Start the web app and API:
 
@@ -480,7 +481,7 @@ If migrations `001` through `007` have already been applied, back up your databa
 Get-Content -Raw .\database\migrations\008_operations_analytics_alerts.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
 ```
 
-Migration 008 creates `operational_alerts` and adds analytics indexes to existing notification, payment and booking tables. Do not rerun the migration after it has succeeded. On a fresh database, apply migrations `001`–`008` in order.
+Migration 008 creates `operational_alerts` and adds analytics indexes to existing notification, payment and booking tables. Migration 009 adds the transactional email outbox. Do not rerun either migration after it has succeeded. On a fresh database, apply migrations `001`–`009` in order.
 
 ### Operations and notification endpoints
 
@@ -493,7 +494,7 @@ Migration 008 creates `operational_alerts` and adds analytics indexes to existin
 - `GET /api/notifications/mine?limit=50&unreadOnly=true|false` — the signed-in user's notification inbox.
 - `POST /api/notifications/:notificationId/read` and `POST /api/notifications/read-all` — update only the signed-in user's notifications.
 
-Booking hold/cancellation, successful paid confirmation, gate entry/exit and first detection of an operational alert now create in-app notification records. SMTP verification email and generic in-app history are not the same as a full email/SMS/push dispatcher: outbound business-event delivery is not yet claimed as production-ready.
+Booking hold/cancellation, successful paid confirmation, gate entry/exit and operational alerts create in-app notification records. Phase 10 also queues allowlisted lifecycle emails for holds/cancellations, verified booking confirmations and gate entry/exit. The separate SMTP worker must be configured and tested; SMS and push dispatch are not implemented.
 
 ### Tests and release checks
 
@@ -505,3 +506,33 @@ python -m unittest discover -s services/vision/tests -v
 ```
 
 The release checklist is in `docs/deployment-security-checklist.md`, and operational response guidance is in `docs/operations-runbook.md`. Before production, complete a real MySQL migration test, full browser build, payment-provider end-to-end tests and a camera/network acceptance test.
+
+
+## Phase 10: transactional email delivery
+
+Phase 10 adds a database-backed transactional email outbox and a separate worker. Booking holds/cancellations, verified booking confirmations, and gate entry/exit events queue email only for active, verified account addresses, in the same database transaction as the related business change.
+
+### Migration 009
+
+If migrations 001–008 are already applied, apply `database/migrations/009_transactional_email_outbox.sql` once, or use the migration runner after verifying/baselining the existing schema.
+
+### Local worker
+
+Run the app in one terminal and the mail worker in another:
+
+```powershell
+npm run dev
+npm run worker:email
+```
+
+To process currently due messages once and exit:
+
+```powershell
+npm run worker:email:once
+```
+
+With `NODE_ENV=development` and no SMTP host, the worker logs email content as a local simulation and records status `simulated`; it does not claim that a message was delivered. Configure SMTP to test real delivery. Only verified active accounts receive event emails.
+
+Production Compose starts `email-worker` as a private service with no published ports. Monitor it with `docker compose -f docker-compose.production.yml logs --tail=100 email-worker`.
+
+SMTP delivery is at-least-once, not exactly-once. The outbox idempotency key prevents duplicate queue inserts for the same event; if the SMTP provider accepts a message and the worker crashes before saving the delivery result, a later retry can deliver a duplicate. Consumers should treat these event emails as notifications, not as proof of payment or authorization.

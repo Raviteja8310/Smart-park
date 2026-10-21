@@ -1,21 +1,26 @@
 import { randomUUID } from 'node:crypto';
+import { enqueueTransactionalEmail } from './email-outbox.js';
 
 export async function createNotification(executor, {
-  userId, channel = 'in_app', eventType, title, message, deliveryStatus = (channel === 'in_app' ? 'sent' : 'queued')
+  userId, channel = 'in_app', eventType, title, message, deliveryStatus = (channel === 'in_app' ? 'sent' : 'queued'), email = null
 }) {
   if (!userId || !eventType || !title || !message) return false;
+  let notificationRecorded = false;
   try {
     await executor.execute(
       `INSERT INTO notifications (id, user_id, channel, event_type, title, message, delivery_status)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [randomUUID(), userId, channel, eventType, title.slice(0, 160), message.slice(0, 1000), deliveryStatus]
     );
-    return true;
+    notificationRecorded = true;
   } catch (error) {
-    // A notification failure should not fail a confirmed booking/payment transaction.
+    // In-app inbox failures are logged, but must not block a confirmed business transaction.
     console.warn('SmartPark notification could not be recorded:', error?.code ?? error?.message ?? 'unknown error');
-    return false;
   }
+  // The email outbox is different: callers request it only inside a business transaction.
+  // If enqueueing fails, propagate the error so the surrounding transaction can roll back.
+  if (email) await enqueueTransactionalEmail(executor, { userId, ...email });
+  return notificationRecorded;
 }
 
 export async function notifyAdmins(executor, notification) {

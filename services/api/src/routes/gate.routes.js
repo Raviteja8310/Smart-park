@@ -90,7 +90,10 @@ router.post('/scan', requireAuth, requireRole('attendant', 'operator', 'admin'),
       );
       await createNotification(connection, {
         userId: booking.user_id, eventType: 'parking.entry_recorded', title: 'Parking entry recorded',
-        message: `Your vehicle was checked in at ${booking.parking_lot_name}, space ${booking.slot_code}.`
+        message: `Your vehicle was checked in at ${booking.parking_lot_name}, space ${booking.slot_code}.`,
+        email: { templateKey: 'parking_entry_recorded', idempotencyKey: `parking-entry:${booking.id}`, data: {
+          bookingCode: booking.booking_code, lotName: booking.parking_lot_name, slotCode: booking.slot_code
+        } }
       });
       await connection.commit();
       return res.json({ success: true, action, message: 'Entry authorized. The vehicle has been checked in.', session: { id: sessionId, ticketCode, status: 'parked', enteredAt: new Date().toISOString() }, booking: { id: booking.id, bookingCode: booking.booking_code, parkingLotName: booking.parking_lot_name, slotCode: booking.slot_code, status: 'checked_in' }, physicalCheckRequired: booking.physical_state === 'unknown' });
@@ -114,7 +117,10 @@ router.post('/scan', requireAuth, requireRole('attendant', 'operator', 'admin'),
     );
     await createNotification(connection, {
       userId: booking.user_id, eventType: 'parking.exit_recorded', title: 'Parking session completed',
-      message: `Your parking session at ${booking.parking_lot_name}, space ${booking.slot_code}, has been marked complete.`
+      message: `Your parking session at ${booking.parking_lot_name}, space ${booking.slot_code}, has been marked complete.`,
+      email: { templateKey: 'parking_exit_recorded', idempotencyKey: `parking-exit:${session.id}`, data: {
+        bookingCode: booking.booking_code, lotName: booking.parking_lot_name, slotCode: booking.slot_code
+      } }
     });
     await connection.commit();
     return res.json({ success: true, action, message: 'Exit recorded. The parking session is complete.', session: { id: session.id, ticketCode: session.ticket_code, status: 'exited', enteredAt: new Date(session.entered_at).toISOString(), exitedAt: new Date().toISOString() }, booking: { id: booking.id, bookingCode: booking.booking_code, parkingLotName: booking.parking_lot_name, slotCode: booking.slot_code, status: 'completed' } });

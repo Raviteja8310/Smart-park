@@ -1,8 +1,10 @@
 {
   "name": "smartpark",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "description": "Original SmartPark web platform and parking services",
   "workspaces": [
     "apps/web",
@@ -20,10 +22,12 @@
     "migrate": "npm run migrate --workspace @smartpark/api",
     "preflight:production": "node scripts/preflight-production.mjs",
     "deploy:build": "npm run preflight:production && docker compose -f docker-compose.production.yml build api web",
-    "deploy:up": "npm run preflight:production && docker compose -f docker-compose.production.yml build api web && docker compose -f docker-compose.production.yml up -d db && docker compose -f docker-compose.production.yml run --rm api npm run migrate && docker compose -f docker-compose.production.yml up -d api web caddy",
+    "deploy:up": "npm run preflight:production && docker compose -f docker-compose.production.yml build api web && docker compose -f docker-compose.production.yml up -d db && docker compose -f docker-compose.production.yml run --rm api npm run migrate && docker compose -f docker-compose.production.yml up -d api web caddy email-worker",
     "deploy:vision": "npm run deploy:up && docker compose -f docker-compose.production.yml --profile vision up -d --build vision",
     "seed:demo": "npm run seed:demo --workspace @smartpark/api",
-    "vision:dev": "cd services/vision && python -m uvicorn smartpark_vision.main:app --host 127.0.0.1 --port 8000"
+    "vision:dev": "cd services/vision && python -m uvicorn smartpark_vision.main:app --host 127.0.0.1 --port 8000",
+    "worker:email": "npm run worker:email --workspace @smartpark/api",
+    "worker:email:once": "npm run worker:email:once --workspace @smartpark/api"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

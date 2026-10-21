@@ -9,7 +9,7 @@
 - [ ] No `.env`, database dump, credentials, camera URL credentials, uploaded photos or model weights are tracked in Git.
 
 ## Database and deployment
-- [ ] Fresh database migration path tested from 001 through 008.
+- [ ] Fresh database migration path tested from 001 through 009.
 - [ ] Existing-database baseline path tested only on a verified backup/schema.
 - [ ] MySQL has no public host port.
 - [ ] Web/API containers run non-root where supported and have health checks.
@@ -19,7 +19,10 @@
 
 ## Business and security
 - [ ] Production uses Razorpay, not mock payments.
-- [ ] Email verification and password reset use the deployed HTTPS origin and verified SMTP sender.
+- [ ] Email verification/password reset and transactional event emails use the deployed HTTPS origin and verified SMTP sender.
+- [ ] `email-worker` starts without public ports, drains an outbox message, retries a simulated SMTP failure, and records terminal failures after the attempt limit.
+- [ ] Development-mode outbox rows are marked `simulated`, never falsely reported as delivered.
+- [ ] Production worker logs contain no SMTP password, recipient/body payloads, or payment credentials; development-only message logging is kept local and is not shared.
 - [ ] Role and facility isolation tested with separate driver/host/operator/admin accounts.
 - [ ] Booking concurrency, payment idempotency, QR replay/expiry, and entry/exit tested.
 - [ ] Alerts and notifications scoped correctly by facility/account.

@@ -231,3 +231,8 @@ The host earning ledger is written in the same database transaction that confirm
 - `POST /api/notifications/read-all` — marks the signed-in user's unread notifications as read.
 
 All facility-scoped data is restricted by host ownership or operator/attendant assignments. Dates in revenue reports are evaluated as UTC day boundaries. In-app notifications are recorded, but external email/SMS/push dispatch must be configured and separately verified.
+
+
+## Phase 10: transactional email worker
+
+The worker is not exposed as a public API. It consumes due rows from `transactional_email_outbox`. `npm run worker:email` runs continuously; `npm run worker:email:once` processes due messages then exits. Lifecycle email templates are generated server-side from allowlisted data and HTML-escaped fields. The signed-in user's email must be verified and account status active before an event email can be queued.
