@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { BadgeCheck, Copy, Gift, Link2, RefreshCw, Users, Wallet } from 'lucide-react';
 
 async function readJson(response) {

@@ -30,7 +30,7 @@ const registerSchema = z.object({
   email: z.string().trim().email('Enter a valid email address.').max(254),
   phone: z.string().trim().max(30).optional().or(z.literal('')),
   referralCode: z.string().trim().max(16).optional().or(z.literal('')),
-  password: z.string().min(12, 'Use at least 12 characters.').max(128)
+  password: z.string().min(6, 'Use at least 6 characters.').max(128)
 });
 const loginSchema = z.object({
   email: z.string().trim().email().max(254),
@@ -38,8 +38,8 @@ const loginSchema = z.object({
 });
 const emailSchema = z.object({ email: z.string().trim().email().max(254) });
 const verifySchema = z.object({ token: z.string().min(30).max(200).regex(/^[A-Za-z0-9_-]+$/) });
-const resetPasswordSchema = z.object({ token: z.string().min(6).max(200).regex(/^(?:[0-9]{6}|[A-Za-z0-9_-]{30,200})$/, 'Enter the six-digit email code.'), email: z.string().trim().email().max(254).optional(), password: z.string().min(12, 'Use at least 12 characters.').max(128) }).refine((value) => !/^[0-9]{6}$/.test(value.token) || Boolean(value.email), { message: 'Enter the email address used to request the code.', path: ['email'] });
-const changePasswordSchema = z.object({ currentPassword: z.string().min(1).max(128), newPassword: z.string().min(12, 'Use at least 12 characters.').max(128) }).strict();
+const resetPasswordSchema = z.object({ token: z.string().min(6).max(200).regex(/^(?:[0-9]{6}|[A-Za-z0-9_-]{30,200})$/, 'Enter the six-digit email code.'), email: z.string().trim().email().max(254).optional(), password: z.string().min(6, 'Use at least 6 characters.').max(128) }).refine((value) => !/^[0-9]{6}$/.test(value.token) || Boolean(value.email), { message: 'Enter the email address used to request the code.', path: ['email'] });
+const changePasswordSchema = z.object({ currentPassword: z.string().min(1).max(128), newPassword: z.string().min(6, 'Use at least 6 characters.').max(128) }).strict();
 
 // Calculated once so an unknown email still costs approximately one password verification.
 const DUMMY_PASSWORD_HASH = await hashPassword('SmartPark timing-only dummy password 2026!');

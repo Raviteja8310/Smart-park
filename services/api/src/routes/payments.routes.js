@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
-import { env } from '../config/env.js';
+import { canPurchaseParking, env } from '../config/env.js';
 import { pool } from '../config/database.js';
 import { requireAuth } from '../middleware/authenticate.js';
 import { createBookingTicket } from '../tickets/ticket.js';
@@ -185,6 +185,7 @@ async function buildOrderResponse(payment, booking) {
 }
 
 router.post('/orders', requireAuth, asyncHandler(async (req, res) => {
+  if (!canPurchaseParking(req.user)) return fail(res, 403, 'DRIVER_BOOKINGS_DISABLED', 'Online parking booking is temporarily unavailable. You can still browse parking spaces.');
   const parsed = orderSchema.safeParse(req.body);
   if (!parsed.success) return validationFail(res, parsed);
   if (env.PAYMENT_PROVIDER === 'mock' && env.NODE_ENV === 'production') {
@@ -519,6 +520,7 @@ router.get('/mine', requireAuth, asyncHandler(async (req, res) => {
 }));
 
 router.post('/verify', requireAuth, asyncHandler(async (req, res) => {
+  if (!canPurchaseParking(req.user)) return fail(res, 403, 'DRIVER_BOOKINGS_DISABLED', 'Online parking booking is temporarily unavailable. You can still browse parking spaces.');
   if (env.PAYMENT_PROVIDER !== 'razorpay') return fail(res, 409, 'PAYMENT_PROVIDER_NOT_ACTIVE', 'Razorpay verification is only available when Razorpay is configured.');
   const parsed = verifySchema.safeParse(req.body);
   if (!parsed.success) return validationFail(res, parsed);
@@ -562,6 +564,7 @@ router.post('/verify', requireAuth, asyncHandler(async (req, res) => {
 }));
 
 router.post('/mock/complete', requireAuth, asyncHandler(async (req, res) => {
+  if (!canPurchaseParking(req.user)) return fail(res, 403, 'DRIVER_BOOKINGS_DISABLED', 'Online parking booking is temporarily unavailable. You can still browse parking spaces.');
   if (env.NODE_ENV === 'production' || env.PAYMENT_PROVIDER !== 'mock') {
     return fail(res, 404, 'NOT_FOUND', 'This development-only payment route is not available.');
   }

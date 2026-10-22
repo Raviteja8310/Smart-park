@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { Component, useEffect, useState } from 'react';
 import {
   Activity, ArrowDownRight, ArrowUpRight, BadgeCheck, Bell, CarFront, CalendarDays, Building2,
   CheckCircle2, ChevronDown, CircleHelp, Clock3, CreditCard, Gauge,
   LayoutDashboard, LogOut, MapPin, MoreHorizontal, Plus, Search, Settings,
-  ShieldCheck, SlidersHorizontal, Sparkles, Users, Wallet, Wifi, Zap, SquareParking, QrCode, Store, Heart, BadgePercent, Gift, ScanEye, Sun, Moon, DoorOpen
+  ShieldCheck, SlidersHorizontal, Sparkles, Users, Wallet, Wifi, Zap, SquareParking, QrCode, Store, Heart, BadgePercent,   ScanEye, Sun, Moon, DoorOpen
 } from 'lucide-react';
 import AuthPage from './components/AuthPage.jsx';
 import ParkingPage from './components/ParkingPage.jsx';
@@ -22,7 +22,6 @@ import AdminUsersPage from './components/AdminUsersPage.jsx';
 import AdminDashboard from './components/AdminDashboard.jsx';
 import OwnerVerificationPage from './components/OwnerVerificationPage.jsx';
 import AdminPromotionsPage from './components/AdminPromotionsPage.jsx';
-import ReferralsPage from './components/ReferralsPage.jsx';
 import SubscriptionsPage from './components/SubscriptionsPage.jsx';
 import CorporateEvPage from './components/CorporateEvPage.jsx';
 import { ProfilePage, SettingsPage, HelpSupportPage } from './components/AccountPages.jsx';
@@ -50,6 +49,26 @@ function StatCard({ icon: Icon, label, value, note, trend, tint = 'mint' }) {
 function StatusPill({ state }) {
   const cls = state.toLowerCase().replaceAll(' ', '-');
   return <span className={`status-pill ${cls}`}><span className="status-dot" />{state}</span>;
+}
+
+class WorkspaceErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  componentDidCatch(error, info) {
+    console.error('Workspace page failed to render:', error, info);
+  }
+
+  render() {
+    if (!this.state.error) return this.props.children;
+    return <section className="sp-page"><div className="sp-alert error" role="alert"><strong>This page could not be loaded.</strong><span>{this.state.error.message || 'Please try again.'}</span><button className="sp-button secondary" onClick={() => window.location.reload()}>Reload page</button></div></section>;
+  }
 }
 
 export default function App() {
@@ -170,7 +189,7 @@ export default function App() {
   const canManageParkingInventory = canHost || roles.some((role) => ['operator', 'attendant'].includes(role));
   const canOperate = isAdmin || roles.includes('operator') || (hasFacilityOwnerRole && ownerWorkspaceActive);
   const navGroups = [
-    { title: 'WORKSPACE', items: [{ label: 'Overview', icon: LayoutDashboard }, { label: 'Find parking', icon: MapPin }, { label: 'My bookings', icon: CalendarDays }, { label: 'Vehicles', icon: CarFront }, { label: 'Saved & reviews', icon: Heart }, { label: 'Refer & earn', icon: Gift }, { label: 'Monthly passes', icon: CalendarDays }, { label: 'Corporate & EV', icon: Zap }] },
+    { title: 'WORKSPACE', items: [{ label: 'Overview', icon: LayoutDashboard }, { label: 'Find parking', icon: MapPin }, { label: 'My bookings', icon: CalendarDays }, { label: 'Vehicles', icon: CarFront }, { label: 'Saved & reviews', icon: Heart }, { label: 'Monthly passes', icon: CalendarDays }, { label: 'Corporate & EV', icon: Zap }] },
     { title: 'MANAGE', items: [...(canManageParkingInventory ? [{ label: 'Parking spaces', icon: Gauge }] : []), ...(canHost ? [{ label: 'My listings', icon: Store }, ...(!isAdmin ? [{ label: 'Owner verification', icon: ShieldCheck }] : []), { label: 'Owner earnings', icon: Wallet }] : []), ...((canHost || roles.some((role) => ['operator', 'admin'].includes(role))) ? [{ label: 'Camera detection', icon: Activity }, { label: 'Plate recognition', icon: ScanEye }] : []), ...(canOperate ? [{ label: 'Operations', icon: Activity }] : []), ...(isAdmin ? [{ label: 'Finance review', icon: ShieldCheck }] : []), { label: 'Transactions', icon: CreditCard }, ...(roles.some((role) => ['attendant', 'operator', 'admin'].includes(role)) ? [{ label: 'Gate access', icon: QrCode }] : []), ...(canManageParkingInventory && roles.some((role) => ['host','operator','admin'].includes(role)) ? [{ label: 'Gate hardware', icon: DoorOpen }] : [])] },
     ...(isAdmin ? [{ title: 'ADMINISTRATION', items: [{ label: 'Admin console', icon: ShieldCheck }, { label: 'User management', icon: Users }, { label: 'Owner verification', icon: BadgeCheck }, { label: 'Promotions', icon: BadgePercent }] }] : []),
     { title: 'PREFERENCES', items: [{ label: 'Notifications', icon: Bell }, { label: 'Settings', icon: Settings }, { label: 'Help & support', icon: CircleHelp }] }
@@ -258,6 +277,7 @@ export default function App() {
           <div className="top-actions"><div className={`connection-status ${apiStatus.state === 'ok' ? 'connected' : ''}`} title={`API: ${apiStatus.state}; database: ${apiStatus.database}`}><span className="connection-dot" />{apiStatus.checking ? 'Checking system' : apiStatus.state === 'ok' ? 'System connected' : apiStatus.state === 'degraded' ? 'Database offline' : 'API offline'}</div><button className="icon-button sp-theme-toggle" type="button" title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} onClick={() => handleThemeChange(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={18}/> : <Moon size={18}/>}</button><button className="icon-button" aria-label="Notifications" onClick={() => setActiveNav('Notifications')}><Bell size={18} /><i /></button><button className="top-avatar sp-top-avatar-button" type="button" title="Open my profile" aria-label="Open my profile" onClick={() => setActiveNav('My profile')}>{userInitials}</button><button className="logout-button" onClick={handleLogout} disabled={loggingOut} title="Sign out"><LogOut size={15} /><span>{loggingOut ? 'Signing out…' : translate(language, 'Sign out')}</span></button></div>
         </header>
 
+        <WorkspaceErrorBoundary>
         <div className="page-content">
           {activeNav === 'Admin console' && currentUser?.roles?.includes('admin') ? <AdminDashboard overview={parkingOverview} onNavigate={setActiveNav} />
             : activeNav === 'User management' && currentUser?.roles?.includes('admin') ? <AdminUsersPage currentUser={currentUser} />
@@ -266,9 +286,8 @@ export default function App() {
             : activeNav === 'My profile' ? <ProfilePage currentUser={currentUser} workspaceMode={workspaceMode} onWorkspaceChange={handleWorkspaceChange} onNavigate={setActiveNav} onProfileUpdated={(user) => setCurrentUser((current) => ({ ...current, ...user }))} />
             : activeNav === 'Settings' ? <SettingsPage language={language} onLanguageChange={setLanguage} theme={theme} onThemeChange={handleThemeChange} currentUser={currentUser} onNavigate={setActiveNav} />
             : activeNav === 'Help & support' ? <HelpSupportPage currentUser={currentUser} />
-            : activeNav === 'Refer & earn' ? <ReferralsPage />
             : activeNav === 'Monthly passes' ? <SubscriptionsPage currentUser={currentUser} />
-            : activeNav === 'Corporate & EV' ? <CorporateEvPage currentUser={currentUser} />
+            : activeNav === 'Corporate & EV' ? <CorporateEvPage currentUser={currentUser} workspaceMode={workspaceMode} />
             : activeNav === 'Find parking' ? <ParkingPage mode="discover" currentUser={currentUser} onViewBookings={() => setActiveNav('My bookings')} onViewEngagement={() => { setInitialEngagementTab('reviews'); setActiveNav('Saved & reviews'); }} initialSearch={initialParkingSearch} />
             : activeNav === 'Parking spaces' && canManageParkingInventory ? <ParkingPage mode="manage" currentUser={currentUser} />
             : activeNav === 'My bookings' ? <BookingsPage currentUser={currentUser} />
@@ -328,6 +347,7 @@ export default function App() {
           </>}
           <footer className="page-footer"><span>© 2026 SmartPark · Original project build</span><span><span className="footer-status" /> Designed for a reliable parking experience</span></footer>
         </div>
+        </WorkspaceErrorBoundary>
       </main>
     </div>
   );

@@ -5,8 +5,10 @@ async function readJson(response) { const data = await response.json().catch(() 
 const money = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(value ?? 0));
 const label = (value) => String(value ?? '').replaceAll('_', ' ');
 
-export default function CorporateEvPage({ currentUser }) {
-  const canHost = (currentUser?.roles ?? []).some((role) => ['host', 'admin'].includes(role));
+export default function CorporateEvPage({ currentUser, workspaceMode = 'driver' }) {
+  const roles = currentUser?.roles ?? [];
+  const isAdmin = roles.includes('admin');
+  const canManageChargers = isAdmin || (roles.includes('host') && workspaceMode === 'facility_owner');
   const [companies, setCompanies] = useState([]); const [companyId, setCompanyId] = useState(''); const [members, setMembers] = useState([]); const [fleet, setFleet] = useState([]);
   const [chargers, setChargers] = useState([]); const [availableChargers, setAvailableChargers] = useState([]); const [sessions, setSessions] = useState([]); const [listings, setListings] = useState([]);
   const [companyForm, setCompanyForm] = useState({ name: '', billingEmail: currentUser?.email ?? '', registrationNumber: '', billingPhone: '', billingAddress: '' });
@@ -18,12 +20,12 @@ export default function CorporateEvPage({ currentUser }) {
     try {
       const [companyData, chargerData, availableData, sessionData] = await Promise.all([
         fetch('/api/enterprise/mine', { credentials: 'same-origin' }).then(readJson),
-        canHost ? fetch('/api/charging/mine', { credentials: 'same-origin' }).then(readJson) : Promise.resolve({ chargers: [] }),
+        canManageChargers ? fetch('/api/charging/mine', { credentials: 'same-origin' }).then(readJson) : Promise.resolve({ chargers: [] }),
         fetch('/api/charging/available', { credentials: 'same-origin' }).then(readJson),
         fetch('/api/charging/sessions/mine', { credentials: 'same-origin' }).then(readJson)
       ]);
       setCompanies(companyData.companies ?? []); setCompanyId((old) => old || companyData.companies?.[0]?.id || ''); setChargers(chargerData.chargers ?? []); setAvailableChargers(availableData.chargers ?? []); setSessions(sessionData.sessions ?? []);
-      if (canHost) { const listingData = await fetch('/api/marketplace/listings/mine', { credentials: 'same-origin' }).then(readJson); setListings(listingData.listings ?? []); setChargerForm((old) => ({ ...old, parkingLotId: old.parkingLotId || listingData.listings?.[0]?.id || '' })); }
+      if (canManageChargers) { const listingData = await fetch('/api/marketplace/listings/mine', { credentials: 'same-origin' }).then(readJson); setListings(listingData.listings ?? []); setChargerForm((old) => ({ ...old, parkingLotId: old.parkingLotId || listingData.listings?.[0]?.id || '' })); }
     } catch (reason) { setError(reason.message); }
     finally { setBusy(false); }
   }
@@ -32,7 +34,7 @@ export default function CorporateEvPage({ currentUser }) {
     try { const [memberData, fleetData] = await Promise.all([fetch(`/api/enterprise/${id}/members`, { credentials: 'same-origin' }).then(readJson), fetch(`/api/enterprise/${id}/fleet`, { credentials: 'same-origin' }).then(readJson)]); setMembers(memberData.members ?? []); setFleet(fleetData.vehicles ?? []); }
     catch (reason) { setError(reason.message); setMembers([]); setFleet([]); }
   }
-  useEffect(() => { load(); }, [currentUser?.id]);
+  useEffect(() => { load(); }, [currentUser?.id, canManageChargers]);
   useEffect(() => { loadCompanyDetails(companyId); }, [companyId]);
   const selectedCompany = useMemo(() => companies.find((company) => company.id === companyId), [companies, companyId]);
   async function submit(event, path, body, success) { event.preventDefault(); setSaving(true); setError(''); setNotice(''); try { await readJson(await fetch(path, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })); setNotice(success); await load(); if (companyId) await loadCompanyDetails(companyId); } catch (reason) { setError(reason.message); } finally { setSaving(false); } }
@@ -64,7 +66,7 @@ export default function CorporateEvPage({ currentUser }) {
       </section>
     </div>
     <section className="panel sp-account-card"><div className="sp-help-title"><PlugZap size={22}/><div><h2>EV charging inventory</h2><p className="muted-copy">Owners can register charger details at their existing parking facilities.</p></div></div>
-      {canHost && <form className="sp-enterprise-form" onSubmit={(event)=>submit(event,'/api/charging', { ...chargerForm, powerKw:Number(chargerForm.powerKw), pricePerKwh:Number(chargerForm.pricePerKwh), quantity:Number(chargerForm.quantity) },'EV charger inventory added.')}>
+      {canManageChargers && <form className="sp-enterprise-form" onSubmit={(event)=>submit(event,'/api/charging', { ...chargerForm, powerKw:Number(chargerForm.powerKw), pricePerKwh:Number(chargerForm.pricePerKwh), quantity:Number(chargerForm.quantity) },'EV charger inventory added.')}>
         <label>Parking facility<select required value={chargerForm.parkingLotId} onChange={(e)=>setChargerForm({...chargerForm,parkingLotId:e.target.value})}><option value="">Select a facility</option>{listings.map((listing)=><option key={listing.id} value={listing.id}>{listing.name} · {listing.city}</option>)}</select></label>
         <label>Charger label<input required value={chargerForm.chargerName} onChange={(e)=>setChargerForm({...chargerForm,chargerName:e.target.value})} placeholder="AC Charger 1" maxLength="120"/></label>
         <label>Connector<select value={chargerForm.connectorType} onChange={(e)=>setChargerForm({...chargerForm,connectorType:e.target.value})}><option value="type2">Type 2 AC</option><option value="ccs2">CCS2 DC</option><option value="bharat_ac001">Bharat AC-001</option><option value="bharat_dc001">Bharat DC-001</option><option value="chademo">CHAdeMO</option><option value="other">Other</option></select></label>
@@ -75,7 +77,7 @@ export default function CorporateEvPage({ currentUser }) {
         <label>Notes (optional)<input value={chargerForm.notes} onChange={(e)=>setChargerForm({...chargerForm,notes:e.target.value})} maxLength="500"/></label>
         <button className="sp-button primary" type="submit" disabled={saving||!chargerForm.parkingLotId}><Plus size={14}/> Add charger</button>
       </form>}
-      <div className="sp-enterprise-charger-grid">{(canHost?chargers:availableChargers).map((charger)=><article className="sp-enterprise-charger" key={charger.id}><div className="sp-enterprise-charger-icon"><Zap size={21}/></div><div className="sp-enterprise-charger-head"><div><strong>{charger.chargerName}</strong><small>{charger.parkingName} · {charger.city}</small></div><span className={`sp-referral-status ${charger.availabilityStatus}`}>{label(charger.availabilityStatus)}</span></div><div className="sp-enterprise-charger-stats"><span><b>{charger.powerKw} kW</b>Power</span><span><b>{label(charger.connectorType)}</b>Connector</span><span><b>{money(charger.pricePerKwh)}</b>per kWh</span><span><b>{charger.activeSessions}/{charger.quantity}</b>Active connectors</span></div>{charger.notes&&<p>{charger.notes}</p>}{!canHost&&charger.availabilityStatus==='available'&&<button className="sp-button primary" disabled={saving} onClick={async()=>{setSaving(true);setError('');try{const data=await readJson(await fetch(`/api/charging/${charger.id}/sessions`,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}));setNotice(data.message);await load()}catch(reason){setError(reason.message)}finally{setSaving(false)}}}><PlugZap size={14}/> Start session record</button>}</article>)}{!(canHost?chargers:availableChargers).length&&<div className="sp-referral-empty"><PlugZap size={24}/><strong>No EV chargers to show</strong><p>{canHost?'Add charger inventory above for one of your parking facilities.':'No approved parking facility currently has available EV charger inventory.'}</p></div>}</div>
+      <div className="sp-enterprise-charger-grid">{(canManageChargers ? chargers : availableChargers).map((charger)=><article className="sp-enterprise-charger" key={charger.id}><div className="sp-enterprise-charger-icon"><Zap size={21}/></div><div className="sp-enterprise-charger-head"><div><strong>{charger.chargerName}</strong><small>{charger.parkingName} · {charger.city}</small></div><span className={`sp-referral-status ${charger.availabilityStatus}`}>{label(charger.availabilityStatus)}</span></div><div className="sp-enterprise-charger-stats"><span><b>{charger.powerKw} kW</b>Power</span><span><b>{label(charger.connectorType)}</b>Connector</span><span><b>{money(charger.pricePerKwh)}</b>per kWh</span><span><b>{charger.activeSessions}/{charger.quantity}</b>Active connectors</span></div>{charger.notes&&<p>{charger.notes}</p>}{!canManageChargers&&charger.availabilityStatus==='available'&&<button className="sp-button primary" disabled={saving} onClick={async()=>{setSaving(true);setError('');try{const data=await readJson(await fetch(`/api/charging/${charger.id}/sessions`,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}));setNotice(data.message);await load()}catch(reason){setError(reason.message)}finally{setSaving(false)}}}><PlugZap size={14}/> Start session record</button>}</article>)}{!(canManageChargers?chargers:availableChargers).length&&<div className="sp-referral-empty"><PlugZap size={24}/><strong>No EV chargers to show</strong><p>{canManageChargers?'Add charger inventory above for one of your parking facilities.':'No approved parking facility currently has available EV charger inventory.'}</p></div>}</div>
       <div className="sp-enterprise-note"><ShieldCheck size={17}/><p>Availability and charging sessions are SmartPark records, not live hardware control. Actual charger activation, metering, payment collection, and provider telemetry require a compatible charging-network integration.</p></div>
     </section>
     <section className="panel sp-account-card"><div className="sp-help-title"><Clock3 size={21}/><div><h2>My charging sessions</h2><p className="muted-copy">Session records and estimated energy costs.</p></div></div>

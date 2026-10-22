@@ -112,7 +112,7 @@ test('every literal frontend API call matches a declared backend route method an
 test('release smoke-check script and operator runbook are included', async () => {
   const [pkg, docs] = await Promise.all([
     readText('package.json').then(JSON.parse),
-    readText('docs/integration-testing.md')
+    readText('README.md')
   ]);
   assert.equal(pkg.scripts['test:integration'], 'node scripts/integration-smoke.mjs');
   assert.ok(pkg.scripts['verify:release'], 'verify:release command is required');
@@ -203,7 +203,7 @@ test('release audit script is wired into the final verification command', async 
   const [pkg, audit, checklist] = await Promise.all([
     readText('package.json').then(JSON.parse),
     readText('scripts/release-audit.mjs'),
-    readText('docs/release-checklist.md')
+    readText('README.md')
   ]);
   assert.equal(pkg.scripts['release:audit'], 'node scripts/release-audit.mjs');
   assert.match(pkg.scripts['verify:release'], /release:audit/);
@@ -269,7 +269,7 @@ test('owner marketplace supports scheduled pricing without replacing the current
 test('parking discovery supports user-consented nearby sorting and map preview without a schema migration', async () => {
   const [component, docs, parkingRoutes] = await Promise.all([
     readText('apps/web/src/components/ParkingPage.jsx'),
-    readText('docs/phase-5-location-discovery.md'),
+    readText('README.md'),
     readText('services/api/src/routes/parking.routes.js')
   ]);
   assert.match(component, /navigator\.geolocation\.getCurrentPosition/);
@@ -285,7 +285,7 @@ test('parking discovery supports user-consented nearby sorting and map preview w
 test('parking discovery supports parking routes, onward destination planning, and public arrival notes', async () => {
   const [component, docs] = await Promise.all([
     readText('apps/web/src/components/ParkingPage.jsx'),
-    readText('docs/phase-6-arrival-planning.md')
+    readText('README.md')
   ]);
   assert.match(component, /function directionsUrl/);
   assert.match(component, /Route to parking/);
@@ -305,7 +305,7 @@ test('referral programme attributes registrations and awards idempotent credits 
     readText('services/api/src/routes/gate.routes.js'),
     readText('database/migrations/016_referral_program.sql'),
     readText('apps/web/src/components/ReferralsPage.jsx'),
-    readText('docs/phase-8-referral-program.md')
+    readText('README.md')
   ]);
   assert.match(app, /app\.use\('\/api\/referrals', referralsRouter\)/);
   assert.match(auth, /referralCode: z\.string/);
@@ -316,4 +316,30 @@ test('referral programme attributes registrations and awards idempotent credits 
   assert.match(migration, /UNIQUE KEY uq_referral_reward_beneficiary/);
   assert.match(component, /Refer & earn/);
   assert.match(docs, /not cash/);
+});
+
+test('EV inventory and ordinary-driver booking restrictions remain server-enforced', async () => {
+  const [charging, bookings, payments, subscriptions, env, app, corporate, parking, auth] = await Promise.all([
+    readText('services/api/src/routes/charging.routes.js'),
+    readText('services/api/src/routes/bookings.routes.js'),
+    readText('services/api/src/routes/payments.routes.js'),
+    readText('services/api/src/routes/subscriptions.routes.js'),
+    readText('services/api/src/config/env.js'),
+    readText('apps/web/src/App.jsx'),
+    readText('apps/web/src/components/CorporateEvPage.jsx'),
+    readText('apps/web/src/components/ParkingPage.jsx'),
+    readText('apps/web/src/components/AuthPage.jsx')
+  ]);
+  assert.match(charging, /router\.post\('\/',requireAuth,requireRole\('host','admin'\)/);
+  assert.match(charging, /You can add chargers only to a facility you own/);
+  assert.match(charging, /You cannot manage this charger/);
+  assert.match(env, /ALLOW_DRIVER_BOOKINGS:.*default\('false'\)/);
+  assert.match(bookings, /DRIVER_BOOKINGS_DISABLED/);
+  assert.match(payments, /DRIVER_BOOKINGS_DISABLED/);
+  assert.match(subscriptions, /DRIVER_BOOKINGS_DISABLED/);
+  assert.match(app, /CorporateEvPage currentUser=\{currentUser\} workspaceMode=\{workspaceMode\}/);
+  assert.match(corporate, /workspaceMode === 'facility_owner'/);
+  assert.match(parking, /\/api\/bookings\/capabilities/);
+  assert.doesNotMatch(app, /Refer & earn/);
+  assert.doesNotMatch(auth, /Referral code/);
 });

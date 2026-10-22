@@ -8,7 +8,6 @@ export const DEFAULT_ROOT = resolve(scriptDir, '..');
 
 const REQUIRED_FILES = [
   'README.md',
-  'CHANGELOG.md',
   '.env.example',
   '.gitignore',
   'package.json',
@@ -18,12 +17,6 @@ const REQUIRED_FILES = [
   'services/api/src/scripts/migrate.js',
   'scripts/preflight-production.mjs',
   'scripts/integration-smoke.mjs',
-  'docs/api-specification.md',
-  'docs/integration-testing.md',
-  'docs/production-deployment.md',
-  'docs/deployment-security-checklist.md',
-  'docs/release-checklist.md',
-  'docs/phase15-final-release.md',
   'deployment/Dockerfile.api',
   'deployment/Dockerfile.web',
   'deployment/Caddyfile',

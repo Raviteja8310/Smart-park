@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import QRCode from 'qrcode';
-import { env } from '../config/env.js';
+import { canPurchaseParking, env } from '../config/env.js';
 import { createBookingTicket } from '../tickets/ticket.js';
 import { constantTimeStringEqual } from '../payments/payment-logic.js';
 import { pool } from '../config/database.js';
@@ -48,6 +48,11 @@ function parseInterval(startAt, endAt) {
 function bookingCode() {
   const day = new Date().toISOString().slice(2, 10).replaceAll('-', '');
   return `SP${day}${randomBytes(3).toString('hex').toUpperCase()}`;
+}
+function assertBookingPurchaseAllowed(user) {
+  if (!canPurchaseParking(user)) {
+    throw new BookingError(403, 'DRIVER_BOOKINGS_DISABLED', 'Online parking booking is temporarily unavailable. You can still browse parking spaces.');
+  }
 }
 
 async function getSlotContext(executor, slotId, lock = false) {
@@ -189,6 +194,7 @@ async function fetchBooking(executor, bookingId, userId, isAdmin = false, lock =
 }
 
 router.post('/quote', requireAuth, asyncHandler(async (req, res) => {
+  try { assertBookingPurchaseAllowed(req.user); } catch (error) { return fail(res, error.status, error.code, error.message); }
   const parsed = bookingInputSchema.safeParse(req.body);
   if (!parsed.success) return validationFail(res, parsed);
   try {
@@ -200,7 +206,12 @@ router.post('/quote', requireAuth, asyncHandler(async (req, res) => {
   }
 }));
 
+router.get('/capabilities', requireAuth, (req, res) => {
+  return res.json({ canPurchaseParking: canPurchaseParking(req.user), message: canPurchaseParking(req.user) ? null : 'Online parking booking is temporarily unavailable. You can still browse parking spaces.' });
+});
+
 router.post('/', requireAuth, asyncHandler(async (req, res, next) => {
+  try { assertBookingPurchaseAllowed(req.user); } catch (error) { return fail(res, error.status, error.code, error.message); }
   const parsed = bookingInputSchema.safeParse(req.body);
   if (!parsed.success) return validationFail(res, parsed);
   const input = parsed.data;

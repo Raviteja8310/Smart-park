@@ -4,12 +4,12 @@ services:
     container_name: smartpark-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-local_root_change_me}
-      MYSQL_DATABASE: ${DB_NAME:-smartpark}
-      MYSQL_USER: ${DB_USER:-smartpark_app}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-change_this_local_password}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: smartpark
+      MYSQL_USER: smartpark_app
+      MYSQL_PASSWORD: root
     ports:
-      - "127.0.0.1:${DB_PORT:-3306}:3306"
+      - "127.0.0.1:3307:3306"
     volumes:
       - smartpark_mysql_data:/var/lib/mysql
     healthcheck:

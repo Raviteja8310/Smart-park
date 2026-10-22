@@ -30,7 +30,6 @@ export default function AuthPage({ onAuthenticated }) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [referralCode, setReferralCode] = useState(() => new URLSearchParams(window.location.search).get('ref')?.trim().toUpperCase() ?? '');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [resetToken, setResetToken] = useState('');
@@ -101,7 +100,7 @@ export default function AuthPage({ onAuthenticated }) {
       let payload;
       if (mode === 'register') {
         endpoint = '/api/auth/register';
-        payload = { fullName, email, phone, password, ...(referralCode.trim() ? { referralCode: referralCode.trim().toUpperCase() } : {}) };
+        payload = { fullName, email, phone, password };
       } else if (mode === 'login') {
         endpoint = '/api/auth/login';
         payload = { email, password };
@@ -190,7 +189,7 @@ export default function AuthPage({ onAuthenticated }) {
   const heading = mode === 'login' ? ['WELCOME BACK', 'Sign in to SmartPark', 'Your next parking experience starts here.']
     : mode === 'register' ? ['GET STARTED', 'Create your account', 'Create a driver account. Other roles are assigned by an administrator.']
     : mode === 'forgot' ? ['ACCOUNT RECOVERY', 'Reset your password', 'We will email a six-digit code if an active account matches your email.']
-    : ['SECURE YOUR ACCOUNT', 'Choose a new password', resetMethod === 'otp' ? 'Enter the six-digit email code and choose a new password.' : 'Use a unique password of at least 12 characters.'];
+    : ['SECURE YOUR ACCOUNT', 'Choose a new password', resetMethod === 'otp' ? 'Enter the six-digit email code and choose a new password.' : 'Use a unique password of at least 6 characters.'];
 
   return (
     <div className="auth-page">
@@ -234,11 +233,10 @@ export default function AuthPage({ onAuthenticated }) {
             {mode === 'register' && <label className="auth-field"><span>Full name</span><input autoComplete="name" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Your full name" minLength={2} maxLength={120} required /></label>}
             {(mode !== 'reset' || resetMethod === 'otp') && <label className="auth-field"><span>Email address</span><input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" maxLength={254} required={mode !== 'reset'} readOnly={mode === 'reset' && resetMethod === 'otp'} /></label>}
             {mode === 'register' && <label className="auth-field"><span>Phone number <small>Optional</small></span><input type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="Your contact number" maxLength={30} /></label>}
-            {mode === 'register' && <label className="auth-field"><span>Referral code <small>Optional</small></span><input autoComplete="off" value={referralCode} onChange={(event) => setReferralCode(event.target.value.toUpperCase())} placeholder="Enter a friend's code" maxLength={16} pattern="[A-Za-z0-9_-]*" /><small className="auth-field-hint">If someone invited you, enter their code to link the referral.</small></label>}
             {mode === 'reset' && resetMethod === 'otp' && <label className="auth-field"><span>Six-digit email code</span><input aria-label="Six-digit password reset code" inputMode="numeric" autoComplete="one-time-code" value={resetToken} onChange={(event) => setResetToken(event.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="Enter code from your email" pattern="[0-9]{6}" minLength={6} maxLength={6} required/><small className="auth-field-hint">The code expires in 10 minutes. Check your spam or junk folder too.</small></label>}
             {mode === 'reset' && resetMethod === 'link' && <div className="auth-message success" role="status"><LockKeyhole size={16}/><span>Secure reset link detected. Choose a new password below.</span></div>}
-            {['login', 'register', 'reset'].includes(mode) && <label className="auth-field"><span>{mode === 'reset' ? 'New password' : 'Password'}</span><div className="auth-password-wrap"><input type={showPassword ? 'text' : 'password'} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={mode === 'login' ? 'Enter your password' : 'At least 12 characters'} minLength={mode === 'login' ? 1 : 12} maxLength={128} required /><button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>{mode !== 'login' && <small className="auth-field-hint">Use a long, unique passphrase of 12 characters or more.</small>}</label>}
-            {['register', 'reset'].includes(mode) && <label className="auth-field"><span>Confirm password</span><input type="password" autoComplete="new-password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder="Enter your password again" minLength={12} maxLength={128} required /></label>}
+            {['login', 'register', 'reset'].includes(mode) && <label className="auth-field"><span>{mode === 'reset' ? 'New password' : 'Password'}</span><div className="auth-password-wrap"><input type={showPassword ? 'text' : 'password'} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={mode === 'login' ? 'Enter your password' : 'At least 6 characters'} minLength={mode === 'login' ? 1 : 6} maxLength={128} required /><button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>{mode !== 'login' && <small className="auth-field-hint">Use a long, unique passphrase of 6 characters or more.</small>}</label>}
+            {['register', 'reset'].includes(mode) && <label className="auth-field"><span>Confirm password</span><input type="password" autoComplete="new-password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder="Enter your password again" minLength={6} maxLength={128} required /></label>}
             <button className="auth-submit" type="submit" disabled={busy}>{busy ? 'Please wait…' : mode === 'login' ? 'Sign in securely' : mode === 'register' ? 'Create account' : mode === 'forgot' ? 'Email me a code' : 'Update password'} {!busy && <ArrowRight size={17} />}</button>
           </form>
           {mode === 'reset' && resetMethod === 'otp' && <button className="auth-resend-link auth-reset-resend" type="button" disabled={busy || !email.trim()} onClick={resendPasswordResetCode}>Didn’t receive the code? Send a new one</button>}

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { pool } from '../config/database.js';
+import { canPurchaseParking } from '../config/env.js';
 import { requireAuth, requireRole } from '../middleware/authenticate.js';
 
 const router = Router();
@@ -58,6 +59,7 @@ router.get('/owner', requireAuth, requireRole('host', 'admin'), asyncHandler(asy
 }));
 
 router.post('/', requireAuth, asyncHandler(async (req, res) => {
+  if (!canPurchaseParking(req.user)) return fail(res, 403, 'DRIVER_BOOKINGS_DISABLED', 'Online parking booking is temporarily unavailable. You can still browse parking spaces.');
   const parsed = requestSchema.safeParse(req.body);
   if (!parsed.success) return fail(res, 400, 'VALIDATION_ERROR', parsed.error.issues[0]?.message ?? 'Check the monthly pass details.');
   const { parkingLotId, startDate, monthsCount } = parsed.data;

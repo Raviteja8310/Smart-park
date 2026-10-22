@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  ArrowLeft, ArrowUpRight, Building2, CalendarClock, Check, CircleAlert, Clock3,
+  ArrowLeft, ArrowUpRight, Building2, CalendarClock, CarFront, Check, CircleAlert, Clock3,
   Layers3, LoaderCircle, MapPin, Plus, RefreshCw, Search, ShieldCheck,
   SlidersHorizontal, SquareParking, X, Heart, Star, MessageSquareText, LocateFixed, Map, List, Navigation
 } from 'lucide-react';
@@ -25,6 +25,10 @@ function facilityLocation(lot) {
   return [lot.addressLine, lot.city, lot.region].filter(Boolean).join(', ');
 }
 
+function facilityStatusLabel(value) {
+  return String(value ?? 'unknown').replaceAll('_', ' ');
+}
+
 function distanceKm(origin, lot) {
   if (!origin || lot.latitude == null || lot.longitude == null) return null;
   const lat = Number(lot.latitude); const lon = Number(lot.longitude);
@@ -33,6 +37,13 @@ function distanceKm(origin, lot) {
   const dLat = radians(lat - origin.latitude); const dLon = radians(lon - origin.longitude);
   const a = Math.sin(dLat / 2) ** 2 + Math.cos(radians(origin.latitude)) * Math.cos(radians(lat)) * Math.sin(dLon / 2) ** 2;
   return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(Math.max(0, 1 - a)));
+}
+
+function hasCoordinates(location) {
+  return location?.latitude != null &&
+    location?.longitude != null &&
+    Number.isFinite(Number(location.latitude)) &&
+    Number.isFinite(Number(location.longitude));
 }
 
 function osmEmbedUrl(lot) {
@@ -114,11 +125,7 @@ function LotCard({ lot, mode, onOpen, onSubmitForApproval, onSetStatus, isAdmin,
     Number.isFinite(Number(lot.latitude)) &&
     Number.isFinite(Number(lot.longitude));
 
-  const hasUserLocation =
-    userLocation?.latitude != null &&
-    userLocation?.longitude != null &&
-    Number.isFinite(Number(userLocation.latitude)) &&
-    Number.isFinite(Number(userLocation.longitude));
+  const hasUserLocation = hasCoordinates(userLocation);
 
   return (
     <article className="sp-lot-card">
@@ -127,8 +134,8 @@ function LotCard({ lot, mode, onOpen, onSubmitForApproval, onSetStatus, isAdmin,
         <div className="sp-lot-top-end">
           {mode === 'discover' && <button type="button" className={`sp-favorite-toggle ${isFavorite ? 'saved' : ''}`} aria-label={isFavorite ? `Remove ${lot.name} from saved parking` : `Save ${lot.name}`} aria-pressed={isFavorite} onClick={() => onToggleFavorite?.(lot)}><Heart size={16} fill={isFavorite ? 'currentColor' : 'none'} /></button>}
           <div className="sp-lot-status-wrap">
-            <span className={`sp-facility-status ${lot.facilityStatus}`}>{lot.facilityStatus.replaceAll('_', ' ')}</span>
-            <span className="sp-lot-id">{lot.id.slice(0, 8).toUpperCase()}</span>
+            <span className={`sp-facility-status ${lot.facilityStatus ?? 'unknown'}`}>{facilityStatusLabel(lot.facilityStatus)}</span>
+            <span className="sp-lot-id">{String(lot.id ?? '').slice(0, 8).toUpperCase()}</span>
           </div>
         </div>
       </div>
@@ -227,6 +234,7 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
   const [bookingQuote, setBookingQuote] = useState(null);
   const [activeHold, setActiveHold] = useState(null);
   const [bookingBusy, setBookingBusy] = useState(false);
+  const [canPurchaseParking, setCanPurchaseParking] = useState(false);
   const [newZoneName, setNewZoneName] = useState('');
   const [newZoneLevel, setNewZoneLevel] = useState('');
   const [newSlotCodes, setNewSlotCodes] = useState('');
@@ -235,6 +243,17 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
   const [newCovered, setNewCovered] = useState(false);
   const [newAccessible, setNewAccessible] = useState(false);
   const [lotForm, setLotForm] = useState({ name: '', description: '', addressLine: '', city: '', region: '', postalCode: '', countryCode: 'IN', latitude: '', longitude: '', openingTime: '06:00', closingTime: '23:00', currency: 'INR' });
+
+  useEffect(() => {
+    if (isManager) { setCanPurchaseParking(false); return undefined; }
+    let active = true;
+    apiRequest('/api/bookings/capabilities').then((data) => {
+      if (active) setCanPurchaseParking(Boolean(data.canPurchaseParking));
+    }).catch(() => {
+      if (active) setCanPurchaseParking(false);
+    });
+    return () => { active = false; };
+  }, [isManager, currentUser?.id]);
 
   const discoveryLots = useMemo(() => {
     const decorated = lots.map((lot) => ({ lot, distance: distanceKm(userLocation, lot) }));
@@ -245,7 +264,7 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
     return result;
   }, [lots, userLocation, nearbyOnly, radiusKm]);
 
-  const mapLots = discoveryLots.filter(({ lot }) => lot.latitude != null && lot.longitude != null);
+  const mapLots = discoveryLots.filter(({ lot }) => hasCoordinates(lot));
   const activeMapLot = mapLots.find(({ lot }) => lot.id === activeMapLotId)?.lot ?? mapLots[0]?.lot ?? null;
 
   function requestUserLocation() {
@@ -267,9 +286,10 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
       const queryString = new URLSearchParams();
       if (criteria.q?.trim()) queryString.set('q', criteria.q.trim());
       if (criteria.city?.trim()) queryString.set('city', criteria.city.trim());
-      const endpoint = isManager ? '/api/parking/managed-lots' : `/api/parking/lots${queryString.size ? `?${queryString}` : ''}`;
+      const query = queryString.toString();
+      const endpoint = isManager ? '/api/parking/managed-lots' : `/api/parking/lots${query ? `?${query}` : ''}`;
       const data = await apiRequest(endpoint);
-      setLots(data.lots ?? []);
+      setLots(Array.isArray(data.lots) ? data.lots.filter(Boolean) : []);
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -543,10 +563,11 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
       <section className="sp-page">
         <div className="sp-page-heading">
           <button className="sp-back-button" onClick={() => { setSelectedLot(null); setSlots([]); setZones([]); setError(''); setNotice(''); reloadLots({ q: '', city: '' }); }}><ArrowLeft size={16} /> Back to {isManager ? 'managed facilities' : 'parking results'}</button>
-          <div className="sp-heading-title-row"><div><p className="sp-kicker">{isManager ? 'FACILITY INVENTORY' : 'PARKING DETAILS'}</p><h1>{selectedLot.name}</h1><p>{facilityLocation(selectedLot)}</p></div><span className={`sp-facility-status ${selectedLot.facilityStatus}`}>{selectedLot.facilityStatus.replaceAll('_', ' ')}</span></div>
+          <div className="sp-heading-title-row"><div><p className="sp-kicker">{isManager ? 'FACILITY INVENTORY' : 'PARKING DETAILS'}</p><h1>{selectedLot.name}</h1><p>{facilityLocation(selectedLot)}</p></div><span className={`sp-facility-status ${selectedLot.facilityStatus ?? 'unknown'}`}>{facilityStatusLabel(selectedLot.facilityStatus)}</span></div>
         </div>
 
-        {!isManager && (currentUser?.roles ?? []).includes('host') && <div className="sp-owner-driver-booking-note"><CarFront size={17}/><span><strong>Facility owner tip</strong> You can book parking as a driver too—including an available space at an approved facility you own. Choose a vehicle and use the normal price and reservation flow.</span></div>}
+        {!isManager && !canPurchaseParking && <div className="sp-owner-driver-booking-note"><ShieldCheck size={17}/><span><strong>Online booking is temporarily unavailable.</strong> You can still browse parking spaces, view availability and prices, and use maps and directions.</span></div>}
+        {!isManager && canPurchaseParking && (currentUser?.roles ?? []).includes('host') && <div className="sp-owner-driver-booking-note"><CarFront size={17}/><span><strong>Facility owner tip</strong> You can book parking as a driver too—including an available space at an approved facility you own. Choose a vehicle and use the normal price and reservation flow.</span></div>}
 
       {error && <div className="sp-alert error"><CircleAlert size={17} /><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error"><X size={14} /></button></div>}
         {notice && <div className="sp-alert success"><Check size={17} /><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss notice"><X size={14} /></button></div>}
@@ -605,7 +626,7 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
                 {isManager && canChangePhysicalState && <label className="sp-inline-control"><span>Physical state</span><select value={slot.physicalState} onChange={(event) => updateSlot(slot, { physicalState: event.target.value })}><option value="unknown">Unknown</option><option value="empty">Empty</option><option value="occupied">Occupied</option></select></label>}
                 {isManager && canManageInventory && <label className="sp-inline-control"><span>Operational status</span><select value={slot.operationalStatus} onChange={(event) => updateSlot(slot, { operationalStatus: event.target.value })}><option value="open">Open</option><option value="disabled">Disabled</option><option value="maintenance">Maintenance</option></select></label>}
                 {slot.physicalStateUpdatedAt && <small className="sp-updated-at">Updated {new Date(slot.physicalStateUpdatedAt).toLocaleString()}</small>}
-                {!isManager && slot.operationalStatus === 'open' && <button className="sp-button secondary sp-slot-book-button" onClick={() => openBooking(slot)}>{slot.availabilityState === 'available' ? 'Choose time' : 'Check another time'}</button>}
+                {!isManager && canPurchaseParking && slot.operationalStatus === 'open' && <button className="sp-button secondary sp-slot-book-button" onClick={() => openBooking(slot)}>{slot.availabilityState === 'available' ? 'Choose time' : 'Check another time'}</button>}
               </article>
             ))}</div> : <div className="sp-empty-state"><SquareParking size={28} /><strong>No parking spaces configured yet</strong><span>Create zones and spaces to set up this facility's inventory.</span></div>}
           </article>
@@ -718,7 +739,7 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
             </button>)}
             {!mapLots.length && <p className="sp-muted">No published facilities have coordinates yet. Owners can add latitude and longitude in their facility details.</p>}
           </div>
-          <div className="sp-map-preview-wrap">{activeMapLot ? <><iframe title={`Map showing ${activeMapLot.name}`} className="sp-map-iframe" src={osmEmbedUrl(activeMapLot)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" /><div className="sp-map-preview-footer"><div><strong>{activeMapLot.name}</strong><span>{facilityLocation(activeMapLot)}</span></div><div className="sp-map-footer-actions"><a href={directionsUrl({ origin: userLocation ? `${userLocation.latitude},${userLocation.longitude}` : undefined, destination: `${activeMapLot.latitude},${activeMapLot.longitude}` })} target="_blank" rel="noreferrer"><Navigation size={13} /> Route to parking</a><a href={`https://www.openstreetmap.org/?mlat=${Number(activeMapLot.latitude)}&mlon=${Number(activeMapLot.longitude)}#map=16/${Number(activeMapLot.latitude)}/${Number(activeMapLot.longitude)}`} target="_blank" rel="noreferrer">Open map <ArrowUpRight size={13} /></a></div></div>
+          <div className="sp-map-preview-wrap">{activeMapLot ? <><iframe title={`Map showing ${activeMapLot.name}`} className="sp-map-iframe" src={osmEmbedUrl(activeMapLot)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />          <div className="sp-map-preview-footer"><div><strong>{activeMapLot.name}</strong><span>{facilityLocation(activeMapLot)}</span></div><div className="sp-map-footer-actions"><a href={directionsUrl({ origin: hasCoordinates(userLocation) ? `${userLocation.latitude},${userLocation.longitude}` : undefined, destination: `${activeMapLot.latitude},${activeMapLot.longitude}` })} target="_blank" rel="noreferrer"><Navigation size={13} /> Route to parking</a><a href={`https://www.openstreetmap.org/?mlat=${Number(activeMapLot.latitude)}&mlon=${Number(activeMapLot.longitude)}#map=16/${Number(activeMapLot.latitude)}/${Number(activeMapLot.longitude)}`} target="_blank" rel="noreferrer">Open map <ArrowUpRight size={13} /></a></div></div>
             <div className="sp-arrival-planner"><div className="sp-arrival-planner-heading"><strong>Plan your arrival</strong><span>Route to this parking space, then continue to your destination.</span></div><label className="sp-arrival-destination"><MapPin size={15} /><input value={arrivalDestination} onChange={(event) => setArrivalDestination(event.target.value)} placeholder="Destination after parking (optional)" aria-label="Destination after parking" /></label><div className="sp-arrival-actions"><label>From parking<select value={destinationTravelMode} onChange={(event) => setDestinationTravelMode(event.target.value)}><option value="walking">Walking</option><option value="bicycling">Cycling</option><option value="driving">Driving</option><option value="transit">Public transit</option></select></label><button className="sp-button secondary" disabled={!arrivalDestination.trim()} onClick={() => window.open(directionsUrl({ origin: `${activeMapLot.latitude},${activeMapLot.longitude}`, destination: arrivalDestination.trim(), travelMode: destinationTravelMode }), '_blank', 'noopener,noreferrer')}>Route to destination <ArrowUpRight size={14} /></button></div>
             {activeMapLot.specialInstructions && <div className="sp-arrival-instructions"><strong><MapPin size={14} /> Arrival instructions</strong><p>{activeMapLot.specialInstructions}</p></div>}
           </div></> : <div className="sp-map-empty"><MapPin size={25} /><strong>Map coordinates unavailable</strong><span>Add coordinates to parking facilities to show their map pins.</span></div>}</div>

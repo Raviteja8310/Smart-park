@@ -59,3 +59,7 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
+
+export function canPurchaseParking(user) {
+  return env.ALLOW_DRIVER_BOOKINGS || user?.roles?.some((role) => ['host', 'admin'].includes(role));
+}
