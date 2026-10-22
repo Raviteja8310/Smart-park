@@ -2,6 +2,12 @@
 
 An original, web-first smart-parking platform combining facility inventory, shared parking listings, bookings, payment verification, QR access, operator workflows and camera-based occupancy detection.
 
+## Phase 14: production least-privilege hardening
+
+The production Compose stack now runs the API, web server and email worker with hardened runtime settings where supported (read-only root filesystems, temporary writable mounts, resource/PID limits and `no-new-privileges`). The email worker uses `SMARTPARK_PROCESS=email-worker` and receives only database/site-origin/SMTP credentials; payment, QR-signing and vision-service secrets are not passed to that container. API-only settings stay with the API.
+
+Review `docs/phase14-production-security.md` before deploying. A static preflight or passing unit tests is not a substitute for testing a clean build, migrated MySQL database, HTTPS, provider sandbox, SMTP, backup restore and camera hardware in staging.
+
 ## Phase 9: release hardening and deployment
 
 Production deployment files are provided under `deployment/` and in `docker-compose.production.yml`. Read `docs/production-deployment.md` before deploying. Production requires a real public DNS name, HTTPS, SMTP, live Razorpay configuration, strong independent secrets, a backup plan, and a tested database migration path. Do not use mock payments with `NODE_ENV=production`.

@@ -65,6 +65,20 @@ strong('QR_SIGNING_SECRET', 32);
 strong('VISION_API_TOKEN', 32);
 if (value('QR_SIGNING_SECRET') && value('VISION_API_TOKEN') && value('QR_SIGNING_SECRET') === value('VISION_API_TOKEN')) issues.push('QR_SIGNING_SECRET and VISION_API_TOKEN must be different.');
 if (value('DB_PASSWORD') && value('MYSQL_ROOT_PASSWORD') && value('DB_PASSWORD') === value('MYSQL_ROOT_PASSWORD')) issues.push('DB_PASSWORD and MYSQL_ROOT_PASSWORD must be different.');
+const placeholder = /(change_this|local-development|replace-with|placeholder|example\.com|your-domain|password123|local_root)/i;
+for (const key of ['SMTP_PASSWORD', 'RAZORPAY_KEY_SECRET', 'RAZORPAY_WEBHOOK_SECRET']) {
+  if (placeholder.test(value(key))) issues.push(`${key} cannot use a sample or placeholder value.`);
+}
+const uniqueSecrets = ['DB_PASSWORD', 'MYSQL_ROOT_PASSWORD', 'SMTP_PASSWORD', 'RAZORPAY_KEY_SECRET', 'RAZORPAY_WEBHOOK_SECRET', 'QR_SIGNING_SECRET', 'VISION_API_TOKEN']
+  .map((key) => [key, value(key)])
+  .filter(([, secret]) => Boolean(secret));
+for (let i = 0; i < uniqueSecrets.length; i += 1) {
+  for (let j = i + 1; j < uniqueSecrets.length; j += 1) {
+    if (uniqueSecrets[i][1] === uniqueSecrets[j][1]) {
+      issues.push(`${uniqueSecrets[i][0]} and ${uniqueSecrets[j][0]} must be different secrets.`);
+    }
+  }
+}
 if (/smartpark\.local|your-domain\.example/i.test(value('MAIL_FROM'))) issues.push('MAIL_FROM must use an address on a domain configured for outbound email.');
 
 if (issues.length) {

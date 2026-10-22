@@ -10,6 +10,7 @@ dotenv.config({ path: resolve(projectRoot, '.env') });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  SMARTPARK_PROCESS: z.enum(['api', 'email-worker']).default('api'),
   API_PORT: z.coerce.number().int().min(1).max(65535).default(4000),
   WEB_ORIGIN: z.string().url().default('http://127.0.0.1:5173'),
   SESSION_TTL_HOURS: z.coerce.number().int().min(1).max(720).default(168),
@@ -35,7 +36,7 @@ const envSchema = z.object({
   for (const issue of productionConfigIssues(value)) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: [issue.path], message: issue.message });
   }
-  if (value.PAYMENT_PROVIDER === 'razorpay') {
+  if (value.SMARTPARK_PROCESS !== 'email-worker' && value.PAYMENT_PROVIDER === 'razorpay') {
     if (!value.RAZORPAY_KEY_ID) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['RAZORPAY_KEY_ID'], message: 'RAZORPAY_KEY_ID is required when Razorpay is enabled.' });
     if (!value.RAZORPAY_KEY_SECRET) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['RAZORPAY_KEY_SECRET'], message: 'RAZORPAY_KEY_SECRET is required when Razorpay is enabled.' });
   }

@@ -131,3 +131,37 @@ test('production Compose keeps MySQL private and requires production secrets', a
   assert.match(compose, /RAZORPAY_WEBHOOK_SECRET:\s*\$\{RAZORPAY_WEBHOOK_SECRET:\?/, 'payment webhook secret must be required');
   assert.match(compose, /VISION_API_TOKEN:\s*\$\{VISION_API_TOKEN:\?/, 'vision service token must be required');
 });
+
+
+test('production email worker receives only database, site-origin and mail credentials', async () => {
+  const compose = await readText('docker-compose.production.yml');
+  const worker = compose.split(/^  email-worker:\s*$/m)[1]?.split(/^  [a-zA-Z_-]+:\s*$/m)[0] ?? '';
+  assert.ok(worker, 'email-worker service must exist');
+  assert.match(worker, /SMARTPARK_PROCESS:\s*email-worker/);
+  assert.match(worker, /SMTP_PASSWORD:/);
+  assert.doesNotMatch(worker, /RAZORPAY_|QR_SIGNING_SECRET|VISION_API_TOKEN|TRUST_PROXY_HOPS|PAYMENT_PROVIDER/);
+  assert.match(worker, /^    read_only:\s*true$/m);
+  assert.match(worker, /no-new-privileges:true/);
+  assert.match(worker, /cap_drop:[\s\S]*?- ALL/);
+});
+
+test('production application containers have read-only root filesystems where supported', async () => {
+  const compose = await readText('docker-compose.production.yml');
+  const serviceBlock = (name, next) => compose.split(new RegExp(`^  ${name}:\\s*$`, 'm'))[1]?.split(new RegExp(`^  ${next}:\\s*$`, 'm'))[0] ?? '';
+  const api = serviceBlock('api', 'email-worker');
+  const web = serviceBlock('web', 'caddy');
+  assert.match(api, /^    read_only:\s*true$/m);
+  assert.match(api, /tmpfs:[\s\S]*?\/tmp/);
+  assert.match(api, /no-new-privileges:true/);
+  assert.match(web, /^    read_only:\s*true$/m);
+  assert.match(web, /\/var\/cache\/nginx/);
+});
+
+
+test('production preflight checks placeholder credentials and cross-service secret reuse', async () => {
+  const preflight = await readText('scripts/preflight-production.mjs');
+  assert.match(preflight, /SMTP_PASSWORD.*RAZORPAY_KEY_SECRET.*RAZORPAY_WEBHOOK_SECRET/);
+  assert.match(preflight, /uniqueSecrets/);
+  assert.match(preflight, /must be different secrets/);
+  assert.match(preflight, /No secret values were printed/);
+});

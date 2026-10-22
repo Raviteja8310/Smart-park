@@ -14,6 +14,8 @@
 - **Phase 10:** Transactional email outbox, retrying SMTP worker, lifecycle email templates and production worker container.
 - **Phase 11:** Customer refund requests, host payout requests, admin financial review, external reference tracking and audit records.
 - **Phase 12:** Favorites, recent search history, completed-booking reviews, rating aggregates and moderation.
+- **Phase 13:** Integration smoke tests, frontend/API route contracts, migration consistency checks, and release runbooks.
+- **Phase 14:** Service-specific production configuration, least-privilege email worker, read-only application container filesystems where supported, temporary write mounts, capability/PID/resource limits.
 
 ## Database migration sequence
 
@@ -111,3 +113,21 @@ Pure API/helper tests cover refund and payout eligibility, status transitions, d
 - `npm install` could not reach `registry.npmjs.org` in this workspace (`EAI_AGAIN`), so no lockfile could be generated here and Vite is not installed. Run `npm install` on the development machine, commit the generated `package-lock.json`, and confirm `npm run build` passes before deploying.
 - Run `npm run test:integration` with a migrated MySQL database and running API. Optional login collection checks require a verified, active staging account set through `SMARTPARK_SMOKE_EMAIL` and `SMARTPARK_SMOKE_PASSWORD`.
 - Still required: real Razorpay staging order/webhook tests, SMTP delivery tests, backup/restore validation, HTTPS issuance, camera accuracy checks, and hardware gate acceptance testing.
+
+
+## Phase 14: production least-privilege hardening
+
+- API and email-worker environment configuration is now scoped by `SMARTPARK_PROCESS`. Keep `SMARTPARK_PROCESS=api` for the API and `SMARTPARK_PROCESS=email-worker` for the mail worker in production Compose.
+- The mail worker receives no Razorpay credentials, QR-signing secret, vision token, or reverse-proxy trust configuration.
+- Production Compose adds runtime hardening and conservative PID/memory controls to application containers while keeping MySQL private and preserving explicit persistent volumes for the database, user listing photos and Caddy state.
+- No SQL migration is required.
+
+## Phase 14 validation and remaining work
+
+- Production rules and Compose contracts are covered with unit tests.
+- This workspace has no Docker/MySQL runtime and no installed web dependencies, so it has not verified image startup, Nginx behavior with a read-only root, live migration/recovery, SMTP, payment APIs, TLS issuance or camera inference.
+- Run the production Compose config/build checks and real staging acceptance checks on your deployment host. Review memory caps against measured usage before production traffic.
+
+## Phase 15: final deployment verification (still required)
+
+Phase 15 is not considered complete until all checks in `docs/release-checklist.md` are recorded against the intended deployment environment: clean dependency install and lockfile, frontend production build, API and vision test suites, fresh and upgrade migration paths, role isolation, booking/payment/QR workflows, email delivery/retry, refund/payout reconciliation, TLS, backup/restore, and camera accuracy.

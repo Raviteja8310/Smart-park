@@ -4,9 +4,12 @@ import { productionConfigIssues } from '../src/config/production-rules.js';
 
 const validProduction = {
   NODE_ENV: 'production',
+  SMARTPARK_PROCESS: 'api',
   WEB_ORIGIN: 'https://smartpark-release.net',
   DB_PASSWORD: 'S8j!a2vN#71_xP0lQ3fB9zTx',
   SMTP_HOST: 'smtp.smartpark-release.net',
+  SMTP_USER: 'smartpark-smtp-user',
+  SMTP_PASSWORD: 'smtp-secret-with-unique-randomness',
   MAIL_FROM: 'SmartPark <no-reply@smartpark-release.net>',
   PAYMENT_PROVIDER: 'razorpay',
   RAZORPAY_KEY_ID: 'rzp_live_abc',
@@ -52,4 +55,43 @@ test('requires independent QR signing and vision service secrets', () => {
   const shared = 'a'.repeat(48);
   const issues = productionConfigIssues({ ...validProduction, QR_SIGNING_SECRET: shared, VISION_API_TOKEN: shared });
   assert.ok(issues.some((issue) => issue.path === 'QR_SIGNING_SECRET' && issue.message.includes('must be different')));
+});
+
+
+test('production email worker does not require API-only payment, QR, or vision secrets', () => {
+  const worker = {
+    ...validProduction,
+    SMARTPARK_PROCESS: 'email-worker',
+    PAYMENT_PROVIDER: 'mock',
+    RAZORPAY_KEY_ID: '',
+    RAZORPAY_KEY_SECRET: '',
+    RAZORPAY_WEBHOOK_SECRET: '',
+    QR_SIGNING_SECRET: '',
+    VISION_API_TOKEN: ''
+  };
+  assert.deepEqual(productionConfigIssues(worker), []);
+});
+
+test('production email worker still requires its SMTP credentials', () => {
+  const worker = {
+    ...validProduction,
+    SMARTPARK_PROCESS: 'email-worker',
+    PAYMENT_PROVIDER: 'mock',
+    RAZORPAY_KEY_ID: '',
+    RAZORPAY_KEY_SECRET: '',
+    RAZORPAY_WEBHOOK_SECRET: '',
+    QR_SIGNING_SECRET: '',
+    VISION_API_TOKEN: '',
+    SMTP_PASSWORD: ''
+  };
+  assert.ok(productionConfigIssues(worker).some((issue) => issue.path === 'SMTP_PASSWORD'));
+});
+
+
+test('rejects reusing a high-value secret across service boundaries', () => {
+  const issues = productionConfigIssues({
+    ...validProduction,
+    SMTP_PASSWORD: validProduction.DB_PASSWORD
+  });
+  assert.ok(issues.some((issue) => issue.path === 'SMTP_PASSWORD' && issue.message.includes('must be different')));
 });

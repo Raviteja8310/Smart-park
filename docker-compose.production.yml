@@ -25,8 +25,18 @@ services:
       context: .
       dockerfile: deployment/Dockerfile.api
     restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 256
+    mem_limit: 768m
     environment:
       NODE_ENV: production
+      SMARTPARK_PROCESS: api
       API_PORT: "4000"
       WEB_ORIGIN: ${WEB_ORIGIN:?Set WEB_ORIGIN to the exact https://APP_DOMAIN origin}
       SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-168}
@@ -65,11 +75,57 @@ services:
       retries: 5
       start_period: 40s
 
+  email-worker:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.api
+    command: ["node", "services/api/src/scripts/email-worker.js"]
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 128
+    mem_limit: 384m
+    environment:
+      NODE_ENV: production
+      SMARTPARK_PROCESS: email-worker
+      WEB_ORIGIN: ${WEB_ORIGIN:?Set WEB_ORIGIN to the exact https://APP_DOMAIN origin}
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:?Set DB_NAME in .env}
+      DB_USER: ${DB_USER:?Set DB_USER in .env}
+      DB_PASSWORD: ${DB_PASSWORD:?Set a unique DB_PASSWORD in .env}
+      SMTP_HOST: ${SMTP_HOST:?Set SMTP_HOST in .env}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:?Set SMTP_USER in .env}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?Set SMTP_PASSWORD in .env}
+      MAIL_FROM: ${MAIL_FROM:?Set MAIL_FROM to a verified sender address}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - database
+      - application
+
   web:
     build:
       context: .
       dockerfile: deployment/Dockerfile.web
     restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:rw,noexec,nosuid,size=64m
+      - /var/run:rw,noexec,nosuid,size=8m
+      - /tmp:rw,noexec,nosuid,size=16m
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 256m
     expose:
       - "8080"
     depends_on:
@@ -88,6 +144,10 @@ services:
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 256m
     environment:
       APP_DOMAIN: ${APP_DOMAIN:?Set APP_DOMAIN to a real DNS name pointing at this server}
     ports:
@@ -112,6 +172,11 @@ services:
       args:
         INSTALL_YOLO: ${VISION_INSTALL_YOLO:-true}
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 256
     environment:
       VISION_API_TOKEN: ${VISION_API_TOKEN:?Set VISION_API_TOKEN in .env}
       VISION_API_URL: http://api:4000/api/vision/service

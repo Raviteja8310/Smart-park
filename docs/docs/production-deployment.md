@@ -8,6 +8,8 @@ This guide assumes a Linux server or cloud VM with Docker Engine and the Docker 
 - Nginx serves the built React application and reverse-proxies `/api`, uploaded listing photos, and camera preview streams.
 - The Express API is private to the Docker networks and connects to MySQL.
 - MySQL has no published host port in the production Compose file.
+- API, web, and email-worker containers use read-only root filesystems where supported, temporary writable mounts, `no-new-privileges`, PID limits and container memory limits.
+- The email-worker process is configured with `SMARTPARK_PROCESS=email-worker`; its container does not receive payment credentials, the QR signing secret, or the vision service token.
 - The Python vision service is optional and is enabled with the Compose `vision` profile.
 - Listing photo uploads and database data are kept in named volumes.
 
@@ -46,7 +48,7 @@ On Windows with Node.js, this also works:
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
-Keep the `VISION_API_TOKEN` and `QR_SIGNING_SECRET` values independent. The API's production environment validation blocks mock payments, local origins, placeholder credentials, and missing SMTP/payment configuration.
+Keep the `VISION_API_TOKEN` and `QR_SIGNING_SECRET` values independent. The API's production environment validation blocks mock payments, local origins, placeholder credentials, and missing SMTP/payment configuration. The email-worker has separate validation and only requires the database, HTTPS site origin and SMTP configuration it uses.
 
 ## 4. Run preflight and validate Compose
 
@@ -147,6 +149,7 @@ The named volumes `smartpark_mysql_data`, `smartpark_marketplace_uploads`, `smar
 - The application has automated unit tests for selected pure logic, but this workspace has not completed a live production Compose deployment, migration run against production MySQL, or a full browser-based end-to-end suite.
 - Host earnings are an internal ledger. Automated owner payouts, full refund reversal/reconciliation workflows, and settlement integration require additional implementation and business-provider configuration.
 - Rate limiting uses process-local memory. Use a shared rate-limit store before horizontally scaling API instances.
+- Container runtime hardening reduces writable paths and process privilege, but image vulnerability scanning, dependency audit, secret rotation, host hardening and runtime monitoring must still be carried out for each release.
 - Verify CSP allowlists against the exact Google Maps/Razorpay integrations enabled for the release.
 - Confirm privacy notices, data retention, local payment/tax requirements and CCTV signage/consent for the deployment location.
 
@@ -165,3 +168,14 @@ For local development, run `npm run worker:email` in a separate terminal after m
 ## Phase 11 financial operations
 
 Refund and host-payout controls require a named administrator to confirm actions in the configured external provider/bank portal. SmartPark stores the case, audit note, and external reference; it does not itself send money or initiate a provider refund in this release. Never record a refund or payout as completed before the external provider confirms it. Review `docs/financial-operations.md` before enabling the workflow for real customers.
+
+
+## Phase 14 runtime-hardening notes
+
+- Production API runs with `SMARTPARK_PROCESS=api`; the private mail worker runs with `SMARTPARK_PROCESS=email-worker`. The process role selects the minimum production environment validation set.
+- The API container's writable marketplace-upload directory is a dedicated named volume. Do not remove that mount when keeping the API root filesystem read-only.
+- The web container's writable Nginx runtime/cache locations are mounted as ephemeral `tmpfs`; application assets stay read-only.
+- The mail worker has no payment provider key/secret, webhook secret, QR-signing secret, vision token, proxy-trust setting or public port.
+- Service memory/PID limits are conservative starting values, not capacity sizing. Observe peak usage (especially during image upload and mail backlog) and adjust deliberately.
+- If using an orchestrator/hosting platform other than the included Docker Compose topology, reproduce the same service-specific secret scopes, writable paths, private networking, health checks and resource controls in its native configuration.
+- Before a public launch, run a dependency vulnerability review against a committed lockfile and scan built images using your chosen scanner; resolve or explicitly accept and document findings.

@@ -20,6 +20,9 @@ import { originGuard } from './middleware/origin-guard.js';
 
 const app = express();
 
+// Only trust the explicitly configured reverse-proxy hop count. This keeps rate-limit
+// client identity useful behind the included Caddy -> Nginx -> API production path.
+app.set('trust proxy', env.TRUST_PROXY_HOPS);
 app.disable('x-powered-by');
 app.use(helmet());
 app.use(cors({ origin: env.WEB_ORIGIN, credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] }));

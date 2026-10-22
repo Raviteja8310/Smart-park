@@ -53,3 +53,13 @@
 - [ ] Verify browser and API access, payment/webhook, email-worker, and camera/vision behavior in the intended deployment environment.
 
 A passing smoke test is not equivalent to production certification. Payment providers, SMTP, TLS issuance, database restore, camera detection accuracy and gate hardware require environment-specific validation.
+
+
+## Phase 14 — Production least-privilege hardening
+- [ ] Confirm production API process role is `SMARTPARK_PROCESS=api` and mail-worker role is `SMARTPARK_PROCESS=email-worker`.
+- [ ] Confirm the mail worker does not receive payment credentials, webhook secret, QR signing secret, vision token or reverse-proxy trust configuration.
+- [ ] Build and start API/web/email-worker with read-only roots, temporary mounts, capability restrictions and resource limits.
+- [ ] Validate uploads still work through the persistent marketplace volume and Nginx health/static routes work with read-only web root.
+- [ ] Run dependency vulnerability audit using the committed package-lock and scan deployable images.
+- [ ] Review configured memory/PID limits under representative workload; check logs do not expose secrets or sensitive payloads.
+- [ ] Complete the environment-specific items in `docs/phase14-production-security.md`.
