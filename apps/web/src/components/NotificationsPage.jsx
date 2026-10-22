@@ -17,6 +17,7 @@ export default function NotificationsPage() {
   const [busyId, setBusyId] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [preferences, setPreferences] = useState(() => { try { return JSON.parse(localStorage.getItem('smartpark.preferences') || '{}'); } catch { return {}; } });
   const load = useCallback(async () => {
     setLoading(true); setError('');
     try {
@@ -27,6 +28,21 @@ export default function NotificationsPage() {
     finally { setLoading(false); }
   }, [unreadOnly]);
   useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const refreshPreferences = () => { try { setPreferences(JSON.parse(localStorage.getItem('smartpark.preferences') || '{}')); } catch { setPreferences({}); } };
+    window.addEventListener('smartpark:preferences-changed', refreshPreferences);
+    return () => window.removeEventListener('smartpark:preferences-changed', refreshPreferences);
+  }, []);
+
+  const visibleNotifications = notifications.filter((item) => {
+    const typeText = `${item.event_type || ''} ${item.title || ''} ${item.message || ''}`.toLowerCase();
+    const isBookingUpdate = /booking|reservation|subscription|monthly.pass/.test(typeText);
+    const isParkingAlert = /parking|occupancy|camera|gate|facility|space|overstay/.test(typeText);
+    if (preferences.bookingUpdates === false && isBookingUpdate) return false;
+    if (preferences.parkingAlerts === false && isParkingAlert && !/payment|security|password|refund|payout/.test(typeText)) return false;
+    return true;
+  });
+  const visibleUnreadCount = visibleNotifications.filter((item) => item.delivery_status !== 'read').length;
 
   async function markRead(notification) {
     if (notification.delivery_status === 'read') return;
@@ -45,12 +61,12 @@ export default function NotificationsPage() {
   return <section className="sp-notifications-page">
     <div className="sp-ops-title-row"><div><p className="section-kicker">YOUR INBOX</p><h1>Notifications</h1><p className="muted-copy">Booking, payment, gate and operational updates recorded for your account.</p></div><div className="sp-notification-toolbar"><button className="sp-button secondary" onClick={load} disabled={loading}><RefreshCw size={15} /> Refresh</button><button className="sp-button primary" onClick={markAllRead} disabled={loading || unreadCount === 0 || busyId === 'all'}><CheckCheck size={15} /> Mark all read</button></div></div>
     {error && <div className="sp-ops-message error">{error}</div>}{notice && <div className="sp-ops-message success">{notice}</div>}
-    <div className="sp-notification-summary"><div className="sp-notification-summary-icon"><BellRing size={21} /></div><div><strong>{unreadCount} unread notification{unreadCount === 1 ? '' : 's'}</strong><p>Notifications in this inbox are private to your signed-in account.</p></div><label><input type="checkbox" checked={unreadOnly} onChange={(event) => setUnreadOnly(event.target.checked)} /> Unread only</label></div>
-    <div className="sp-notification-list">{notifications.map((item) => <article key={item.id} className={`sp-notification-card ${item.delivery_status === 'read' ? 'read' : 'unread'}`}>
+    <div className="sp-notification-summary"><div className="sp-notification-summary-icon"><BellRing size={21} /></div><div><strong>{visibleUnreadCount} unread notification{visibleUnreadCount === 1 ? '' : 's'}</strong><p>Notifications in this inbox are private to your signed-in account.</p></div><label><input type="checkbox" checked={unreadOnly} onChange={(event) => setUnreadOnly(event.target.checked)} /> Unread only</label></div>
+    <div className="sp-notification-list">{visibleNotifications.map((item) => <article key={item.id} className={`sp-notification-card ${item.delivery_status === 'read' ? 'read' : 'unread'}`}>
       <span className="sp-notification-icon">{item.delivery_status === 'read' ? <Mail size={18} /> : <Bell size={18} />}</span>
       <div className="sp-notification-content"><div className="sp-notification-title-row"><strong>{item.title}</strong><span className={`sp-notification-delivery ${item.delivery_status}`}>{item.delivery_status.replaceAll('_', ' ')}</span></div><p>{item.message}</p><small>{formatDate(item.created_at)} · {item.channel.replaceAll('_', ' ')} · {item.event_type}</small></div>
       {item.delivery_status !== 'read' && <button className="sp-button ghost" onClick={() => markRead(item)} disabled={busyId === item.id}><Check size={14} /> Mark read</button>}
     </article>)}
-    {!notifications.length && <div className="sp-ops-empty"><Bell size={24} /><strong>{loading ? 'Loading your inbox…' : 'You’re all caught up'}</strong><span>{loading ? 'Reading notifications for your account.' : 'Important booking and operational updates will appear here.'}</span></div>}</div>
+    {!visibleNotifications.length && <div className="sp-ops-empty"><Bell size={24} /><strong>{loading ? 'Loading your inbox…' : notifications.length ? 'No notifications match your preferences' : 'You’re all caught up'}</strong><span>{loading ? 'Reading notifications for your account.' : notifications.length ? 'Your saved settings hide these categories. You can change them in Settings.' : 'Important booking and operational updates will appear here.'}</span></div>}</div>
   </section>;
 }

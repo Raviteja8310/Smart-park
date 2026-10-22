@@ -21,3 +21,14 @@ Phase 4 should implement a reservation engine with interval-based conflict prote
 - Physical occupancy can be changed manually; the computer-vision service has not yet been connected.
 - Map links use coordinates when available; an interactive map and Google Maps/Places credentials have not been configured.
 - The API requires all three database migrations before the Phase 3 endpoints will work.
+
+- Migration 012 extends shared parking listings with optional surface type, typical bay dimensions, and maximum vehicle height; the owner form supports create and edit.
+
+
+## Phase 4 — Owner verification workflow (migration 014)
+
+- Hosts can submit a manual owner-verification application with legal name, contact phone, property relationship, evidence type, and optional last four digits of a document reference.
+- Administrators can review pending applications, approve them, or reject them with a reason. Decisions are recorded in `audit_logs`.
+- The owner sees the latest application status and review note. The interface intentionally does not collect full government ID numbers or public document URLs.
+- This is a manual review record, not an automated identity check. Verify evidence using the organization's approved process and a secure document-handling channel before approving.
+- Apply `database/migrations/014_owner_verification.sql` after backup and migration-history verification.

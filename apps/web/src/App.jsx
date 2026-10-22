@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
-  Activity, ArrowDownRight, ArrowUpRight, Bell, CarFront, CalendarDays, Building2,
+  Activity, ArrowDownRight, ArrowUpRight, BadgeCheck, Bell, CarFront, CalendarDays, Building2,
   CheckCircle2, ChevronDown, CircleHelp, Clock3, CreditCard, Gauge,
   LayoutDashboard, LogOut, MapPin, MoreHorizontal, Plus, Search, Settings,
-  ShieldCheck, SlidersHorizontal, Sparkles, Users, Wallet, Wifi, Zap, SquareParking, QrCode, Store, Heart
+  ShieldCheck, SlidersHorizontal, Sparkles, Users, Wallet, Wifi, Zap, SquareParking, QrCode, Store, Heart, BadgePercent, Gift, ScanEye, Sun, Moon, DoorOpen
 } from 'lucide-react';
 import AuthPage from './components/AuthPage.jsx';
 import ParkingPage from './components/ParkingPage.jsx';
@@ -18,6 +18,17 @@ import OperationsPage from './components/OperationsPage.jsx';
 import NotificationsPage from './components/NotificationsPage.jsx';
 import FinancialOperationsPage from './components/FinancialOperationsPage.jsx';
 import EngagementPage from './components/EngagementPage.jsx';
+import AdminUsersPage from './components/AdminUsersPage.jsx';
+import AdminDashboard from './components/AdminDashboard.jsx';
+import OwnerVerificationPage from './components/OwnerVerificationPage.jsx';
+import AdminPromotionsPage from './components/AdminPromotionsPage.jsx';
+import ReferralsPage from './components/ReferralsPage.jsx';
+import SubscriptionsPage from './components/SubscriptionsPage.jsx';
+import CorporateEvPage from './components/CorporateEvPage.jsx';
+import { ProfilePage, SettingsPage, HelpSupportPage } from './components/AccountPages.jsx';
+import PlateRecognitionPage from './components/PlateRecognitionPage.jsx';
+import GateHardwarePage from './components/GateHardwarePage.jsx';
+import { translate } from './i18n.js';
 
 
 function StatCard({ icon: Icon, label, value, note, trend, tint = 'mint' }) {
@@ -55,6 +66,29 @@ export default function App() {
   const [recentBookingsError, setRecentBookingsError] = useState('');
   const [initialParkingSearch, setInitialParkingSearch] = useState(null);
   const [initialEngagementTab, setInitialEngagementTab] = useState('favorites');
+  const [language, setLanguage] = useState(() => { try { return JSON.parse(localStorage.getItem('smartpark.preferences') || '{}').language || 'en'; } catch { return 'en'; } });
+  const [theme, setTheme] = useState(() => { try { return JSON.parse(localStorage.getItem('smartpark.preferences') || '{}').theme === 'dark' ? 'dark' : 'light'; } catch { return 'light'; } });
+  const [workspaceMode, setWorkspaceMode] = useState('driver');
+
+  useEffect(() => {
+    if (!currentUser?.id) { setWorkspaceMode('driver'); return; }
+    try {
+      setWorkspaceMode(localStorage.getItem(`smartpark.workspaceMode.${currentUser.id}`) === 'facility_owner' ? 'facility_owner' : 'driver');
+    } catch { setWorkspaceMode('driver'); }
+  }, [currentUser?.id, (currentUser?.roles ?? []).join('|')]);
+
+  useEffect(() => { document.documentElement.lang = language; }, [language]);
+  useEffect(() => { document.documentElement.classList.toggle('sp-dark-theme', theme === 'dark'); }, [theme]);
+  useEffect(() => {
+    try {
+      const prefs = JSON.parse(localStorage.getItem('smartpark.preferences') || '{}');
+      document.documentElement.classList.toggle('sp-high-contrast', Boolean(prefs.highContrast));
+      document.documentElement.classList.toggle('sp-large-text', Boolean(prefs.largeText));
+      document.documentElement.classList.toggle('sp-reduce-motion', Boolean(prefs.reduceMotion));
+      document.documentElement.classList.toggle('sp-compact-tables', Boolean(prefs.compactTables));
+      document.documentElement.classList.toggle('sp-dark-theme', prefs.theme === 'dark');
+    } catch { /* Ignore malformed local preferences and keep accessible defaults. */ }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -126,20 +160,47 @@ export default function App() {
     return () => { cancelled = true; };
   }, [currentUser?.id]);
 
-  const canHost = (currentUser?.roles ?? []).some((role) => ['host', 'admin'].includes(role));
-  const canOperate = (currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role));
+  const roles = currentUser?.roles ?? [];
+  const isAdmin = roles.includes('admin');
+  const hasFacilityOwnerRole = roles.includes('host');
+  // Workspace switching is a presentation preference, not an authorization boundary.
+  // Server-side route guards continue to enforce the user's actual roles.
+  const ownerWorkspaceActive = isAdmin || (hasFacilityOwnerRole && workspaceMode === 'facility_owner');
+  const canHost = isAdmin || (hasFacilityOwnerRole && ownerWorkspaceActive);
+  const canManageParkingInventory = canHost || roles.some((role) => ['operator', 'attendant'].includes(role));
+  const canOperate = isAdmin || roles.includes('operator') || (hasFacilityOwnerRole && ownerWorkspaceActive);
   const navGroups = [
-    { title: 'WORKSPACE', items: [{ label: 'Overview', icon: LayoutDashboard }, { label: 'Find parking', icon: MapPin }, { label: 'My bookings', icon: CalendarDays }, { label: 'Vehicles', icon: CarFront }, { label: 'Saved & reviews', icon: Heart }] },
-    { title: 'MANAGE', items: [{ label: 'Parking spaces', icon: Gauge }, ...(canHost ? [{ label: 'My listings', icon: Store }, { label: 'Owner earnings', icon: Wallet }] : []), ...((currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role)) ? [{ label: 'Camera detection', icon: Activity }] : []), ...(canOperate ? [{ label: 'Operations', icon: Activity }] : []), ...(currentUser?.roles?.includes('admin') ? [{ label: 'Finance review', icon: ShieldCheck }] : []), { label: 'Transactions', icon: CreditCard }, ...((currentUser?.roles ?? []).some((role) => ['attendant', 'operator', 'admin'].includes(role)) ? [{ label: 'Gate access', icon: QrCode }] : [])] },
+    { title: 'WORKSPACE', items: [{ label: 'Overview', icon: LayoutDashboard }, { label: 'Find parking', icon: MapPin }, { label: 'My bookings', icon: CalendarDays }, { label: 'Vehicles', icon: CarFront }, { label: 'Saved & reviews', icon: Heart }, { label: 'Refer & earn', icon: Gift }, { label: 'Monthly passes', icon: CalendarDays }, { label: 'Corporate & EV', icon: Zap }] },
+    { title: 'MANAGE', items: [...(canManageParkingInventory ? [{ label: 'Parking spaces', icon: Gauge }] : []), ...(canHost ? [{ label: 'My listings', icon: Store }, ...(!isAdmin ? [{ label: 'Owner verification', icon: ShieldCheck }] : []), { label: 'Owner earnings', icon: Wallet }] : []), ...((canHost || roles.some((role) => ['operator', 'admin'].includes(role))) ? [{ label: 'Camera detection', icon: Activity }, { label: 'Plate recognition', icon: ScanEye }] : []), ...(canOperate ? [{ label: 'Operations', icon: Activity }] : []), ...(isAdmin ? [{ label: 'Finance review', icon: ShieldCheck }] : []), { label: 'Transactions', icon: CreditCard }, ...(roles.some((role) => ['attendant', 'operator', 'admin'].includes(role)) ? [{ label: 'Gate access', icon: QrCode }] : []), ...(canManageParkingInventory && roles.some((role) => ['host','operator','admin'].includes(role)) ? [{ label: 'Gate hardware', icon: DoorOpen }] : [])] },
+    ...(isAdmin ? [{ title: 'ADMINISTRATION', items: [{ label: 'Admin console', icon: ShieldCheck }, { label: 'User management', icon: Users }, { label: 'Owner verification', icon: BadgeCheck }, { label: 'Promotions', icon: BadgePercent }] }] : []),
     { title: 'PREFERENCES', items: [{ label: 'Notifications', icon: Bell }, { label: 'Settings', icon: Settings }, { label: 'Help & support', icon: CircleHelp }] }
   ];
 
   const displayName = currentUser?.fullName || currentUser?.email || 'SmartPark user';
   const userInitials = displayName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join('') || 'SP';
-  const userRoleLabel = currentUser?.roles?.includes('admin') ? 'Administrator'
-    : currentUser?.roles?.includes('operator') ? 'Facility operator'
-    : currentUser?.roles?.includes('attendant') ? 'Parking attendant'
-    : currentUser?.roles?.includes('host') ? 'Parking host' : 'Driver account';
+  const userRoleLabel = isAdmin ? 'Administrator'
+    : roles.includes('operator') ? 'Facility operator'
+    : roles.includes('attendant') ? 'Parking attendant'
+    : hasFacilityOwnerRole && ownerWorkspaceActive ? 'Facility owner workspace'
+    : hasFacilityOwnerRole ? 'Driver workspace · owner enabled' : 'Driver workspace';
+
+  function handleThemeChange(nextTheme) {
+    const normalized = nextTheme === 'dark' ? 'dark' : 'light';
+    setTheme(normalized);
+    try {
+      const preferences = JSON.parse(localStorage.getItem('smartpark.preferences') || '{}');
+      localStorage.setItem('smartpark.preferences', JSON.stringify({ ...preferences, theme: normalized }));
+      window.dispatchEvent(new CustomEvent('smartpark:preferences-changed'));
+    } catch { /* The theme still changes for the current app session if storage is unavailable. */ }
+  }
+
+  function handleWorkspaceChange(nextMode) {
+    const normalized = nextMode === 'facility_owner' ? 'facility_owner' : 'driver';
+    setWorkspaceMode(normalized);
+    try {
+      if (currentUser?.id) localStorage.setItem(`smartpark.workspaceMode.${currentUser.id}`, normalized);
+    } catch { /* Workspace switching still works for the current session if storage is unavailable. */ }
+  }
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -172,34 +233,44 @@ export default function App() {
   if (!currentUser) return <AuthPage onAuthenticated={setCurrentUser} />;
 
   return (
-    <div className="app-shell">
+    <div className="app-shell"><a className="sp-skip-link" href="#main-content">Skip to main content</a>
       <aside className="sidebar">
         <div className="brand">
           <div className="brand-mark"><CarFront size={22} strokeWidth={2.5} /></div>
           <div><span className="brand-name">smartpark</span><span className="brand-caption">PARKING, SIMPLIFIED</span></div>
         </div>
-        <button className="workspace-switcher"><span className="workspace-avatar">SP</span><span className="workspace-copy"><strong>{displayName}</strong><small>{userRoleLabel}</small></span><ChevronDown size={15} /></button>
+        <button className="workspace-switcher" type="button" onClick={() => setActiveNav('My profile')} title="Manage your driver and facility owner workspaces in My profile"><span className="workspace-avatar">SP</span><span className="workspace-copy"><strong>{displayName}</strong><small>{userRoleLabel}</small></span><ChevronDown size={15} /></button>
         <nav className="side-nav" aria-label="Main navigation">
           {navGroups.map((group) => <div className="nav-group" key={group.title}>
-            <p className="nav-group-title">{group.title}</p>
-            {group.items.map(({ label, icon: Icon }) => <button key={label} onClick={() => { if (label === 'Saved & reviews') setInitialEngagementTab('favorites'); setActiveNav(label); }} className={`nav-link ${activeNav === label ? 'active' : ''}`}><Icon size={17} /><span>{label}</span></button>)}
+            <p className="nav-group-title">{translate(language, group.title)}</p>
+            {group.items.map(({ label, icon: Icon }) => <button key={label} onClick={() => { if (label === 'Saved & reviews') setInitialEngagementTab('favorites'); setActiveNav(label); }} className={`nav-link ${activeNav === label ? 'active' : ''}`}><Icon size={17} /><span>{translate(language, label)}</span></button>)}
           </div>)}
         </nav>
         <div className="sidebar-bottom">
-          <div className="help-card"><div className="help-spark"><Sparkles size={17} /></div><strong>Need a hand?</strong><p>Find answers and get help with your parking.</p><button onClick={() => setActiveNav('Help & support')}>Visit help center <span>↗</span></button></div>
-          <button className="profile-mini" type="button" title="Signed-in account"><div className="profile-avatar">{userInitials}</div><span className="profile-text"><strong>{displayName}</strong><small>{userRoleLabel}</small></span><MoreHorizontal size={18} /></button>
+          <div className="help-card"><div className="help-spark"><Sparkles size={17} /></div><strong>{translate(language, 'Need a hand?')}</strong><p>Find answers and get help with your parking.</p><button onClick={() => setActiveNav('Help & support')}>{translate(language, 'Visit help center')} <span>↗</span></button></div>
+          <button className="profile-mini" type="button" title="Open my profile" onClick={() => setActiveNav('My profile')}><div className="profile-avatar">{userInitials}</div><span className="profile-text"><strong>{displayName}</strong><small>{userRoleLabel}</small></span><MoreHorizontal size={18} /></button>
         </div>
       </aside>
 
-      <main className="main-area">
+      <main className="main-area" id="main-content" tabIndex="-1">
         <header className="topbar">
-          <div className="breadcrumb"><span>Workspace</span><span className="crumb-slash">/</span><strong>{activeNav}</strong></div>
-          <div className="top-actions"><div className={`connection-status ${apiStatus.state === 'ok' ? 'connected' : ''}`} title={`API: ${apiStatus.state}; database: ${apiStatus.database}`}><span className="connection-dot" />{apiStatus.checking ? 'Checking system' : apiStatus.state === 'ok' ? 'System connected' : apiStatus.state === 'degraded' ? 'Database offline' : 'API offline'}</div><button className="icon-button" aria-label="Notifications" onClick={() => setActiveNav('Notifications')}><Bell size={18} /><i /></button><div className="top-avatar" title={displayName}>{userInitials}</div><button className="logout-button" onClick={handleLogout} disabled={loggingOut} title="Sign out"><LogOut size={15} /><span>{loggingOut ? 'Signing out…' : 'Sign out'}</span></button></div>
+          <div className="breadcrumb"><span>Workspace</span><span className="crumb-slash">/</span><strong>{translate(language, activeNav)}</strong></div>
+          <div className="top-actions"><div className={`connection-status ${apiStatus.state === 'ok' ? 'connected' : ''}`} title={`API: ${apiStatus.state}; database: ${apiStatus.database}`}><span className="connection-dot" />{apiStatus.checking ? 'Checking system' : apiStatus.state === 'ok' ? 'System connected' : apiStatus.state === 'degraded' ? 'Database offline' : 'API offline'}</div><button className="icon-button sp-theme-toggle" type="button" title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} onClick={() => handleThemeChange(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={18}/> : <Moon size={18}/>}</button><button className="icon-button" aria-label="Notifications" onClick={() => setActiveNav('Notifications')}><Bell size={18} /><i /></button><button className="top-avatar sp-top-avatar-button" type="button" title="Open my profile" aria-label="Open my profile" onClick={() => setActiveNav('My profile')}>{userInitials}</button><button className="logout-button" onClick={handleLogout} disabled={loggingOut} title="Sign out"><LogOut size={15} /><span>{loggingOut ? 'Signing out…' : translate(language, 'Sign out')}</span></button></div>
         </header>
 
         <div className="page-content">
-          {activeNav === 'Find parking' ? <ParkingPage mode="discover" currentUser={currentUser} onViewBookings={() => setActiveNav('My bookings')} onViewEngagement={() => { setInitialEngagementTab('reviews'); setActiveNav('Saved & reviews'); }} initialSearch={initialParkingSearch} />
-            : activeNav === 'Parking spaces' ? <ParkingPage mode="manage" currentUser={currentUser} />
+          {activeNav === 'Admin console' && currentUser?.roles?.includes('admin') ? <AdminDashboard overview={parkingOverview} onNavigate={setActiveNav} />
+            : activeNav === 'User management' && currentUser?.roles?.includes('admin') ? <AdminUsersPage currentUser={currentUser} />
+            : activeNav === 'Owner verification' && canHost ? <OwnerVerificationPage currentUser={currentUser} />
+            : activeNav === 'Promotions' && currentUser?.roles?.includes('admin') ? <AdminPromotionsPage />
+            : activeNav === 'My profile' ? <ProfilePage currentUser={currentUser} workspaceMode={workspaceMode} onWorkspaceChange={handleWorkspaceChange} onNavigate={setActiveNav} onProfileUpdated={(user) => setCurrentUser((current) => ({ ...current, ...user }))} />
+            : activeNav === 'Settings' ? <SettingsPage language={language} onLanguageChange={setLanguage} theme={theme} onThemeChange={handleThemeChange} currentUser={currentUser} onNavigate={setActiveNav} />
+            : activeNav === 'Help & support' ? <HelpSupportPage currentUser={currentUser} />
+            : activeNav === 'Refer & earn' ? <ReferralsPage />
+            : activeNav === 'Monthly passes' ? <SubscriptionsPage currentUser={currentUser} />
+            : activeNav === 'Corporate & EV' ? <CorporateEvPage currentUser={currentUser} />
+            : activeNav === 'Find parking' ? <ParkingPage mode="discover" currentUser={currentUser} onViewBookings={() => setActiveNav('My bookings')} onViewEngagement={() => { setInitialEngagementTab('reviews'); setActiveNav('Saved & reviews'); }} initialSearch={initialParkingSearch} />
+            : activeNav === 'Parking spaces' && canManageParkingInventory ? <ParkingPage mode="manage" currentUser={currentUser} />
             : activeNav === 'My bookings' ? <BookingsPage currentUser={currentUser} />
             : activeNav === 'Vehicles' ? <VehiclesPage currentUser={currentUser} />
             : activeNav === 'Saved & reviews' ? <EngagementPage currentUser={currentUser} initialTab={initialEngagementTab} onUseSearch={useRecentSearch} onBrowseParking={() => setActiveNav('Find parking')} />
@@ -207,18 +278,20 @@ export default function App() {
             : activeNav === 'Owner earnings' && canHost ? <EarningsPage currentUser={currentUser} />
             : activeNav === 'Transactions' ? <TransactionsPage currentUser={currentUser} />
             : activeNav === 'Gate access' ? <GatePage currentUser={currentUser} />
-            : activeNav === 'Camera detection' && (currentUser?.roles ?? []).some((role) => ['host', 'operator', 'admin'].includes(role)) ? <VisionPage currentUser={currentUser} />
+            : activeNav === 'Gate hardware' ? <GateHardwarePage currentUser={currentUser} />
+            : activeNav === 'Camera detection' && (canHost || roles.some((role) => ['operator', 'admin'].includes(role))) ? <VisionPage currentUser={currentUser} />
+            : activeNav === 'Plate recognition' && (canHost || roles.some((role) => ['operator', 'admin'].includes(role))) ? <PlateRecognitionPage />
             : activeNav === 'Operations' && canOperate ? <OperationsPage currentUser={currentUser} />
             : activeNav === 'Finance review' && currentUser?.roles?.includes('admin') ? <FinancialOperationsPage currentUser={currentUser} />
             : activeNav === 'Notifications' ? <NotificationsPage /> : <>
           <section className="welcome-row">
-            <div><div className="eyebrow"><span className="eyebrow-line" /> YOUR PARKING OVERVIEW</div><h1>Welcome back, {displayName.split(/\s+/)[0]} <span className="wave">✳</span></h1><p className="welcome-subtitle">Everything you need for a smoother parking experience.</p></div>
-            <button className="primary-button" onClick={() => setActiveNav('Find parking')}><Plus size={17} /> Find a parking spot</button>
+            <div><div className="eyebrow"><span className="eyebrow-line" /> {translate(language, 'YOUR PARKING OVERVIEW')}</div><h1>{translate(language, 'Welcome back')}, {displayName.split(/\s+/)[0]} <span className="wave">✳</span></h1><p className="welcome-subtitle">Everything you need for a smoother parking experience.</p></div>
+            <button className="primary-button" onClick={() => setActiveNav('Find parking')}><Plus size={17} /> {translate(language, 'Find a parking spot')}</button>
           </section>
 
           <section className="stat-grid" aria-label="Live parking inventory overview">
-            <StatCard icon={Building2} label="Active locations" value={parkingOverview ? parkingOverview.overview.activeLots : '—'} note="Published facilities" tint="mint" />
-            <StatCard icon={Gauge} label="Total spaces" value={parkingOverview ? parkingOverview.overview.totalSpaces : '—'} note="Across active locations" tint="blue" />
+            <StatCard icon={Building2} label={translate(language, 'Active locations')} value={parkingOverview ? parkingOverview.overview.activeLots : '—'} note={translate(language, 'Published facilities')} tint="mint" />
+            <StatCard icon={Gauge} label={translate(language, 'Total spaces')} value={parkingOverview ? parkingOverview.overview.totalSpaces : '—'} note={translate(language, 'Across active locations')} tint="blue" />
             <StatCard icon={CheckCircle2} label="Available now" value={parkingOverview ? parkingOverview.overview.availableNow : '—'} note="Known empty and unreserved" tint="violet" />
             <StatCard icon={CarFront} label="Occupied now" value={parkingOverview ? parkingOverview.overview.occupiedNow : '—'} note="Latest recorded physical state" tint="amber" />
           </section>

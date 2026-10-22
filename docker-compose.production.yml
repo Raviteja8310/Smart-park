@@ -5,10 +5,10 @@ services:
     image: mysql:8.4
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set a unique MYSQL_ROOT_PASSWORD in .env}
-      MYSQL_DATABASE: ${DB_NAME:?Set DB_NAME in .env}
-      MYSQL_USER: ${DB_USER:?Set DB_USER in .env}
-      MYSQL_PASSWORD: ${DB_PASSWORD:?Set a unique DB_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: smartpark
+      MYSQL_USER: smartpark_app
+      MYSQL_PASSWORD: root
     volumes:
       - smartpark_mysql_data:/var/lib/mysql
     healthcheck:
@@ -51,6 +51,11 @@ services:
       SMTP_USER: ${SMTP_USER:?Set SMTP_USER in .env}
       SMTP_PASSWORD: ${SMTP_PASSWORD:?Set SMTP_PASSWORD in .env}
       MAIL_FROM: ${MAIL_FROM:?Set MAIL_FROM to a verified sender address}
+      SMS_PROVIDER: ${SMS_PROVIDER:-none}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER:-}
+      GATE_DEVICE_SERVICE_TOKEN: ${GATE_DEVICE_SERVICE_TOKEN:-}
       PAYMENT_PROVIDER: razorpay
       RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:?Set RAZORPAY_KEY_ID in .env}
       RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:?Set RAZORPAY_KEY_SECRET in .env}
@@ -105,6 +110,96 @@ services:
       SMTP_USER: ${SMTP_USER:?Set SMTP_USER in .env}
       SMTP_PASSWORD: ${SMTP_PASSWORD:?Set SMTP_PASSWORD in .env}
       MAIL_FROM: ${MAIL_FROM:?Set MAIL_FROM to a verified sender address}
+      SMS_PROVIDER: ${SMS_PROVIDER:-none}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER:-}
+      GATE_DEVICE_SERVICE_TOKEN: ${GATE_DEVICE_SERVICE_TOKEN:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - database
+      - application
+
+  sms-worker:
+    profiles: ["sms"]
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.api
+    command: ["node", "services/api/src/scripts/sms-worker.js"]
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 128
+    mem_limit: 384m
+    environment:
+      NODE_ENV: production
+      SMARTPARK_PROCESS: sms-worker
+      WEB_ORIGIN: ${WEB_ORIGIN:?Set WEB_ORIGIN to the exact https://APP_DOMAIN origin}
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:?Set DB_NAME in .env}
+      DB_USER: ${DB_USER:?Set DB_USER in .env}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      SMTP_HOST: ${SMTP_HOST:?Set SMTP_HOST in .env}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:?Set SMTP_USER in .env}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?Set SMTP_PASSWORD in .env}
+      MAIL_FROM: ${MAIL_FROM:?Set MAIL_FROM to a verified sender address}
+      SMS_PROVIDER: ${SMS_PROVIDER:-none}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - database
+      - application
+
+  operations-worker:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.api
+    command: ["node", "services/api/src/scripts/operations-monitor.js"]
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 128
+    mem_limit: 384m
+    environment:
+      NODE_ENV: production
+      SMARTPARK_PROCESS: operations-worker
+      WEB_ORIGIN: ${WEB_ORIGIN:?Set WEB_ORIGIN to the exact https://APP_DOMAIN origin}
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:?Set DB_NAME in .env}
+      DB_USER: ${DB_USER:?Set DB_USER in .env}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      SMTP_HOST: ${SMTP_HOST:?Set SMTP_HOST in .env}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:?Set SMTP_USER in .env}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?Set SMTP_PASSWORD in .env}
+      MAIL_FROM: ${MAIL_FROM:?Set MAIL_FROM to a verified sender address}
+      SMS_PROVIDER: ${SMS_PROVIDER:-none}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER:-}
+      OVERSTAY_GRACE_MINUTES: ${OVERSTAY_GRACE_MINUTES:-10}
+      OPERATIONS_MONITOR_POLL_MS: ${OPERATIONS_MONITOR_POLL_MS:-60000}
     depends_on:
       db:
         condition: service_healthy

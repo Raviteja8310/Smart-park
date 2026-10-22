@@ -31,15 +31,12 @@ export async function sendVerificationEmail(email, rawToken) {
   return { delivered: true, developmentLinkLogged: false };
 }
 
-export async function sendPasswordResetEmail(email, rawToken) {
-  const resetUrl = new URL('/', env.WEB_ORIGIN);
-  resetUrl.searchParams.set('reset', rawToken);
-  const link = resetUrl.toString();
-
+export async function sendPasswordResetOtpEmail(email, otp) {
+  const expiryMinutes = 10;
   if (!env.SMTP_HOST) {
     if (env.NODE_ENV === 'development') {
-      console.info(`\n[SmartPark development email]\nTo: ${email}\nReset password: ${link}\n`);
-      return { delivered: false, developmentLinkLogged: true };
+      console.info(`\n[SmartPark development email]\nTo: ${email}\nPassword reset code: ${otp}\nThis code expires in ${expiryMinutes} minutes.\n`);
+      return { delivered: false, developmentCodeLogged: true };
     }
     throw new Error('SMTP email delivery is not configured.');
   }
@@ -53,9 +50,9 @@ export async function sendPasswordResetEmail(email, rawToken) {
   await transport.sendMail({
     from: env.MAIL_FROM,
     to: email,
-    subject: 'Reset your SmartPark password',
-    text: `A password reset was requested for your SmartPark account. Use this link within 30 minutes: ${link} If you did not request this, ignore this message.`,
-    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#20312b"><h2>Reset your SmartPark password</h2><p>Use the link below to choose a new password. It expires in 30 minutes.</p><p><a href="${link}" style="background:#168761;color:#fff;padding:12px 18px;border-radius:6px;text-decoration:none">Reset password</a></p><p>If you did not request this, you can ignore this message.</p></div>`
+    subject: 'Your SmartPark password reset code',
+    text: `Your SmartPark password reset code is ${otp}. It expires in ${expiryMinutes} minutes and can be used only once. If you did not request this code, you can ignore this email.`,
+    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#20312b;max-width:520px"><h2>Reset your SmartPark password</h2><p>Enter this one-time code in SmartPark to choose a new password.</p><div style="font-size:30px;letter-spacing:8px;font-weight:800;padding:16px 20px;border-radius:10px;background:#f0f7f2;color:#176e4d;text-align:center">${otp}</div><p>This code expires in ${expiryMinutes} minutes and can be used only once.</p><p>If you did not request this code, you can safely ignore this email.</p></div>`
   });
-  return { delivered: true, developmentLinkLogged: false };
+  return { delivered: true, developmentCodeLogged: false };
 }

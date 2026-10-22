@@ -11,20 +11,24 @@
     "migrate": "node src/scripts/migrate.js",
     "seed:demo": "node src/scripts/seed-demo.js",
     "worker:email": "node src/scripts/email-worker.js",
-    "worker:email:once": "node src/scripts/email-worker.js --once"
+    "worker:email:once": "node src/scripts/email-worker.js --once",
+    "worker:sms": "node src/scripts/sms-worker.js",
+    "worker:sms:once": "node src/scripts/sms-worker.js --once",
+    "worker:operations": "node src/scripts/operations-monitor.js",
+    "worker:operations:once": "node src/scripts/operations-monitor.js --once"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "helmet": "^8.0.0",
+    "multer": "^2.0.2",
     "mysql2": "^3.12.0",
-    "zod": "^3.24.1",
-    "nodemailer": "^6.10.0",
+    "nodemailer": "^10.2.0",
     "qrcode": "^1.5.4",
-    "multer": "^2.0.2"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^1.14.10"
   }
 }

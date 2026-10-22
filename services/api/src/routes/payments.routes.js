@@ -361,6 +361,7 @@ export async function settleCapturedPayment({ paymentId, provider, providerOrder
     if (reviewReason) {
       if (!['cancelled', 'completed', 'confirmed', 'checked_in'].includes(row.booking_status)) {
         await connection.execute("UPDATE bookings SET status = 'payment_failed', hold_expires_at = NULL WHERE id = ?", [row.booking_id]);
+        await connection.execute("UPDATE promo_redemptions SET status = 'released', expires_at = NULL WHERE booking_id = ? AND status = 'reserved'", [row.booking_id]);
       }
       await connection.execute('UPDATE payments SET needs_reconciliation = TRUE WHERE id = ?', [row.id]);
       await connection.execute(
@@ -376,6 +377,7 @@ export async function settleCapturedPayment({ paymentId, provider, providerOrder
       "UPDATE bookings SET status = 'confirmed', hold_expires_at = NULL, qr_token_hash = ? WHERE id = ?",
       [ticket.tokenHash, row.booking_id]
     );
+    await connection.execute("UPDATE promo_redemptions SET status = 'redeemed', redeemed_at = UTC_TIMESTAMP(), expires_at = NULL WHERE booking_id = ? AND status = 'reserved'", [row.booking_id]);
     // Record host earnings only after a verified payment has also confirmed its booking.
     // This is a ledger entry, not a bank transfer; settlement remains an explicit later step.
     await connection.execute(

@@ -17,6 +17,8 @@ const timeSchema = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/);
 const parkingTypeSchema = z.enum(['driveway', 'garage', 'covered_lot', 'outdoor_lot', 'private_bay', 'commercial', 'other']);
 const vehicleTypeSchema = z.enum(['motorcycle', 'car', 'suv', 'van', 'truck', 'other', 'any']);
 const amenitySchema = z.enum(['coveredParking', 'cctv', 'onsiteStaff', 'accessibleParking', 'lighting', 'overnightAccess', 'evCharging', 'gatedAccess']);
+const surfaceTypeSchema = z.enum(['asphalt', 'concrete', 'pavers', 'gravel', 'dirt', 'other']);
+const dimensionSchema = z.coerce.number().int().min(1).max(3000).nullable().optional();
 
 const createListingSchema = z.object({
   name: z.string().trim().min(2).max(160),
@@ -35,6 +37,10 @@ const createListingSchema = z.object({
   contactPhone: z.string().trim().max(30).nullable().optional(),
   specialInstructions: z.string().trim().max(2000).nullable().optional(),
   parkingType: parkingTypeSchema.default('private_bay'),
+  surfaceType: surfaceTypeSchema.default('other'),
+  spaceLengthCm: dimensionSchema,
+  spaceWidthCm: dimensionSchema,
+  maxVehicleHeightCm: dimensionSchema,
   amenities: z.array(amenitySchema).max(8).default([]),
   numberSpaces: z.coerce.number().int().min(1).max(100).default(1),
   vehicleType: vehicleTypeSchema.default('any'),
@@ -65,6 +71,10 @@ const updateListingSchema = z.object({
   contactPhone: z.string().trim().max(30).nullable().optional(),
   specialInstructions: z.string().trim().max(2000).nullable().optional(),
   parkingType: parkingTypeSchema.optional(),
+  surfaceType: surfaceTypeSchema.optional(),
+  spaceLengthCm: dimensionSchema,
+  spaceWidthCm: dimensionSchema,
+  maxVehicleHeightCm: dimensionSchema,
   amenities: z.array(amenitySchema).max(8).optional(),
   openingTime: timeSchema.optional(),
   closingTime: timeSchema.optional()
@@ -123,6 +133,10 @@ function mapListing(row) {
     description: row.description ?? '',
     listingKind: row.listing_kind,
     parkingType: row.parking_type,
+    surfaceType: row.surface_type ?? 'other',
+    spaceLengthCm: row.space_length_cm == null ? null : Number(row.space_length_cm),
+    spaceWidthCm: row.space_width_cm == null ? null : Number(row.space_width_cm),
+    maxVehicleHeightCm: row.max_vehicle_height_cm == null ? null : Number(row.max_vehicle_height_cm),
     contactPhone: row.contact_phone ?? '',
     specialInstructions: row.special_instructions ?? '',
     amenities: normalizeJson(row.amenities, []),
@@ -138,6 +152,9 @@ function mapListing(row) {
     openingTime: row.opening_time ?? null,
     closingTime: row.closing_time ?? null,
     facilityStatus: row.facility_status,
+    reviewStatus: row.review_status ?? 'not_reviewed',
+    reviewNote: row.review_note ?? null,
+    reviewedAt: row.reviewed_at ?? null,
     totalSpaces: Number(row.total_spaces ?? 0),
     availableNow: Number(row.available_now ?? 0),
     hourlyRate: row.hourly_rate === null || row.hourly_rate === undefined ? null : Number(row.hourly_rate),
@@ -163,10 +180,10 @@ async function getOwnedListing(executor, listingId, user) {
 }
 const listingSummarySql = `
   SELECT l.id, l.owner_user_id, (SELECT u.full_name FROM users u WHERE u.id = l.owner_user_id LIMIT 1) AS owner_name,
-         l.name, l.description, l.listing_kind, l.parking_type, l.contact_phone, l.special_instructions,
+         l.name, l.description, l.listing_kind, l.parking_type, l.surface_type, l.space_length_cm, l.space_width_cm, l.max_vehicle_height_cm, l.contact_phone, l.special_instructions,
          l.amenities, l.address_line, l.city, l.region, l.postal_code, l.country_code,
          l.latitude, l.longitude, l.timezone, l.currency, l.opening_time, l.closing_time,
-         l.facility_status, l.created_at,
+         l.facility_status, l.review_status, l.review_note, l.reviewed_at, l.created_at,
          COUNT(s.id) AS total_spaces,
          COALESCE(SUM(CASE WHEN s.operational_status = 'open' AND s.physical_state = 'empty'
            AND NOT EXISTS (SELECT 1 FROM bookings b WHERE b.slot_id = s.id AND b.start_at <= UTC_TIMESTAMP() AND b.end_at > UTC_TIMESTAMP()
@@ -260,10 +277,10 @@ router.post('/listings', requireAuth, requireRole('host', 'admin'), asyncHandler
     await connection.beginTransaction();
     await connection.execute(
       `INSERT INTO parking_lots
-        (id, owner_user_id, name, description, listing_kind, parking_type, contact_phone, special_instructions, amenities,
+        (id, owner_user_id, name, description, listing_kind, parking_type, surface_type, space_length_cm, space_width_cm, max_vehicle_height_cm, contact_phone, special_instructions, amenities,
          address_line, city, region, postal_code, country_code, latitude, longitude, timezone, currency, opening_time, closing_time, facility_status)
-       VALUES (?, ?, ?, ?, 'shared_space', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')`,
-      [listingId, req.user.id, input.name, input.description ?? null, input.parkingType, input.contactPhone ?? null,
+       VALUES (?, ?, ?, ?, 'shared_space', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')`,
+      [listingId, req.user.id, input.name, input.description ?? null, input.parkingType, input.surfaceType, input.spaceLengthCm ?? null, input.spaceWidthCm ?? null, input.maxVehicleHeightCm ?? null, input.contactPhone ?? null,
         input.specialInstructions ?? null, JSON.stringify(input.amenities), input.addressLine, input.city, input.region ?? null,
         input.postalCode ?? null, input.countryCode, input.latitude ?? null, input.longitude ?? null, input.timezone,
         input.currency, openingTime, closingTime]
@@ -272,7 +289,7 @@ router.post('/listings', requireAuth, requireRole('host', 'admin'), asyncHandler
     for (let index = 1; index <= input.numberSpaces; index += 1) {
       const slotCode = `P${String(index).padStart(2, '0')}`;
       await connection.execute(
-        `INSERT INTO parking_slots (id, parking_lot_id, slot_code, vehicle_type, covered, accessible, operational_status, physical_state)
+        `INSERT INTO parking_slots (id, parking_lot_id, slot_code, vehicle_type, covered, \`accessible\`, operational_status, physical_state)
          VALUES (?, ?, ?, ?, ?, ?, 'open', 'unknown')`,
         [randomUUID(), listingId, slotCode, input.vehicleType, amenityFlags.has('coveredParking') ? 1 : 0, amenityFlags.has('accessibleParking') ? 1 : 0]
       );
@@ -318,12 +335,12 @@ router.get('/listings/:listingId', requireAuth, asyncHandler(async (req, res) =>
   }
   const [photoRows] = await pool.execute('SELECT id, public_url, alt_text, sort_order, created_at FROM parking_listing_photos WHERE parking_lot_id = ? ORDER BY sort_order, created_at', [parsedId.data]);
   const [scheduleRows] = await pool.execute('SELECT id, weekday, is_available, opens_at, closes_at FROM parking_availability_rules WHERE parking_lot_id = ? ORDER BY weekday', [parsedId.data]);
-  const [pricingRows] = await pool.execute('SELECT id, rate_type, amount, currency, service_fee, tax_rate_percent, is_active FROM pricing_rules WHERE parking_lot_id = ? ORDER BY is_active DESC, rate_type', [parsedId.data]);
+  const [pricingRows] = await pool.execute('SELECT id, rate_type, amount, currency, service_fee, tax_rate_percent, valid_from, valid_until, is_active, created_at FROM pricing_rules WHERE parking_lot_id = ? ORDER BY is_active DESC, rate_type, valid_from DESC, created_at DESC', [parsedId.data]);
   return res.json({
     listing: mapListing(listingRow),
     photos: photoRows.map(mapPhoto),
     availability: scheduleRows.map(mapSchedule),
-    pricingRules: pricingRows.map((row) => ({ id: row.id, rateType: row.rate_type, amount: Number(row.amount), currency: row.currency, serviceFee: Number(row.service_fee), taxRatePercent: Number(row.tax_rate_percent), isActive: Boolean(row.is_active) }))
+    pricingRules: pricingRows.map((row) => ({ id: row.id, rateType: row.rate_type, amount: Number(row.amount), currency: row.currency, serviceFee: Number(row.service_fee), taxRatePercent: Number(row.tax_rate_percent), validFrom: row.valid_from ? new Date(row.valid_from).toISOString() : null, validUntil: row.valid_until ? new Date(row.valid_until).toISOString() : null, isActive: Boolean(row.is_active), createdAt: row.created_at ? new Date(row.created_at).toISOString() : null }))
   });
 }));
 
@@ -338,7 +355,9 @@ router.patch('/listings/:listingId', requireAuth, requireRole('host', 'admin'), 
   const mapping = {
     name: 'name', description: 'description', addressLine: 'address_line', city: 'city', region: 'region',
     postalCode: 'postal_code', latitude: 'latitude', longitude: 'longitude', contactPhone: 'contact_phone',
-    specialInstructions: 'special_instructions', parkingType: 'parking_type', openingTime: 'opening_time', closingTime: 'closing_time'
+    specialInstructions: 'special_instructions', parkingType: 'parking_type', surfaceType: 'surface_type',
+    spaceLengthCm: 'space_length_cm', spaceWidthCm: 'space_width_cm', maxVehicleHeightCm: 'max_vehicle_height_cm',
+    openingTime: 'opening_time', closingTime: 'closing_time'
   };
   const assignments = [];
   const values = [];
@@ -399,9 +418,49 @@ router.post('/listings/:listingId/submit-for-approval', requireAuth, requireRole
   if (Number(check.hourly_rules) < 1) return fail(res, 409, 'LISTING_INCOMPLETE', 'Configure an active hourly price before submitting.');
   if (Number(check.schedule_days) !== 7) return fail(res, 409, 'LISTING_INCOMPLETE', 'Save all seven days of weekly availability before submitting.');
   if (Number(check.photos) < 1) return fail(res, 409, 'LISTING_INCOMPLETE', 'Upload at least one genuine photo of the parking space before submitting.');
-  await pool.execute("UPDATE parking_lots SET facility_status = 'pending_approval' WHERE id = ?", [parsedId.data]);
+  await pool.execute("UPDATE parking_lots SET facility_status = 'pending_approval', review_status = 'pending', review_note = NULL, reviewed_by_user_id = NULL, reviewed_at = NULL WHERE id = ?", [parsedId.data]);
   await audit(pool, req.user.id, 'marketplace.listing_submitted', 'parking_lot', parsedId.data, {});
   return res.json({ message: 'Listing submitted for administrator approval.', facilityStatus: 'pending_approval' });
+}));
+
+
+const reviewDecisionSchema = z.object({
+  decision: z.enum(['approve', 'reject']),
+  note: z.string().trim().max(1000).optional().default('')
+}).superRefine((value, ctx) => {
+  if (value.decision === 'reject' && value.note.length < 8) {
+    ctx.addIssue({ code: 'custom', message: 'Provide a clear rejection reason of at least 8 characters.', path: ['note'] });
+  }
+});
+
+router.post('/listings/:listingId/review', requireAuth, requireRole('admin'), asyncHandler(async (req, res) => {
+  const parsedId = uuidSchema.safeParse(req.params.listingId);
+  if (!parsedId.success) return fail(res, 400, 'INVALID_ID', 'The listing identifier is invalid.');
+  const parsed = reviewDecisionSchema.safeParse(req.body);
+  if (!parsed.success) return validationFail(res, parsed);
+  const [rows] = await pool.execute(
+    `SELECT id, facility_status, review_status, listing_kind FROM parking_lots WHERE id = ? LIMIT 1`,
+    [parsedId.data]
+  );
+  const listing = rows[0];
+  if (!listing || listing.listing_kind !== 'shared_space') return fail(res, 404, 'LISTING_NOT_FOUND', 'The shared-space listing was not found.');
+  if (listing.facility_status !== 'pending_approval' || listing.review_status !== 'pending') {
+    return fail(res, 409, 'NOT_AWAITING_REVIEW', 'Only listings currently awaiting review can be approved or rejected.');
+  }
+  const approved = parsed.data.decision === 'approve';
+  const note = approved ? (parsed.data.note || null) : parsed.data.note;
+  const [result] = await pool.execute(
+    `UPDATE parking_lots SET facility_status = ?, review_status = ?, review_note = ?, reviewed_by_user_id = ?, reviewed_at = UTC_TIMESTAMP() WHERE id = ? AND review_status = 'pending' AND facility_status = 'pending_approval'`,
+    [approved ? 'active' : 'paused', approved ? 'approved' : 'rejected', note, req.user.id, parsedId.data]
+  );
+  if (result.affectedRows !== 1) return fail(res, 409, 'REVIEW_ALREADY_RESOLVED', 'Another administrator has already resolved this listing review. Refresh the listing.');
+  await audit(pool, req.user.id, approved ? 'marketplace.listing_approved' : 'marketplace.listing_rejected', 'parking_lot', parsedId.data, { note });
+  return res.json({
+    message: approved ? 'Listing approved and published.' : 'Listing rejected. The owner can review the reason, update the listing and resubmit it.',
+    facilityStatus: approved ? 'active' : 'paused',
+    reviewStatus: approved ? 'approved' : 'rejected',
+    reviewNote: note
+  });
 }));
 
 router.post('/listings/:listingId/photos', requireAuth, requireRole('host', 'admin'), uploadPhotos, asyncHandler(async (req, res) => {

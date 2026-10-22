@@ -9,7 +9,7 @@
 - [ ] No `.env`, database dump, credentials, camera URL credentials, uploaded photos or model weights are tracked in Git.
 
 ## Database and deployment
-- [ ] Fresh database migration path tested from 001 through 011.
+- [ ] Fresh database migration path tested from 001 through 012.
 - [ ] Existing-database baseline path tested only on a verified backup/schema.
 - [ ] MySQL has no public host port.
 - [ ] Web/API containers run non-root where supported and have health checks.
@@ -63,3 +63,14 @@ A passing smoke test is not equivalent to production certification. Payment prov
 - [ ] Run dependency vulnerability audit using the committed package-lock and scan deployable images.
 - [ ] Review configured memory/PID limits under representative workload; check logs do not expose secrets or sensitive payloads.
 - [ ] Complete the environment-specific items in `docs/phase14-production-security.md`.
+
+
+## Phase 15 — Final launch gate
+- [ ] `npm run release:audit` reports no failures; all warnings have an owner and disposition.
+- [ ] Root `package-lock.json` was generated with a network-enabled npm install and a clean `npm ci` succeeds. The current Phase 15 archive does not include a lockfile because registry access timed out during packaging.
+- [ ] `npm run verify:release` passes with a migrated disposable MySQL database and API running.
+- [ ] Fresh-install and upgrade migration paths are tested against MySQL 8.4, including an approved backup and baseline when applicable.
+- [ ] Production Compose images build and start on the target host; health checks and TLS issuance/renewal are verified.
+- [ ] Payment, SMTP, refund, host payout, camera, and gate integrations pass environment-specific staging checks.
+- [ ] Backup restore, rollback, alerts, and operational ownership are documented and exercised.
+- [ ] Public launch is a GO only after every mandatory item above and every previous mandatory checklist item is recorded as PASS.

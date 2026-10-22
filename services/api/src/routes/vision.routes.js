@@ -5,6 +5,7 @@ import { pool } from '../config/database.js';
 import { env } from '../config/env.js';
 import { requireAuth, requireRole } from '../middleware/authenticate.js';
 import { normalizePolygon, safeJsonArray } from '../vision/region-utils.js';
+import { normalizePlate, plateMatchStatus } from '../vision/plate-utils.js';
 
 const router = Router();
 const asyncHandler = (handler) => (req, res, next) => Promise.resolve(handler(req, res, next)).catch(next);
@@ -38,6 +39,8 @@ const eventSchema = z.object({
   })).max(100)
 });
 const healthSchema = z.object({ status: z.enum(['offline', 'configured']), message: z.string().trim().max(500).optional().nullable() });
+const plateEventSchema = z.object({ cameraId: uuidSchema, plateText: z.string().trim().min(2).max(40), confidence: z.number().min(0).max(1), direction: z.enum(['entry', 'exit', 'unknown']).default('unknown'), observedAt: z.string().datetime({ offset: true }), providerEventId: z.string().trim().min(1).max(120).optional() });
+const plateReviewSchema = z.object({ reviewStatus: z.enum(['confirmed', 'false_positive']), note: z.string().trim().max(500).optional().nullable() });
 
 function fail(res, status, code, message) {
   return res.status(status).json({ error: { code, message } });
@@ -192,6 +195,37 @@ router.get('/cameras', requireAuth, requireRole('host', 'operator', 'attendant',
   const cameras = [];
   for (const row of rows) cameras.push(mapCamera(row, await readRegions(pool, row.id)));
   return res.json({ cameras });
+}));
+
+router.get('/plate-events', requireAuth, requireRole('host', 'operator', 'admin'), asyncHandler(async (req, res) => {
+  const lotId = req.query.parkingLotId;
+  if (!lotId || !validId(lotId)) return fail(res, 400, 'INVALID_PARKING_LOT', 'Select a valid parking facility to view plate events.');
+  const [lots] = await pool.execute('SELECT id, owner_user_id FROM parking_lots WHERE id = ? LIMIT 1', [lotId]);
+  if (!lots.length) return fail(res, 404, 'LOT_NOT_FOUND', 'The parking facility was not found.');
+  if (!(await canViewLot(pool, lots[0], req.user))) return fail(res, 403, 'FORBIDDEN', 'You do not have access to this facility.');
+  const [rows] = await pool.execute(`
+    SELECT e.id, e.normalized_plate, e.confidence, e.direction, e.observed_at, e.match_status,
+           e.review_status, e.review_note, e.reviewed_at, c.name AS camera_name,
+           v.registration_number AS matched_registration, b.booking_code
+      FROM anpr_events e JOIN cameras c ON c.id = e.camera_id
+      LEFT JOIN vehicles v ON v.id = e.matched_vehicle_id
+      LEFT JOIN bookings b ON b.id = e.matched_booking_id
+     WHERE e.parking_lot_id = ? ORDER BY e.observed_at DESC LIMIT 100
+  `, [lotId]);
+  return res.json({ events: rows.map((row) => ({ id: row.id, plate: row.normalized_plate, confidence: Number(row.confidence), direction: row.direction, observedAt: row.observed_at, matchStatus: row.match_status, reviewStatus: row.review_status, reviewNote: row.review_note, reviewedAt: row.reviewed_at, cameraName: row.camera_name, matchedRegistration: row.matched_registration, bookingCode: row.booking_code })) });
+}));
+
+router.patch('/plate-events/:eventId/review', requireAuth, requireRole('host', 'operator', 'admin'), asyncHandler(async (req, res) => {
+  if (!validId(req.params.eventId)) return fail(res, 400, 'INVALID_ID', 'The plate event identifier is invalid.');
+  const parsed = plateReviewSchema.safeParse(req.body);
+  if (!parsed.success) return fail(res, 400, 'VALIDATION_ERROR', parsed.error.issues[0]?.message ?? 'Invalid review details.');
+  const [rows] = await pool.execute('SELECT e.id, e.camera_id, c.parking_lot_id, l.owner_user_id FROM anpr_events e JOIN cameras c ON c.id = e.camera_id JOIN parking_lots l ON l.id = c.parking_lot_id WHERE e.id = ? LIMIT 1', [req.params.eventId]);
+  if (!rows.length) return fail(res, 404, 'PLATE_EVENT_NOT_FOUND', 'The plate event was not found.');
+  if (!(await canManageLot(pool, { id: rows[0].parking_lot_id, owner_user_id: rows[0].owner_user_id }, req.user))) return fail(res, 403, 'FORBIDDEN', 'Only the facility owner, assigned operator, or administrator can review plate events.');
+  await pool.execute('UPDATE anpr_events SET review_status = ?, review_note = ?, reviewed_by_user_id = ?, reviewed_at = UTC_TIMESTAMP(3) WHERE id = ?', [parsed.data.reviewStatus, parsed.data.note ?? null, req.user.id, req.params.eventId]);
+  await pool.execute(`UPDATE operational_alerts SET status='resolved',condition_active=FALSE,resolved_at=COALESCE(resolved_at,UTC_TIMESTAMP(3)),resolved_by_user_id=?,last_seen_at=UTC_TIMESTAMP(3) WHERE fingerprint=? AND alert_type='plate_manual_review' AND status<>'resolved'`, [req.user.id, `anpr-review:${req.params.eventId}`]);
+  await audit(pool, req.user.id, 'vision.plate_event_reviewed', req.params.eventId, { reviewStatus: parsed.data.reviewStatus });
+  return res.json({ message: 'Plate event review saved.', reviewStatus: parsed.data.reviewStatus });
 }));
 
 router.post('/cameras', requireAuth, requireRole('host', 'operator', 'admin'), asyncHandler(async (req, res) => {
@@ -374,6 +408,35 @@ router.post('/service/events', requireVisionService, asyncHandler(async (req, re
     connection.release();
   }
   return res.json({ received: parsed.data.events.length, applied, status: 'online' });
+}));
+
+// ANPR provider callback. It records a candidate match for human review; it never opens a gate or changes booking state.
+router.post('/service/plate-events', requireVisionService, asyncHandler(async (req, res) => {
+  const parsed = plateEventSchema.safeParse(req.body);
+  if (!parsed.success) return fail(res, 400, 'VALIDATION_ERROR', parsed.error.issues[0]?.message ?? 'The plate event payload is invalid.');
+  const observed = new Date(parsed.data.observedAt);
+  if (observed.getTime() > Date.now() + 30000 || observed.getTime() < Date.now() - 5 * 60 * 1000) return fail(res, 400, 'STALE_PLATE_EVENT', 'Plate event timestamp must be recent and cannot be in the future.');
+  const plate = normalizePlate(parsed.data.plateText);
+  if (plate.length < 2 || plate.length > 24) return fail(res, 400, 'INVALID_PLATE', 'The normalized vehicle plate must contain 2–24 letters or digits.');
+  const [cameras] = await pool.execute('SELECT c.id, c.parking_lot_id, c.status FROM cameras c WHERE c.id = ? LIMIT 1', [parsed.data.cameraId]);
+  if (!cameras.length || cameras[0].status === 'disabled') return fail(res, 404, 'CAMERA_UNAVAILABLE', 'The camera is missing or disabled.');
+  const camera = cameras[0];
+  const [vehicles] = await pool.execute("SELECT id, registration_number FROM vehicles WHERE UPPER(REPLACE(REPLACE(registration_number, ' ', ''), '-', '')) = ? LIMIT 1", [plate]);
+  const vehicle = vehicles[0] ?? null;
+  let booking = null;
+  if (vehicle) {
+    const [bookings] = await pool.execute(`SELECT id, booking_code FROM bookings WHERE vehicle_id = ? AND parking_lot_id = ? AND status IN ('confirmed','checked_in') AND start_at <= DATE_ADD(?, INTERVAL 30 MINUTE) AND end_at >= DATE_SUB(?, INTERVAL 30 MINUTE) ORDER BY start_at DESC LIMIT 1`, [vehicle.id, camera.parking_lot_id, observed, observed]);
+    booking = bookings[0] ?? null;
+  }
+  const matchStatus = plateMatchStatus({ confidence: parsed.data.confidence, vehicleMatched: Boolean(vehicle), bookingMatched: Boolean(booking) });
+  const id = randomUUID();
+  try {
+    await pool.execute(`INSERT INTO anpr_events (id, camera_id, parking_lot_id, provider_event_id, normalized_plate, confidence, direction, observed_at, matched_vehicle_id, matched_booking_id, match_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [id, camera.id, camera.parking_lot_id, parsed.data.providerEventId ?? null, plate, parsed.data.confidence, parsed.data.direction, observed, vehicle?.id ?? null, booking?.id ?? null, matchStatus]);
+  } catch (error) {
+    if (error?.code === 'ER_DUP_ENTRY' && parsed.data.providerEventId) return res.status(200).json({ duplicate: true, message: 'This provider event was already received.' });
+    throw error;
+  }
+  return res.status(201).json({ eventId: id, matchStatus, vehicleMatched: Boolean(vehicle), bookingMatched: Boolean(booking), requiresHumanReview: matchStatus === 'review_required' || matchStatus === 'unmatched' });
 }));
 
 router.post('/service/cameras/:cameraId/health', requireVisionService, asyncHandler(async (req, res) => {

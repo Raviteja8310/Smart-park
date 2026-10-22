@@ -9,6 +9,7 @@ import { pool } from '../config/database.js';
 import { requireAuth } from '../middleware/authenticate.js';
 import { calculateBestQuote, isWithinOperatingHours, isWithinWeeklyAvailability, mapBookingRow, toMysqlUtc, validateBookingInterval } from '../bookings/pricing.js';
 import { createNotification } from '../services/notifications.js';
+import { validatePromo } from './promotions.routes.js';
 
 const router = Router();
 const asyncHandler = (handler) => (req, res, next) => Promise.resolve(handler(req, res, next)).catch(next);
@@ -17,7 +18,8 @@ const bookingInputSchema = z.object({
   slotId: idSchema,
   startAt: z.string().datetime({ offset: true }),
   endAt: z.string().datetime({ offset: true }),
-  vehicleId: idSchema.nullable().optional()
+  vehicleId: idSchema.nullable().optional(),
+  promoCode: z.string().trim().max(32).optional().nullable()
 });
 const listQuerySchema = z.object({
   status: z.enum(['held', 'pending_payment', 'confirmed', 'checked_in', 'completed', 'cancelled', 'expired', 'payment_failed']).optional(),
@@ -141,6 +143,20 @@ async function makeQuote(executor, userId, input, options = {}) {
   if (!quote) {
     throw new BookingError(422, 'PRICING_NOT_CONFIGURED', 'This facility has no active pricing rule that covers the entire requested booking interval.');
   }
+  let appliedPromo = null;
+  const promoCode = String(input.promoCode ?? '').trim().toUpperCase();
+  if (promoCode) {
+    const [promoRows] = await executor.execute('SELECT * FROM promo_codes WHERE code = ? LIMIT 1 FOR UPDATE', [promoCode]);
+    if (!promoRows.length) throw new BookingError(422, 'PROMO_NOT_FOUND', 'This promotion code is not available.');
+    const validation = await validatePromo(executor, promoRows[0], userId, quote.baseAmount, quote.currency);
+    if (!validation.ok) throw new BookingError(422, validation.code, validation.message);
+    const discountAmount = validation.discountAmount;
+    quote.discountAmount = discountAmount;
+    quote.taxAmount = Math.round((Math.max(0, quote.baseAmount - discountAmount) + quote.serviceFee) * quote.taxRatePercent / 100 * 100) / 100;
+    quote.totalAmount = Math.max(0, Math.round((quote.baseAmount - discountAmount + quote.serviceFee + quote.taxAmount) * 100) / 100);
+    appliedPromo = { id: promoRows[0].id, code: promoRows[0].code, description: promoRows[0].description, discountAmount };
+    quote.promotion = appliedPromo;
+  }
   return {
     slot: {
       id: slot.slot_id,
@@ -227,6 +243,9 @@ router.post('/', requireAuth, asyncHandler(async (req, res, next) => {
         toMysqlUtc(interval.start), toMysqlUtc(interval.end), quote.currency, quote.baseAmount,
         quote.serviceFee, quote.taxAmount, quote.discountAmount, quote.totalAmount, JSON.stringify(quote)]
     );
+    if (quote.promotion?.id) {
+      await connection.execute(`INSERT INTO promo_redemptions (id, promo_code_id, user_id, booking_id, discount_amount, status, expires_at) VALUES (?, ?, ?, ?, ?, 'reserved', DATE_ADD(UTC_TIMESTAMP(), INTERVAL ${holdMinutes} MINUTE))`, [randomUUID(), quote.promotion.id, req.user.id, bookingId, quote.discountAmount]);
+    }
     await connection.execute(
       'INSERT INTO audit_logs (actor_user_id, action, entity_type, entity_id, metadata) VALUES (?, ?, ?, ?, ?)',
       [req.user.id, 'booking.hold_created', 'booking', bookingId, JSON.stringify({ slotId: input.slotId, bookingCode: code, holdMinutes })]

@@ -40,7 +40,7 @@ async function seed() {
       if (existing.length) continue;
       await connection.execute(`
         INSERT INTO parking_slots
-          (id, parking_lot_id, zone_id, slot_code, vehicle_type, covered, accessible, operational_status, physical_state, physical_state_updated_at)
+          (id, parking_lot_id, zone_id, slot_code, vehicle_type, covered, \`accessible\`, operational_status, physical_state, physical_state_updated_at)
         VALUES (?, ?, ?, ?, 'car', ?, ?, 'open', ?, UTC_TIMESTAMP(3))
       `, [randomUUID(), lotId, slot.zoneId, slot.code, slot.code.endsWith('01'), slot.code.endsWith('02'), slot.state]);
     }

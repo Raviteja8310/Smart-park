@@ -60,7 +60,16 @@ const pricingRuleSchema = z.object({
   rateType: z.enum(['hourly', 'daily', 'weekly', 'monthly']),
   amount: z.coerce.number().finite().min(0).max(10000000),
   serviceFee: z.coerce.number().finite().min(0).max(1000000).default(0),
-  taxRatePercent: z.coerce.number().finite().min(0).max(100).default(0)
+  taxRatePercent: z.coerce.number().finite().min(0).max(100).default(0),
+  validFrom: z.string().datetime({ offset: true }).nullable().optional(),
+  validUntil: z.string().datetime({ offset: true }).nullable().optional()
+}).superRefine((value, ctx) => {
+  const now = Date.now();
+  const start = value.validFrom ? Date.parse(value.validFrom) : null;
+  const end = value.validUntil ? Date.parse(value.validUntil) : null;
+  if (start !== null && start < now) ctx.addIssue({ code: 'custom', message: 'A scheduled price cannot start in the past.', path: ['validFrom'] });
+  if (start !== null && end !== null && end <= start) ctx.addIssue({ code: 'custom', message: 'The price end date must be later than its start date.', path: ['validUntil'] });
+  if (start === null && end !== null) ctx.addIssue({ code: 'custom', message: 'Set an effective start date when an end date is provided.', path: ['validFrom'] });
 });
 const listQuerySchema = z.object({
   q: z.string().trim().max(100).optional(),
@@ -349,21 +358,44 @@ router.post('/lots/:lotId/pricing', requireAuth, asyncHandler(async (req, res) =
   const ruleId = randomUUID();
   try {
     await connection.beginTransaction();
-    // For a given scope and rate type, replace the active current rule while retaining history.
-    await connection.execute(
-      `UPDATE pricing_rules SET is_active = FALSE
-        WHERE parking_lot_id = ? AND rate_type = ? AND slot_id <=> ? AND is_active = TRUE`,
-      [lotId, input.rateType, input.slotId ?? null]
-    );
+    const nowMs = Date.now();
+    const validFromMs = input.validFrom ? Date.parse(input.validFrom) : null;
+    const validUntilMs = input.validUntil ? Date.parse(input.validUntil) : null;
+    // Keep future rules alongside the current rule. Booking quotes choose the latest
+    // effective valid_from, so a scheduled price can take effect without removing
+    // today's price and an expiring promotion can fall back to the previous rate.
+    if (validFromMs === null || validFromMs <= nowMs) {
+      await connection.execute(
+        `UPDATE pricing_rules SET is_active = FALSE
+          WHERE parking_lot_id = ? AND rate_type = ? AND slot_id <=> ? AND is_active = TRUE
+            AND (valid_from IS NULL OR valid_from <= UTC_TIMESTAMP())
+            AND (valid_until IS NULL OR valid_until > UTC_TIMESTAMP())`,
+        [lotId, input.rateType, input.slotId ?? null]
+      );
+    }
+    if (validFromMs !== null) {
+      const [sameStartRows] = await connection.execute(
+        `SELECT id FROM pricing_rules WHERE parking_lot_id = ? AND rate_type = ? AND slot_id <=> ?
+          AND is_active = TRUE AND valid_from = ? LIMIT 1 FOR UPDATE`,
+        [lotId, input.rateType, input.slotId ?? null, new Date(validFromMs).toISOString().slice(0, 19).replace('T', ' ')]
+      );
+      if (sameStartRows.length) {
+        await connection.rollback();
+        return fail(res, 409, 'PRICING_START_CONFLICT', 'An active price already starts at this exact time. Edit the existing schedule or choose a different start time.');
+      }
+    }
     await connection.execute(
       `INSERT INTO pricing_rules
-        (id, parking_lot_id, slot_id, rate_type, amount, currency, service_fee, tax_rate_percent, is_active)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE)`,
-      [ruleId, lotId, input.slotId ?? null, input.rateType, input.amount, (await getLot(connection, lotId)).currency ?? 'INR', input.serviceFee, input.taxRatePercent]
+        (id, parking_lot_id, slot_id, rate_type, amount, currency, service_fee, tax_rate_percent, valid_from, valid_until, is_active)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE)`,
+      [ruleId, lotId, input.slotId ?? null, input.rateType, input.amount, (await getLot(connection, lotId)).currency ?? 'INR', input.serviceFee, input.taxRatePercent,
+        input.validFrom ? new Date(validFromMs).toISOString().slice(0, 19).replace('T', ' ') : null,
+        input.validUntil ? new Date(validUntilMs).toISOString().slice(0, 19).replace('T', ' ') : null]
     );
     await audit(connection, req.user.id, 'pricing_rule.created', 'pricing_rule', ruleId, {
       parkingLotId: lotId, slotId: input.slotId ?? null, rateType: input.rateType,
-      amount: input.amount, serviceFee: input.serviceFee, taxRatePercent: input.taxRatePercent
+      amount: input.amount, serviceFee: input.serviceFee, taxRatePercent: input.taxRatePercent,
+      validFrom: input.validFrom ?? null, validUntil: input.validUntil ?? null
     });
     await connection.commit();
   } catch (error) {
@@ -535,7 +567,7 @@ router.post('/lots/:lotId/slots/bulk', requireAuth, asyncHandler(async (req, res
       const id = randomUUID();
       await connection.execute(`
         INSERT INTO parking_slots
-          (id, parking_lot_id, zone_id, slot_code, vehicle_type, covered, accessible, operational_status, physical_state)
+          (id, parking_lot_id, zone_id, slot_code, vehicle_type, covered, \`accessible\`, operational_status, physical_state)
         VALUES (?, ?, ?, ?, ?, ?, ?, 'open', 'unknown')
       `, [id, lotId, input.zoneId ?? null, code, input.vehicleType, input.covered, input.accessible]);
       insertedIds.push(id);
@@ -569,7 +601,7 @@ router.patch('/slots/:slotId', requireAuth, asyncHandler(async (req, res) => {
   if (parsed.data.operationalStatus !== undefined && !(await canManageInventory(pool, lot, req.user))) {
     return fail(res, 403, 'FORBIDDEN', 'Only the owner, assigned operator or administrator can change operational status.');
   }
-  const mapping = { operationalStatus: 'operational_status', physicalState: 'physical_state', vehicleType: 'vehicle_type', covered: 'covered', accessible: 'accessible', notes: 'notes' };
+  const mapping = { operationalStatus: 'operational_status', physicalState: 'physical_state', vehicleType: 'vehicle_type', covered: 'covered', accessible: '`accessible`', notes: 'notes' };
   const fields = Object.entries(parsed.data).filter(([, value]) => value !== undefined);
   const values = fields.map(([field, value]) => value);
   const assignments = fields.map(([field]) => `${mapping[field]} = ?`);

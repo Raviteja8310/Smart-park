@@ -41,7 +41,100 @@ const BASELINE_REQUIREMENTS = [
     { table: 'parking_reviews', column: 'updated_at' }
   ], enumValues: [
     { table: 'parking_reviews', column: 'status', values: ['published', 'hidden'] }
-  ] }
+  ] },
+  { version: 12, columns: [
+    { table: 'parking_lots', column: 'surface_type' },
+    { table: 'parking_lots', column: 'space_length_cm' },
+    { table: 'parking_lots', column: 'space_width_cm' },
+    { table: 'parking_lots', column: 'max_vehicle_height_cm' }
+  ], enumValues: [
+    { table: 'parking_lots', column: 'surface_type', values: ['asphalt', 'concrete', 'pavers', 'gravel', 'dirt', 'other'] }
+  ] },
+  { version: 13, columns: [
+    { table: 'parking_lots', column: 'review_status' },
+    { table: 'parking_lots', column: 'review_note' },
+    { table: 'parking_lots', column: 'reviewed_by_user_id' },
+    { table: 'parking_lots', column: 'reviewed_at' }
+  ], enumValues: [
+    { table: 'parking_lots', column: 'review_status', values: ['not_reviewed', 'pending', 'approved', 'rejected'] }
+  ] },
+  { version: 14, tables: ['owner_verification_requests'], columns: [
+    { table: 'owner_verification_requests', column: 'user_id' },
+    { table: 'owner_verification_requests', column: 'legal_name' },
+    { table: 'owner_verification_requests', column: 'property_relationship' },
+    { table: 'owner_verification_requests', column: 'document_type' },
+    { table: 'owner_verification_requests', column: 'status' },
+    { table: 'owner_verification_requests', column: 'reviewed_by_user_id' }
+  ], enumValues: [
+    { table: 'owner_verification_requests', column: 'status', values: ['pending', 'approved', 'rejected'] }
+  ] },
+  { version: 15, tables: ['promo_codes', 'promo_redemptions'], columns: [
+    { table: 'promo_codes', column: 'code' },
+    { table: 'promo_codes', column: 'discount_type' },
+    { table: 'promo_codes', column: 'discount_value' },
+    { table: 'promo_codes', column: 'is_active' },
+    { table: 'promo_redemptions', column: 'booking_id' },
+    { table: 'promo_redemptions', column: 'discount_amount' },
+    { table: 'promo_redemptions', column: 'status' }
+  ], enumValues: [
+    { table: 'promo_codes', column: 'discount_type', values: ['percent', 'fixed'] },
+    { table: 'promo_redemptions', column: 'status', values: ['reserved', 'redeemed', 'released'] }
+  ] },
+  { version: 16, tables: ['referral_codes', 'referrals', 'referral_rewards'], columns: [
+    { table: 'referral_codes', column: 'code' },
+    { table: 'referrals', column: 'referrer_user_id' },
+    { table: 'referrals', column: 'referred_user_id' },
+    { table: 'referrals', column: 'qualifying_booking_id' },
+    { table: 'referral_rewards', column: 'beneficiary_user_id' },
+    { table: 'referral_rewards', column: 'reward_amount' },
+    { table: 'referral_rewards', column: 'status' }
+  ], enumValues: [
+    { table: 'referrals', column: 'status', values: ['pending', 'qualified', 'rejected'] },
+    { table: 'referral_rewards', column: 'status', values: ['available', 'reversed'] }
+  ] },
+  { version: 17, tables: ['parking_subscriptions'], columns: [
+    { table: 'parking_subscriptions', column: 'user_id' },
+    { table: 'parking_subscriptions', column: 'parking_lot_id' },
+    { table: 'parking_subscriptions', column: 'owner_user_id' },
+    { table: 'parking_subscriptions', column: 'start_date' },
+    { table: 'parking_subscriptions', column: 'end_date' },
+    { table: 'parking_subscriptions', column: 'monthly_amount' },
+    { table: 'parking_subscriptions', column: 'payment_status' },
+    { table: 'parking_subscriptions', column: 'status' }
+  ], enumValues: [
+    { table: 'parking_subscriptions', column: 'status', values: ['pending', 'approved', 'rejected', 'cancelled', 'expired'] },
+    { table: 'parking_subscriptions', column: 'payment_status', values: ['unpaid', 'paid', 'failed', 'refunded'] }
+  ] },
+  { version: 18, tables: ['corporate_accounts', 'corporate_members', 'corporate_fleet_vehicles', 'ev_chargers', 'ev_charging_sessions'], columns: [
+    { table: 'corporate_accounts', column: 'created_by_user_id' },
+    { table: 'corporate_members', column: 'member_role' },
+    { table: 'corporate_fleet_vehicles', column: 'registration_number' },
+    { table: 'ev_chargers', column: 'connector_type' },
+    { table: 'ev_chargers', column: 'price_per_kwh' },
+    { table: 'ev_charging_sessions', column: 'price_per_kwh_snapshot' },
+    { table: 'ev_charging_sessions', column: 'status' }
+  ], enumValues: [
+    { table: 'corporate_accounts', column: 'status', values: ['active', 'suspended'] },
+    { table: 'corporate_members', column: 'member_role', values: ['manager', 'employee', 'driver'] },
+    { table: 'ev_chargers', column: 'availability_status', values: ['available', 'occupied', 'maintenance', 'offline'] },
+    { table: 'ev_charging_sessions', column: 'status', values: ['active', 'completed', 'cancelled'] }
+  ] },
+  { version: 19, tables: ['anpr_events'], columns: [
+    { table: 'anpr_events', column: 'camera_id' },
+    { table: 'anpr_events', column: 'normalized_plate' },
+    { table: 'anpr_events', column: 'confidence' },
+    { table: 'anpr_events', column: 'match_status' },
+    { table: 'anpr_events', column: 'review_status' }
+  ], enumValues: [
+    { table: 'anpr_events', column: 'direction', values: ['entry', 'exit', 'unknown'] },
+    { table: 'anpr_events', column: 'review_status', values: ['pending', 'confirmed', 'false_positive'] }
+  ] },
+  { version: 20, columns: [{ table: 'password_reset_tokens', column: 'attempt_count' }] },
+  { version: 21, tables: ['overstay_incidents', 'gate_devices', 'gate_device_commands', 'support_tickets', 'support_ticket_messages', 'user_notification_preferences'], columns: [
+    { table: 'notifications', column: 'delivery_attempt_count' },
+    { table: 'notifications', column: 'next_attempt_at' },
+    { table: 'notifications', column: 'delivery_locked_until' }
+  ], enumValues: [{ table: 'notifications', column: 'delivery_status', values: ['sending'] }] }
 ];
 
 function migrationVersion(name) {
@@ -107,7 +200,7 @@ async function assertBaselineSchema(connection, targetVersion) {
 
 async function baseline(connection, migrations, targetText) {
   const targetVersion = Number(targetText);
-  if (!Number.isInteger(targetVersion) || targetVersion < 1) throw new Error('Usage: npm run migrate -- --baseline 011 --confirm-existing-schema');
+  if (!Number.isInteger(targetVersion) || targetVersion < 1) throw new Error('Usage: npm run migrate -- --baseline 014 --confirm-existing-schema');
   const upto = migrations.filter((migration) => migration.version <= targetVersion);
   if (!upto.length || upto.at(-1).version !== targetVersion) throw new Error(`Migration version ${targetText} was not found.`);
   if (!process.argv.includes('--confirm-existing-schema')) {

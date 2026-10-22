@@ -5,6 +5,7 @@ import { pool } from '../config/database.js';
 import { requireAuth, requireRole } from '../middleware/authenticate.js';
 import { normalizeRevenueRows, normalizeStatusFilter, resolveDateRange } from '../operations/reporting.js';
 import { createNotification } from '../services/notifications.js';
+import { buildBookingDemandForecast } from '../operations/forecasting.js';
 
 const router = Router();
 const asyncHandler = (handler) => (req, res, next) => Promise.resolve(handler(req, res, next)).catch(next);
@@ -155,6 +156,29 @@ async function refreshSystemAlerts(user) {
   }
   await resolveInactiveAlerts('camera', cameraIds, scopedLotIds);
 
+  // Flag unmatched/uncertain number-plate observations for staff review. The
+  // alert deliberately masks most of the plate; the authorized ANPR workspace
+  // remains the place for a staff member to inspect the full candidate.
+  const [plateRows] = await pool.execute(
+    `SELECT e.id,e.normalized_plate,e.confidence,e.match_status,e.observed_at,
+            e.parking_lot_id,c.name AS camera_name,l.name AS lot_name
+       FROM anpr_events e JOIN cameras c ON c.id=e.camera_id JOIN parking_lots l ON l.id=e.parking_lot_id
+      WHERE e.review_status='pending' AND e.match_status IN ('unmatched','review_required')
+        ${activeLotFilter}
+      ORDER BY e.observed_at DESC LIMIT 500`, scopeParams
+  );
+  for (const event of plateRows) {
+    const plate = String(event.normalized_plate ?? '');
+    const mask = plate.length > 3 ? `${'*'.repeat(Math.min(8, plate.length - 3))}${plate.slice(-3)}` : 'plate candidate';
+    await upsertOperationalAlert({
+      fingerprint: `anpr-review:${event.id}`, parkingLotId: event.parking_lot_id,
+      sourceType: 'system', sourceId: event.id, alertType: 'plate_manual_review',
+      severity: Number(event.confidence) < 0.65 ? 'critical' : 'warning',
+      title: 'Vehicle plate needs manual review',
+      message: `${mask} was observed by ${event.camera_name} at ${event.lot_name}. Match status: ${event.match_status.replaceAll('_', ' ')}; confidence ${Math.round(Number(event.confidence) * 100)}%. Verify the event before making an access decision.`
+    });
+  }
+
   const [paymentRows] = await pool.execute(
     `SELECT p.id, p.booking_id, p.provider_payment_id, b.booking_code, b.parking_lot_id, l.name AS lot_name
        FROM payments p JOIN bookings b ON b.id=p.booking_id JOIN parking_lots l ON l.id=b.parking_lot_id
@@ -294,6 +318,40 @@ router.get('/reports/occupancy', requireAuth, requireRole(...managementRoles), a
     };
   });
   return res.json({ lots, generatedAt: new Date().toISOString() });
+}));
+
+router.get('/reports/forecast', requireAuth, requireRole(...managementRoles), asyncHandler(async (req, res) => {
+  const requestedHours = Math.max(1, Math.min(168, Number.parseInt(req.query.hours ?? '24', 10) || 24));
+  const scope = lotScope(req.user, 'l');
+  const [capacityRows] = await pool.execute(
+    `SELECT l.id,l.name,l.city,COUNT(s.id) AS total_spaces FROM parking_lots l
+       LEFT JOIN parking_slots s ON s.parking_lot_id=l.id
+      WHERE l.facility_status='active'${scope.sql} GROUP BY l.id,l.name,l.city ORDER BY l.name`, scope.params);
+  const totalCapacity = capacityRows.reduce((sum, row) => sum + Number(row.total_spaces || 0), 0);
+  const [historyRows] = await pool.execute(
+    `SELECT b.parking_lot_id,DAYOFWEEK(b.start_at) AS weekday,HOUR(b.start_at) AS hour,
+            COUNT(*) AS booking_count,COUNT(DISTINCT DATE(b.start_at)) AS sampled_days
+       FROM bookings b JOIN parking_lots l ON l.id=b.parking_lot_id
+      WHERE b.start_at>=DATE_SUB(UTC_TIMESTAMP(),INTERVAL 56 DAY) AND b.start_at<UTC_TIMESTAMP()
+        AND b.status IN ('confirmed','checked_in','completed')${scope.sql}
+      GROUP BY b.parking_lot_id,DAYOFWEEK(b.start_at),HOUR(b.start_at)`, scope.params);
+  const combinedPatterns = new Map();
+  const byLotPatterns = new Map();
+  for (const row of historyRows) {
+    const key = `${Number(row.weekday)}:${Number(row.hour)}`;
+    const old = combinedPatterns.get(key) ?? { booking_count:0,sampled_days:0 };
+    combinedPatterns.set(key,{ booking_count:old.booking_count+Number(row.booking_count||0),sampled_days:Math.max(old.sampled_days,Number(row.sampled_days||0)) });
+    const lot = byLotPatterns.get(row.parking_lot_id) ?? [];
+    lot.push(row); byLotPatterns.set(row.parking_lot_id,lot);
+  }
+  const patterns = [...combinedPatterns].map(([key,value]) => { const [weekday,hour]=key.split(':').map(Number); return { weekday,hour,...value }; });
+  const forecast = buildBookingDemandForecast({ historicalRows:patterns,capacity:totalCapacity,hours:requestedHours,sampleWeeks:8 });
+  const lots = capacityRows.map((lot) => ({
+    lotId:lot.id,name:lot.name,city:lot.city,totalSpaces:Number(lot.total_spaces||0),
+    forecast:buildBookingDemandForecast({historicalRows:byLotPatterns.get(lot.id)||[],capacity:Number(lot.total_spaces||0),hours:Math.min(requestedHours,24),sampleWeeks:8})
+  }));
+  return res.json({ generatedAt:new Date().toISOString(),lookbackDays:56,hours:requestedHours,totalFacilities:capacityRows.length,totalCapacity,
+    method:'Average historical booking starts for the same UTC weekday/hour over the last eight weekly samples. This is a planning indicator, not a sensor-based prediction of physical occupancy.',forecast,lots });
 }));
 
 router.get('/alerts', requireAuth, requireRole(...alertRoles), asyncHandler(async (req, res) => {

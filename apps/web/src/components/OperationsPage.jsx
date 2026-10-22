@@ -36,6 +36,7 @@ function AlertCard({ alert, onAcknowledge, onResolve, busyId, canResolve, isAdmi
   const isBusy = busyId === alert.id;
   const isCameraAlert = ['camera_offline', 'camera_stale'].includes(alert.alert_type);
   const isPaymentReview = alert.alert_type === 'payment_reconciliation';
+  const isPlateReview = alert.alert_type === 'plate_manual_review';
   return <article className={`sp-ops-alert ${alert.severity}`}>
     <div className="sp-ops-alert-icon">{alert.severity === 'critical' ? <ShieldAlert size={18} /> : <AlertTriangle size={18} />}</div>
     <div className="sp-ops-alert-main">
@@ -44,8 +45,9 @@ function AlertCard({ alert, onAcknowledge, onResolve, busyId, canResolve, isAdmi
       <div className="sp-ops-alert-meta">{alert.parking_lot_name || 'Platform-wide'} · Last observed {formatDate(alert.last_seen_at)}</div>
       <div className="sp-ops-alert-actions">
         {alert.status === 'open' && <button className="sp-button secondary" disabled={isBusy} onClick={() => onAcknowledge(alert)}>{isBusy ? 'Saving…' : 'Acknowledge'}</button>}
-        {canResolve && !isCameraAlert && (!isPaymentReview || isAdmin) && alert.status !== 'resolved' && <button className="sp-button ghost" disabled={isBusy} onClick={() => onResolve(alert)}>{isBusy ? 'Saving…' : isPaymentReview ? 'Record resolution' : 'Resolve'}</button>}
+        {canResolve && !isCameraAlert && !isPlateReview && (!isPaymentReview || isAdmin) && alert.status !== 'resolved' && <button className="sp-button ghost" disabled={isBusy} onClick={() => onResolve(alert)}>{isBusy ? 'Saving…' : isPaymentReview ? 'Record resolution' : 'Resolve'}</button>}
         {isCameraAlert && alert.status !== 'resolved' && <small className="sp-ops-auto-resolve">Resolves automatically after the camera feed is healthy or disabled.</small>}
+        {isPlateReview && alert.status !== 'resolved' && <small className="sp-ops-auto-resolve">Review this candidate in Plate recognition to resolve the alert.</small>}
       </div>
     </div>
   </article>;
@@ -57,6 +59,7 @@ export default function OperationsPage({ currentUser }) {
   const [summary, setSummary] = useState(null);
   const [revenue, setRevenue] = useState([]);
   const [occupancy, setOccupancy] = useState([]);
+  const [forecastData, setForecastData] = useState(null);
   const [alerts, setAlerts] = useState([]);
   const [alertStatus, setAlertStatus] = useState('open');
   const [from, setFrom] = useState(() => localDate(-29));
@@ -77,15 +80,17 @@ export default function OperationsPage({ currentUser }) {
     try {
       const query = new URLSearchParams(appliedRange);
       const alertQuery = new URLSearchParams({ status: alertStatus, limit: '100' });
-      const [summaryData, revenueData, occupancyData, alertData] = await Promise.all([
+      const [summaryData, revenueData, occupancyData, forecastResponse, alertData] = await Promise.all([
         apiRequest('/api/operations/summary'),
         apiRequest(`/api/operations/reports/revenue?${query}`),
         apiRequest('/api/operations/reports/occupancy'),
+        apiRequest('/api/operations/reports/forecast?hours=24'),
         apiRequest(`/api/operations/alerts?${alertQuery}`)
       ]);
       setSummary(summaryData.overview ?? null);
       setRevenue(revenueData.series ?? []);
       setOccupancy(occupancyData.lots ?? []);
+      setForecastData(forecastResponse ?? null);
       setAlerts(alertData.alerts ?? []);
     } catch (requestError) {
       setError(requestError.message || 'Operations data could not be loaded. Apply migration 008 and check the API/database connection.');
@@ -186,12 +191,21 @@ export default function OperationsPage({ currentUser }) {
       </article>
     </div>
 
+    <article className="sp-ops-panel sp-ops-forecast-panel">
+      <div className="sp-ops-panel-head"><div><p className="section-kicker">PLANNING INDICATOR</p><h2>Booking demand outlook</h2><p className="muted-copy">Expected reservation starts for the next 24 hours, based on the same UTC weekday/hour over the previous eight weeks.</p></div></div>
+      <div className="sp-ops-forecast-summary"><div><span>Facilities in scope</span><strong>{forecastData?.totalFacilities ?? '—'}</strong></div><div><span>Total spaces</span><strong>{forecastData?.totalCapacity ?? '—'}</strong></div><div><span>Forecast window</span><strong>24 hours</strong></div></div>
+      <div className="sp-ops-forecast-list">{(forecastData?.forecast ?? []).slice(0, 24).map((item) => { const pressure = Math.max(0, Math.min(100, Number(item.bookingDemandPercentOfCapacity) || 0)); return <div className="sp-ops-forecast-row" key={item.hourAt}><span>{new Date(item.hourAt).toLocaleTimeString([], { weekday: 'short', hour: '2-digit' })}</span><div className="sp-ops-forecast-track"><i style={{ width: `${pressure}%` }} /></div><strong>{Number(item.expectedBookingStarts || 0).toFixed(1)}</strong><small>{item.confidence} confidence</small></div>; })}
+        {!forecastData?.forecast?.length && <div className="sp-ops-empty"><TrendingUp size={20}/><strong>{loading ? 'Preparing demand outlook…' : 'Not enough historical bookings yet'}</strong><span>Forecast quality improves as SmartPark collects booking history.</span></div>}
+      </div>
+      <p className="sp-ops-footnote">This estimates booking starts, not live physical occupancy. It is a planning signal, not an AI or sensor-based guarantee.</p>
+    </article>
+
     <article className="sp-ops-panel sp-ops-alerts-panel">
-      <div className="sp-ops-panel-head sp-ops-alerts-head"><div><p className="section-kicker">ACTION CENTER</p><h2><BellRing size={19} /> Operational alerts</h2><p className="muted-copy">Camera health and payment-reconciliation issues are detected from current system records.</p></div>
+      <div className="sp-ops-panel-head sp-ops-alerts-head"><div><p className="section-kicker">ACTION CENTER</p><h2><BellRing size={19} /> Operational alerts</h2><p className="muted-copy">Camera health, unmatched plate candidates, overstays, gate failures, and payment reconciliation alerts are generated from current system records.</p></div>
         <label className="sp-ops-alert-filter">Show<select value={alertStatus} onChange={(event) => setAlertStatus(event.target.value)}><option value="open">Open</option><option value="acknowledged">Acknowledged</option><option value="resolved">Resolved</option><option value="all">All alerts</option></select></label>
       </div>
       <div className="sp-ops-alert-list">{alerts.map((alert) => <AlertCard key={alert.id} alert={alert} onAcknowledge={(item) => updateAlert(item, 'acknowledge')} onResolve={(item) => updateAlert(item, 'resolve')} busyId={busyId} canResolve={canResolve} isAdmin={roles.includes('admin')} />)}
-        {!alerts.length && <div className="sp-ops-empty"><CheckCircle2 size={22} /><strong>{loading ? 'Checking operational health…' : 'No alerts in this view'}</strong><span>Detected issues will appear here when camera feeds go stale or a captured payment needs review.</span></div>}
+        {!alerts.length && <div className="sp-ops-empty"><CheckCircle2 size={22} /><strong>{loading ? 'Checking operational health…' : 'No alerts in this view'}</strong><span>Detected issues will appear here for camera feeds, plate review, overstays, gate command failures, and payment reconciliation.</span></div>}
       </div>
     </article>
     <p className="sp-ops-last-updated">{loading ? 'Refreshing data…' : `Last loaded ${new Date().toLocaleTimeString()}`} · Reports are scoped to the facilities your account is authorized to access.</p>

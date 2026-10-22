@@ -1,6 +1,6 @@
 {
   "name": "smartpark",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": true,
   "engines": {
     "node": ">=22"
@@ -17,7 +17,7 @@
     "db:up": "docker compose up -d db",
     "db:down": "docker compose down",
     "test:api": "npm run test --workspace @smartpark/api",
-    "test:vision": "cd services/vision && python -m unittest discover -s tests -v",
+    "test:vision": "cd services/vision && PYTHONPATH=. python -m unittest discover -s tests -v",
     "test:all": "npm run test:api && npm run test:vision",
     "migrate": "npm run migrate --workspace @smartpark/api",
     "preflight:production": "node scripts/preflight-production.mjs",
@@ -29,7 +29,13 @@
     "worker:email": "npm run worker:email --workspace @smartpark/api",
     "worker:email:once": "npm run worker:email:once --workspace @smartpark/api",
     "test:integration": "node scripts/integration-smoke.mjs",
-    "verify:release": "npm run test:all && npm run build && npm run test:integration"
+    "verify:release": "npm run release:audit && npm run check:syntax && npm run test:all && npm run build && npm run test:integration",
+    "release:audit": "node scripts/release-audit.mjs",
+    "check:syntax": "node scripts/check-source-syntax.mjs",
+    "worker:sms": "npm run worker:sms --workspace @smartpark/api",
+    "worker:sms:once": "npm run worker:sms:once --workspace @smartpark/api",
+    "worker:operations": "npm run worker:operations --workspace @smartpark/api",
+    "worker:operations:once": "npm run worker:operations:once --workspace @smartpark/api"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

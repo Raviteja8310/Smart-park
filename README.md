@@ -112,9 +112,10 @@ Release hardening and production deployment instructions: `docs/production-deplo
    Get-Content -Raw .\database\migrations\009_transactional_email_outbox.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    Get-Content -Raw .\database\migrations\010_refunds_and_host_payouts.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    Get-Content -Raw .\database\migrations\011_favorites_search_reviews.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
+   Get-Content -Raw .\database\migrations\012_shared_listing_space_dimensions.sql | mysql -h 127.0.0.1 -P 3306 -u smartpark_app -p smartpark
    ```
 
-   Enter the value of `DB_PASSWORD` from `.env` when prompted. On a new database, apply migrations `001`–`011` exactly once and in numeric order. On an existing database, run only migrations not yet applied, in order. In particular, a Phase 6 database needs only migration `007_vision_detection.sql` for Phase 7. Do not re-run any migration that has already succeeded. Back up a database with data before schema changes.
+   Enter the value of `DB_PASSWORD` from `.env` when prompted. This command list is an older manual-recovery example; the current SmartPark schema has numbered migrations `001`–`021`. For a fresh database, prefer `npm run migrate`. For an existing database, verify `schema_migrations` and the actual schema, then run only pending migrations in order. Do not rerun successful migrations. Back up a database with data before schema changes.
 
 5. Start the web app and API:
 
@@ -579,3 +580,57 @@ The live API smoke tests, full Vite build, MySQL-backed business workflows, prov
 Phase 13 adds a read-mostly live API smoke suite (`npm run test:integration`) plus source-contract tests that verify router mounts, frontend-to-backend endpoint correspondence, raw webhook-body ordering, migration sequence/baseline coverage, and production network/secret assumptions. Run `npm run test:all` for deterministic API/vision tests, then `npm run build`, followed by the live smoke suite with the API and MySQL running. See `docs/integration-testing.md` and the Phase 13 section in `docs/release-checklist.md`.
 
 The current environment could run the deterministic tests but could not download npm dependencies from the registry, and has no running MySQL/Docker runtime. Therefore the production frontend build, database-backed HTTP smoke tests, Razorpay staging checkout/webhooks, SMTP delivery, and physical camera/hardware flow must still be verified on the development computer or staging server.
+
+## Phase 15: final release candidate
+
+This archive includes `npm run release:audit` for static release checks and `npm run check:syntax` for frontend JSX/TSX and server JavaScript syntax. `npm run verify:release` runs both checks, deterministic tests, the production frontend build and the live HTTP smoke suite. Read `docs/phase15-final-release.md` and complete every mandatory entry in `docs/release-checklist.md` before public launch. Automated helper tests do not certify live MySQL, payments, SMTP, TLS, backup/restore, camera accuracy or gate hardware.
+
+Phase 15 static verification evidence and current release blockers are recorded in `docs/release-evidence/phase15-static-checks.md`. The package remains a release candidate until the local build, lockfile, database, external services and deployment checks pass.
+
+
+## Phase 13: shared listing physical details
+
+Migration `012_shared_listing_space_dimensions.sql` adds optional parking surface type, typical space length and width, and maximum vehicle height to shared parking listings. The fields are editable by the listing owner or an administrator and are validated by the API. Existing records remain valid and default to an unspecified surface. Back up the database and apply migration 012 once after migration 011, or use `npm run migrate` after checking migration history. Dimensions are stored in centimetres.
+
+
+### Scheduled owner pricing
+
+The marketplace pricing form supports future-effective rates and optional end times using the existing `pricing_rules.valid_from` and `valid_until` columns. Scheduled prices are kept alongside the currently effective rate; booking quote selection applies the newest effective rule and falls back to an earlier rule after a temporary rate expires. No schema migration is required for this enhancement.
+
+
+## Phase 14: listing review decisions and owner feedback
+
+Migration `013_listing_review_workflow.sql` adds an auditable moderation state, reviewer, review timestamp, and owner-visible review note for shared-space listings. Admins can approve or reject a listing that is currently pending review. Rejections require a clear reason; the listing is paused and the owner can correct the listing and resubmit it. Public search continues to show only active listings. Apply migration 013 after 001–012 using `npm run migrate` after verifying migration history.
+
+
+## Phase 16: listing moderation feedback
+
+The shared-space marketplace now records review decisions and owner-visible feedback. An administrator can approve or reject a listing while it is pending review; rejection requires a reason. Rejected listings remain paused and can be corrected and resubmitted. The review API rejects decisions for listings no longer awaiting review and writes moderation actions to the audit log. Apply `database/migrations/013_listing_review_workflow.sql` after migrations 001–012 using `npm run migrate` after checking the database's migration history.
+
+
+### Owner verification (Phase 4)
+
+Hosts can submit an owner-verification request from **Owner verification**. Administrators can review pending requests in the same module and approve or reject with a reason. Apply migration `014_owner_verification.sql` through the project's migration runner after backing up the database and confirming the existing migration history. This feature stores verification metadata only; it does not upload or automatically verify identity documents.
+
+
+## Phase 15: promotion codes and booking discounts
+
+Administrators can create percentage or fixed-value promotion codes with date windows, minimum parking-charge requirements, maximum discount caps, total redemption limits and per-driver limits. Drivers can apply a code in the reservation quote flow. The server validates the code both when calculating the quote and when creating the temporary hold; discounts are applied to the parking charge, then tax is recalculated. A redemption is reserved for the 10-minute hold, redeemed only after verified payment, and released on a failed payment. Apply `015_promotions.sql` with the migration runner after a database backup and migration-history check. See `docs/phase-7-promotions.md`. Referral rewards are a later phase and are not included in this update.
+
+
+## Phase 9: monthly parking passes
+
+Migration `017_monthly_subscriptions.sql` adds monthly-pass requests for approved shared-space listings that have an active monthly pricing rule. Drivers can request a pass for 1–12 months, review request history, and cancel unpaid requests. Hosts can approve or reject requests for their own listings; administrators can review all requests. Ownership checks, date/amount validation, overlapping-request checks, and audit events are enforced by the API.
+
+**Scope note:** this phase records owner decisions and estimated amounts. It does not collect subscription payments, create an access entitlement, charge recurring payments, or automatically renew passes. An `approved` request remains `payment_status = 'unpaid'` until a later payment integration is implemented. Do not use this phase alone to grant gate access based on a monthly pass.
+
+## Combined Phases 10–11: corporate fleet and EV charging
+
+Migration `018_corporate_fleet_ev_charging.sql` adds corporate accounts, manager/employee membership, fleet vehicle records, EV charger inventory, and charging-session records. Open **Corporate & EV** in the web app to create a company account, add existing SmartPark users, manage fleet vehicles, register chargers at owned facilities, and review personal charging-session history. Corporate account and fleet APIs are mounted at `/api/enterprise`; EV inventory and session APIs are mounted at `/api/charging`.
+
+This phase does not yet automate employee parking allocation, corporate invoices, charging hardware/OCPP control, live telemetry, meter readings, or EV charging payments. Charging session costs are estimates based on manually supplied energy and the rate snapshotted at session start. See `docs/phase-10-11-corporate-fleet-ev.md` for permissions and testing.
+
+
+## Remaining roadmap integration: Phases 14–17
+
+The latest integrated package adds overstay monitoring, a token-protected gate-adapter command queue, support tickets, opt-in Twilio SMS delivery, and a historical booking-demand planning indicator. Review [`docs/remaining-phases-integrated.md`](docs/remaining-phases-integrated.md) for migration `021_remaining_phases.sql`, worker commands, adapter API contract, service configuration, and external integration limitations. These helpers are a release candidate—not production certification. Test with a restored database and sandbox provider credentials before launch.

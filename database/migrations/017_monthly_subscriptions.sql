@@ -1,0 +1,31 @@
+-- SmartPark Phase 9: monthly parking pass requests and owner review.
+-- Payment collection/recurring billing is intentionally not implied by an approved request.
+CREATE TABLE IF NOT EXISTS parking_subscriptions (
+  id CHAR(36) PRIMARY KEY,
+  user_id CHAR(36) NOT NULL,
+  parking_lot_id CHAR(36) NOT NULL,
+  owner_user_id CHAR(36) NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  months_count TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  monthly_amount DECIMAL(12,2) NOT NULL,
+  currency CHAR(3) NOT NULL DEFAULT 'INR',
+  total_amount DECIMAL(12,2) NOT NULL,
+  status ENUM('pending','approved','rejected','cancelled','expired') NOT NULL DEFAULT 'pending',
+  payment_status ENUM('unpaid','paid','failed','refunded') NOT NULL DEFAULT 'unpaid',
+  owner_note VARCHAR(500) NULL,
+  reviewed_by_user_id CHAR(36) NULL,
+  reviewed_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_subscriptions_user_status (user_id, status, start_date),
+  INDEX idx_subscriptions_owner_status (owner_user_id, status, created_at),
+  INDEX idx_subscriptions_lot_dates (parking_lot_id, start_date, end_date, status),
+  CONSTRAINT fk_subscriptions_user FOREIGN KEY (user_id) REFERENCES users(id),
+  CONSTRAINT fk_subscriptions_lot FOREIGN KEY (parking_lot_id) REFERENCES parking_lots(id),
+  CONSTRAINT fk_subscriptions_owner FOREIGN KEY (owner_user_id) REFERENCES users(id),
+  CONSTRAINT fk_subscriptions_reviewer FOREIGN KEY (reviewed_by_user_id) REFERENCES users(id),
+  CONSTRAINT chk_subscriptions_months CHECK (months_count BETWEEN 1 AND 12),
+  CONSTRAINT chk_subscriptions_dates CHECK (end_date > start_date),
+  CONSTRAINT chk_subscriptions_amounts CHECK (monthly_amount >= 0 AND total_amount >= 0)
+) ENGINE=InnoDB;

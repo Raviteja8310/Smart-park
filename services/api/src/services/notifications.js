@@ -20,6 +20,19 @@ export async function createNotification(executor, {
   // The email outbox is different: callers request it only inside a business transaction.
   // If enqueueing fails, propagate the error so the surrounding transaction can roll back.
   if (email) await enqueueTransactionalEmail(executor, { userId, ...email });
+  // Opt-in SMS is duplicated to the delivery queue only when a provider is configured.
+  // Enqueue errors are intentionally non-fatal to booking/payment transactions.
+  if (channel === 'in_app' && process.env.SMS_PROVIDER === 'twilio' && /^(booking|parking|payment|finance|operations|support)\./.test(eventType)) {
+    try {
+      const [prefs] = await executor.execute('SELECT p.sms_enabled,u.phone FROM user_notification_preferences p JOIN users u ON u.id=p.user_id WHERE p.user_id=? LIMIT 1', [userId]);
+      const phone = String(prefs?.[0]?.phone ?? '').trim();
+      if (prefs?.[0]?.sms_enabled && /^\+[1-9][0-9]{7,14}$/.test(phone)) {
+        await executor.execute(`INSERT INTO notifications (id,user_id,channel,event_type,title,message,delivery_status) VALUES (?,?, 'sms',?,?,?,'queued')`, [randomUUID(), userId, eventType, title.slice(0,160), message.slice(0,1000)]);
+      }
+    } catch (error) {
+      console.warn('Opt-in SMS notification could not be queued:', error?.code ?? error?.message ?? 'unknown error');
+    }
+  }
   return notificationRecorded;
 }
 

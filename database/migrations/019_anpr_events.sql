@@ -1,0 +1,28 @@
+-- Number-plate recognition event inbox. Stores text/confidence only; never stores raw frames or images.
+CREATE TABLE IF NOT EXISTS anpr_events (
+  id CHAR(36) PRIMARY KEY,
+  camera_id CHAR(36) NOT NULL,
+  parking_lot_id CHAR(36) NOT NULL,
+  provider_event_id VARCHAR(120) NULL UNIQUE,
+  normalized_plate VARCHAR(24) NOT NULL,
+  confidence DECIMAL(5,4) NOT NULL,
+  direction ENUM('entry','exit','unknown') NOT NULL DEFAULT 'unknown',
+  observed_at DATETIME(3) NOT NULL,
+  matched_vehicle_id CHAR(36) NULL,
+  matched_booking_id CHAR(36) NULL,
+  match_status ENUM('matched_booking','matched_vehicle','unmatched','review_required') NOT NULL DEFAULT 'review_required',
+  review_status ENUM('pending','confirmed','false_positive') NOT NULL DEFAULT 'pending',
+  reviewed_by_user_id CHAR(36) NULL,
+  reviewed_at DATETIME(3) NULL,
+  review_note VARCHAR(500) NULL,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  INDEX idx_anpr_lot_observed (parking_lot_id, observed_at DESC),
+  INDEX idx_anpr_plate_observed (normalized_plate, observed_at DESC),
+  INDEX idx_anpr_review (parking_lot_id, review_status, observed_at DESC),
+  CONSTRAINT fk_anpr_camera FOREIGN KEY (camera_id) REFERENCES cameras(id),
+  CONSTRAINT fk_anpr_lot FOREIGN KEY (parking_lot_id) REFERENCES parking_lots(id),
+  CONSTRAINT fk_anpr_vehicle FOREIGN KEY (matched_vehicle_id) REFERENCES vehicles(id),
+  CONSTRAINT fk_anpr_booking FOREIGN KEY (matched_booking_id) REFERENCES bookings(id),
+  CONSTRAINT fk_anpr_reviewer FOREIGN KEY (reviewed_by_user_id) REFERENCES users(id),
+  CONSTRAINT chk_anpr_confidence CHECK (confidence >= 0 AND confidence <= 1)
+) ENGINE=InnoDB;

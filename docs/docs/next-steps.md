@@ -131,3 +131,12 @@ Pure API/helper tests cover refund and payout eligibility, status transitions, d
 ## Phase 15: final deployment verification (still required)
 
 Phase 15 is not considered complete until all checks in `docs/release-checklist.md` are recorded against the intended deployment environment: clean dependency install and lockfile, frontend production build, API and vision test suites, fresh and upgrade migration paths, role isolation, booking/payment/QR workflows, email delivery/retry, refund/payout reconciliation, TLS, backup/restore, and camera accuracy.
+
+
+## Phase 15: final release candidate and launch gate
+
+Phase 15 adds `npm run release:audit`, a static release-candidate audit for required files and commands, contiguous migrations and baseline version, source artifact hygiene, secret-pattern scanning, lockfile presence, and build/container-tool availability. `npm run verify:release` now starts with this audit before running deterministic tests, production frontend build, and live API smoke tests.
+
+**This phase is a release-candidate gate, not a claim that production launch has been verified.** In the artifact-generation environment, API tests (94) and vision tests (14) pass. npm registry access timed out, so there is no root lockfile and Vite is unavailable; Docker and MySQL CLIs are also unavailable. Clean dependency installation, a root `package-lock.json`, frontend build, actual MySQL migrations/integration, provider checkout/webhooks, SMTP, TLS, backups, deployment health and onsite camera/gate validation must be completed on the development/staging/production host.
+
+Use `docs/phase15-final-release.md` and `docs/release-checklist.md` to record evidence. Do not enable public booking or real payment traffic until mandatory checklist items pass.

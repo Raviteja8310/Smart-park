@@ -22,7 +22,7 @@ const WEEKDAYS = [
 const DEFAULT_FORM = {
   name: '', description: '', addressLine: '', city: '', region: '', postalCode: '', countryCode: 'IN',
   latitude: '', longitude: '', timezone: 'Asia/Kolkata', currency: 'INR', openingTime: '06:00', closingTime: '23:00',
-  contactPhone: '', specialInstructions: '', parkingType: 'private_bay', numberSpaces: '1', vehicleType: 'any',
+  contactPhone: '', specialInstructions: '', parkingType: 'private_bay', surfaceType: 'other', spaceLengthCm: '', spaceWidthCm: '', maxVehicleHeightCm: '', numberSpaces: '1', vehicleType: 'any',
   hourlyRate: '40', dailyRate: '', weeklyRate: '', monthlyRate: '', serviceFee: '5', taxRatePercent: '0', amenities: []
 };
 const DEFAULT_SCHEDULE = WEEKDAYS.map((day) => ({ weekday: day.value, isAvailable: true, opensAt: '06:00', closesAt: '23:00' }));
@@ -43,6 +43,22 @@ function money(value, currency = 'INR') {
 }
 function label(value) { return String(value ?? '').replaceAll('_', ' ').replace(/\b\w/g, (character) => character.toUpperCase()); }
 function normalizeTime(value) { return value ? String(value).slice(0, 5) : '06:00'; }
+function toLocalDateTimeInput(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return '';
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+}
+function fromLocalDateTimeInput(value) { return value ? new Date(value).toISOString() : null; }
+function pricingRuleStatus(rule) {
+  if (!rule.isActive) return 'Disabled';
+  const now = Date.now();
+  const start = rule.validFrom ? Date.parse(rule.validFrom) : null;
+  const end = rule.validUntil ? Date.parse(rule.validUntil) : null;
+  if (start !== null && start > now) return 'Scheduled';
+  if (end !== null && end <= now) return 'Expired';
+  return 'Effective now';
+}
 function toSchedule(rules = []) {
   const byDay = new Map(rules.map((rule) => [Number(rule.weekday), rule]));
   return WEEKDAYS.map((day) => {
@@ -60,7 +76,10 @@ function listingToForm(listing) {
     timezone: listing.timezone || 'Asia/Kolkata', currency: listing.currency || 'INR',
     openingTime: normalizeTime(listing.openingTime), closingTime: normalizeTime(listing.closingTime),
     contactPhone: listing.contactPhone ?? '', specialInstructions: listing.specialInstructions ?? '',
-    parkingType: listing.parkingType || 'private_bay', amenities: Array.isArray(listing.amenities) ? listing.amenities : []
+    parkingType: listing.parkingType || 'private_bay', surfaceType: listing.surfaceType || 'other',
+    spaceLengthCm: listing.spaceLengthCm == null ? '' : String(listing.spaceLengthCm),
+    spaceWidthCm: listing.spaceWidthCm == null ? '' : String(listing.spaceWidthCm),
+    maxVehicleHeightCm: listing.maxVehicleHeightCm == null ? '' : String(listing.maxVehicleHeightCm), amenities: Array.isArray(listing.amenities) ? listing.amenities : []
   };
 }
 function apiFormPayload(form) {
@@ -73,7 +92,10 @@ function apiFormPayload(form) {
     timezone: form.timezone || 'Asia/Kolkata', currency: form.currency || 'INR',
     openingTime: form.openingTime, closingTime: form.closingTime,
     contactPhone: form.contactPhone.trim() || null, specialInstructions: form.specialInstructions.trim() || null,
-    parkingType: form.parkingType, amenities: form.amenities
+    parkingType: form.parkingType, surfaceType: form.surfaceType,
+    spaceLengthCm: form.spaceLengthCm.trim() ? Number(form.spaceLengthCm) : null,
+    spaceWidthCm: form.spaceWidthCm.trim() ? Number(form.spaceWidthCm) : null,
+    maxVehicleHeightCm: form.maxVehicleHeightCm.trim() ? Number(form.maxVehicleHeightCm) : null, amenities: form.amenities
   };
 }
 
@@ -92,7 +114,7 @@ export default function MarketplacePage({ currentUser }) {
   const [details, setDetails] = useState(null);
   const [form, setForm] = useState(DEFAULT_FORM);
   const [schedule, setSchedule] = useState(DEFAULT_SCHEDULE);
-  const [rateForm, setRateForm] = useState({ rateType: 'hourly', amount: '40', serviceFee: '5', taxRatePercent: '0' });
+  const [rateForm, setRateForm] = useState({ rateType: 'hourly', amount: '40', serviceFee: '5', taxRatePercent: '0', validFrom: '', validUntil: '' });
   const [photoFiles, setPhotoFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingDetails, setLoadingDetails] = useState(false);
@@ -122,8 +144,8 @@ export default function MarketplacePage({ currentUser }) {
       setDetails(data);
       setForm(listingToForm(data.listing));
       setSchedule(toSchedule(data.availability));
-      const activeHourly = (data.pricingRules ?? []).find((rule) => rule.isActive && rule.rateType === 'hourly');
-      setRateForm({ rateType: 'hourly', amount: String(activeHourly?.amount ?? 40), serviceFee: String(activeHourly?.serviceFee ?? 0), taxRatePercent: String(activeHourly?.taxRatePercent ?? 0) });
+      const activeHourly = (data.pricingRules ?? []).find((rule) => rule.rateType === 'hourly' && pricingRuleStatus(rule) === 'Effective now');
+      setRateForm({ rateType: 'hourly', amount: String(activeHourly?.amount ?? 40), serviceFee: String(activeHourly?.serviceFee ?? 0), taxRatePercent: String(activeHourly?.taxRatePercent ?? 0), validFrom: '', validUntil: '' });
     } catch (requestError) { setError(requestError.message || 'Unable to open listing.'); setDetails(null); }
     finally { setLoadingDetails(false); }
   }, []);
@@ -200,7 +222,9 @@ export default function MarketplacePage({ currentUser }) {
     event.preventDefault(); if (!selectedId) return;
     setBusy(true); setError(''); setNotice('');
     try {
-      const payload = { rateType: rateForm.rateType, amount: Number(rateForm.amount), serviceFee: Number(rateForm.serviceFee || 0), taxRatePercent: Number(rateForm.taxRatePercent || 0), slotId: null };
+      const payload = { rateType: rateForm.rateType, amount: Number(rateForm.amount), serviceFee: Number(rateForm.serviceFee || 0), taxRatePercent: Number(rateForm.taxRatePercent || 0), slotId: null, validFrom: fromLocalDateTimeInput(rateForm.validFrom), validUntil: fromLocalDateTimeInput(rateForm.validUntil) };
+      if (rateForm.validUntil && !rateForm.validFrom) throw new Error('Set an effective start date when setting an end date.');
+      if (rateForm.validFrom && rateForm.validUntil && new Date(rateForm.validUntil) <= new Date(rateForm.validFrom)) throw new Error('The end date must be later than the start date.');
       const data = await apiRequest(`/api/parking/lots/${selectedId}/pricing`, { method: 'POST', body: JSON.stringify(payload) });
       setNotice(`${label(data.pricingRule.rateType)} price saved.`); await openListing(selectedId); await reloadMine();
     } catch (requestError) { setError(requestError.message || 'Unable to save pricing.'); }
@@ -212,6 +236,17 @@ export default function MarketplacePage({ currentUser }) {
     setBusy(true); setError(''); setNotice('');
     try { const data = await apiRequest(`/api/marketplace/listings/${selectedId}/submit-for-approval`, { method: 'POST', body: JSON.stringify({}) }); setNotice(data.message); await openListing(selectedId); await reloadMine(); }
     catch (requestError) { setError(requestError.message || 'Unable to submit listing.'); }
+    finally { setBusy(false); }
+  }
+
+  async function reviewListing(decision) {
+    if (!selectedId) return;
+    const note = decision === 'reject' ? window.prompt('Explain what the owner must correct before resubmitting (at least 8 characters):') : '';
+    if (decision === 'reject' && note === null) return;
+    if (decision === 'reject' && note.trim().length < 8) { setError('Please provide a clear rejection reason of at least 8 characters.'); return; }
+    setBusy(true); setError(''); setNotice('');
+    try { const data = await apiRequest(`/api/marketplace/listings/${selectedId}/review`, { method: 'POST', body: JSON.stringify({ decision, note: note?.trim() || '' }) }); setNotice(data.message); await openListing(selectedId); await reloadMine(); }
+    catch (requestError) { setError(requestError.message || 'Unable to record the review decision.'); }
     finally { setBusy(false); }
   }
 
@@ -247,6 +282,10 @@ export default function MarketplacePage({ currentUser }) {
           <label>Postal code<input name="postalCode" value={form.postalCode} onChange={updateForm} maxLength={20} placeholder="Postal code" /></label>
           <label>Contact phone<input name="contactPhone" value={form.contactPhone} onChange={updateForm} maxLength={30} placeholder="Optional contact number" /></label>
           <label>Vehicle compatibility<select name="vehicleType" value={form.vehicleType} onChange={updateForm}><option value="any">Any supported vehicle</option><option value="motorcycle">Motorcycle</option><option value="car">Car</option><option value="suv">SUV</option><option value="van">Van</option><option value="truck">Truck</option><option value="other">Other</option></select></label>
+          <label>Parking surface<select name="surfaceType" value={form.surfaceType} onChange={updateForm}><option value="asphalt">Asphalt</option><option value="concrete">Concrete</option><option value="pavers">Pavers / blocks</option><option value="gravel">Gravel</option><option value="dirt">Dirt / unpaved</option><option value="other">Other / not specified</option></select></label>
+          <label>Typical space length (cm) <span className="sp-optional">Optional</span><input name="spaceLengthCm" type="number" min="1" max="3000" step="1" value={form.spaceLengthCm} onChange={updateForm} placeholder="e.g. 500" /></label>
+          <label>Typical space width (cm) <span className="sp-optional">Optional</span><input name="spaceWidthCm" type="number" min="1" max="3000" step="1" value={form.spaceWidthCm} onChange={updateForm} placeholder="e.g. 250" /></label>
+          <label>Maximum vehicle height (cm) <span className="sp-optional">Optional</span><input name="maxVehicleHeightCm" type="number" min="1" max="3000" step="1" value={form.maxVehicleHeightCm} onChange={updateForm} placeholder="e.g. 210" /></label>
           <label>Number of spaces<input name="numberSpaces" type="number" min="1" max="100" step="1" required value={form.numberSpaces} onChange={updateForm} /></label>
           <label>Opening time<input name="openingTime" type="time" required value={form.openingTime} onChange={updateForm} /></label>
           <label>Closing time<input name="closingTime" type="time" required value={form.closingTime} onChange={updateForm} /></label>
@@ -281,7 +320,7 @@ export default function MarketplacePage({ currentUser }) {
     </>}
 
     {selectedListing && !loadingDetails && <>
-      <div className="sp-market-detail-banner"><div className="sp-market-detail-photo">{selectedListing.coverPhoto ? <img src={selectedListing.coverPhoto} alt={selectedListing.name} /> : <ParkingSquare size={32} />}</div><div className="sp-market-detail-copy"><span className={`sp-facility-status ${selectedListing.facilityStatus}`}>{label(selectedListing.facilityStatus)}</span><h2>{selectedListing.name}</h2><p><MapPin size={14} /> {selectedListing.addressLine}, {selectedListing.city}</p><div className="sp-market-detail-tags"><span>{label(selectedListing.parkingType)}</span><span>{selectedListing.totalSpaces} parking space{selectedListing.totalSpaces === 1 ? '' : 's'}</span><span>{selectedListing.photoCount} photos</span></div></div></div>
+      <div className="sp-market-detail-banner"><div className="sp-market-detail-photo">{selectedListing.coverPhoto ? <img src={selectedListing.coverPhoto} alt={selectedListing.name} /> : <ParkingSquare size={32} />}</div><div className="sp-market-detail-copy"><span className={`sp-facility-status ${selectedListing.facilityStatus}`}>{label(selectedListing.facilityStatus)}</span><h2>{selectedListing.name}</h2><p><MapPin size={14} /> {selectedListing.addressLine}, {selectedListing.city}</p><div className="sp-market-detail-tags"><span>{label(selectedListing.parkingType)}</span><span>{selectedListing.totalSpaces} parking space{selectedListing.totalSpaces === 1 ? '' : 's'}</span><span>{selectedListing.photoCount} photos</span><span>{label(selectedListing.surfaceType || 'other')} surface</span>{selectedListing.spaceLengthCm && selectedListing.spaceWidthCm ? <span>{selectedListing.spaceLengthCm} × {selectedListing.spaceWidthCm} cm</span> : null}{selectedListing.maxVehicleHeightCm ? <span>Max height {selectedListing.maxVehicleHeightCm} cm</span> : null}</div></div></div>
       <article className="sp-panel sp-market-panel"><div className="sp-panel-header"><div><p className="sp-kicker">LISTING PROFILE</p><h2>Space details</h2><p>Keep the location, amenities and instructions accurate for drivers.</p></div><Save size={20} /></div>
         <form className="sp-form" onSubmit={saveListing}><div className="sp-form-grid sp-market-form-grid">
           <label>Listing title<input name="name" value={form.name} onChange={updateForm} required minLength={2} maxLength={160} /></label>
@@ -290,6 +329,10 @@ export default function MarketplacePage({ currentUser }) {
           <label>State / region<input name="region" value={form.region} onChange={updateForm} /></label><label>Postal code<input name="postalCode" value={form.postalCode} onChange={updateForm} /></label>
           <label>Contact phone<input name="contactPhone" value={form.contactPhone} onChange={updateForm} maxLength={30} /></label>
           <label>Opening time<input type="time" name="openingTime" value={form.openingTime} onChange={updateForm} required /></label><label>Closing time<input type="time" name="closingTime" value={form.closingTime} onChange={updateForm} required /></label>
+          <label>Parking surface<select name="surfaceType" value={form.surfaceType} onChange={updateForm}><option value="asphalt">Asphalt</option><option value="concrete">Concrete</option><option value="pavers">Pavers / blocks</option><option value="gravel">Gravel</option><option value="dirt">Dirt / unpaved</option><option value="other">Other / not specified</option></select></label>
+          <label>Typical space length (cm) <span className="sp-optional">Optional</span><input name="spaceLengthCm" type="number" min="1" max="3000" step="1" value={form.spaceLengthCm} onChange={updateForm} /></label>
+          <label>Typical space width (cm) <span className="sp-optional">Optional</span><input name="spaceWidthCm" type="number" min="1" max="3000" step="1" value={form.spaceWidthCm} onChange={updateForm} /></label>
+          <label>Maximum vehicle height (cm) <span className="sp-optional">Optional</span><input name="maxVehicleHeightCm" type="number" min="1" max="3000" step="1" value={form.maxVehicleHeightCm} onChange={updateForm} /></label>
           <label>Latitude<input type="number" step="any" name="latitude" value={form.latitude} onChange={updateForm} /></label><label>Longitude<input type="number" step="any" name="longitude" value={form.longitude} onChange={updateForm} /></label>
           <label className="sp-span-full">Description<textarea rows="3" name="description" value={form.description} onChange={updateForm} maxLength={5000} /></label>
           <label className="sp-span-full">Special instructions<textarea rows="2" name="specialInstructions" value={form.specialInstructions} onChange={updateForm} maxLength={2000} /></label>
@@ -312,17 +355,20 @@ export default function MarketplacePage({ currentUser }) {
       </article>
 
       <article className="sp-panel sp-market-panel"><div className="sp-panel-header"><div><p className="sp-kicker">FLEXIBLE PRICING</p><h2>Hourly, daily and longer stays</h2><p>Rates apply to the whole listing. Slot-specific prices can be managed in Parking spaces.</p></div><Clock3 size={20} /></div>
-        <div className="sp-market-rate-chips">{(details.pricingRules ?? []).filter((rule) => rule.isActive).map((rule) => <div key={rule.id}><span>{label(rule.rateType)}</span><strong>{money(rule.amount, rule.currency)}</strong><small>Fee {money(rule.serviceFee, rule.currency)} · tax {rule.taxRatePercent}%</small></div>)}{!(details.pricingRules ?? []).some((rule) => rule.isActive) && <p>No active rates configured.</p>}</div>
+        <div className="sp-market-rate-chips">{(details.pricingRules ?? []).filter((rule) => rule.isActive).map((rule) => <div key={rule.id}><span>{label(rule.rateType)} · {pricingRuleStatus(rule)}</span><strong>{money(rule.amount, rule.currency)}</strong><small>Fee {money(rule.serviceFee, rule.currency)} · tax {rule.taxRatePercent}%</small>{(rule.validFrom || rule.validUntil) && <small>{rule.validFrom ? `From ${new Date(rule.validFrom).toLocaleString()}` : 'Starts immediately'}{rule.validUntil ? ` · Until ${new Date(rule.validUntil).toLocaleString()}` : ''}</small>}</div>)}{!(details.pricingRules ?? []).some((rule) => rule.isActive) && <p>No active rates configured.</p>}</div>
         <form className="sp-form" onSubmit={saveRate}><div className="sp-form-grid sp-market-rate-grid">
           <label>Rate type<select value={rateForm.rateType} onChange={(event) => setRateForm((old) => ({ ...old, rateType: event.target.value }))}><option value="hourly">Hourly</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
           <label>Amount ({selectedListing.currency})<input type="number" min="0" max="10000000" step="0.01" required value={rateForm.amount} onChange={(event) => setRateForm((old) => ({ ...old, amount: event.target.value }))} /></label>
           <label>Service fee<input type="number" min="0" max="1000000" step="0.01" value={rateForm.serviceFee} onChange={(event) => setRateForm((old) => ({ ...old, serviceFee: event.target.value }))} /></label>
           <label>Tax rate (%)<input type="number" min="0" max="100" step="0.01" value={rateForm.taxRatePercent} onChange={(event) => setRateForm((old) => ({ ...old, taxRatePercent: event.target.value }))} /></label>
-        </div><div className="sp-form-actions"><span className="sp-form-hint">Saving a rate replaces the active rule for that period while retaining old pricing records.</span><button className="sp-button secondary" disabled={busy}><Save size={15} /> Save rate</button></div></form>
+          <label>Effective from (optional)<input type="datetime-local" value={rateForm.validFrom} onChange={(event) => setRateForm((old) => ({ ...old, validFrom: event.target.value }))} /></label>
+          <label>Effective until (optional)<input type="datetime-local" min={rateForm.validFrom || undefined} value={rateForm.validUntil} onChange={(event) => setRateForm((old) => ({ ...old, validUntil: event.target.value }))} /></label>
+        </div><div className="sp-form-actions"><span className="sp-form-hint">Leave both dates blank to change the current price now. Set a future start date to schedule a price change; the previous price remains available until then. Set an end date to make the scheduled rate temporary.</span><button className="sp-button secondary" disabled={busy}><Save size={15} /> Save rate</button></div></form>
       </article>
 
+      {selectedListing.reviewStatus && selectedListing.reviewStatus !== 'not_reviewed' && <article className={`sp-market-review-note ${selectedListing.reviewStatus}`}><div><strong>Review status: {label(selectedListing.reviewStatus)}</strong>{selectedListing.reviewNote && <p>{selectedListing.reviewNote}</p>}{selectedListing.reviewedAt && <small>Reviewed {new Date(selectedListing.reviewedAt).toLocaleString()}</small>}</div></article>}
       <article className="sp-panel sp-market-submit-panel"><div className="sp-market-submit-icon"><FileCheck2 size={21} /></div><div><p className="sp-kicker">PUBLICATION WORKFLOW</p><h2>Review and publish</h2><p>Listings require at least one photo, one parking space, an active hourly rate and all seven weekly schedule rows before administrator review.</p></div>
-        <div className="sp-market-submit-actions">{selectedListing.facilityStatus === 'draft' || selectedListing.facilityStatus === 'paused' ? <button className="sp-button primary" onClick={submitForApproval} disabled={busy}><ShieldCheck size={15} /> Submit for approval</button> : selectedListing.facilityStatus === 'pending_approval' && isAdmin ? <button className="sp-button primary" onClick={() => moderateListing('active')} disabled={busy}><BadgeCheck size={15} /> Approve & publish</button> : selectedListing.facilityStatus === 'pending_approval' ? <span className="sp-market-pending-note">Waiting for administrator review.</span> : selectedListing.facilityStatus === 'active' && isAdmin ? <button className="sp-button ghost" onClick={() => moderateListing('paused')} disabled={busy}>Pause listing</button> : <span className="sp-market-pending-note">Listing status: {label(selectedListing.facilityStatus)}</span>}</div>
+        <div className="sp-market-submit-actions">{selectedListing.facilityStatus === 'draft' || selectedListing.facilityStatus === 'paused' ? <button className="sp-button primary" onClick={submitForApproval} disabled={busy}><ShieldCheck size={15} /> {selectedListing.reviewStatus === 'rejected' ? 'Resubmit for approval' : 'Submit for approval'}</button> : selectedListing.facilityStatus === 'pending_approval' && isAdmin ? <div className="sp-market-review-actions"><button className="sp-button primary" onClick={() => reviewListing('approve')} disabled={busy}><BadgeCheck size={15} /> Approve & publish</button><button className="sp-button danger" onClick={() => reviewListing('reject')} disabled={busy}>Reject with reason</button></div> : selectedListing.facilityStatus === 'pending_approval' ? <span className="sp-market-pending-note">Waiting for administrator review.</span> : selectedListing.facilityStatus === 'active' && isAdmin ? <button className="sp-button ghost" onClick={() => moderateListing('paused')} disabled={busy}>Pause listing</button> : <span className="sp-market-pending-note">Listing status: {label(selectedListing.facilityStatus)}</span>}</div>
       </article>
     </>}
     <div className="sp-page-footer"><span><ShieldCheck size={14} /> Photos are public listing assets. Do not upload IDs, payment cards or other sensitive documents.</span><button className="sp-button ghost" onClick={reloadMine} disabled={loading}><RefreshCw size={14} /> Refresh</button></div>

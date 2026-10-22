@@ -6,6 +6,7 @@ import { env } from '../config/env.js';
 import { requireAuth, requireRole } from '../middleware/authenticate.js';
 import { constantTimeStringEqual, sha256Hex, verifySignedTicket } from '../payments/payment-logic.js';
 import { createNotification } from '../services/notifications.js';
+import { qualifyReferralForCompletedBooking } from './referrals.routes.js';
 
 const router = Router();
 const asyncHandler = (handler) => (req, res, next) => Promise.resolve(handler(req, res, next)).catch(next);
@@ -116,6 +117,8 @@ router.post('/scan', requireAuth, requireRole('attendant', 'operator', 'admin'),
     const session = sessions[0];
     await connection.execute("UPDATE parking_sessions SET status = 'exited', exited_at = UTC_TIMESTAMP() WHERE id = ?", [session.id]);
     await connection.execute("UPDATE bookings SET status = 'completed' WHERE id = ?", [booking.id]);
+    // Referral credits are awarded only after a completed session and a verified paid payment.
+    await qualifyReferralForCompletedBooking(connection, booking);
     // A gate exit is not sufficient proof that the bay is physically empty;
     // leave it unknown until the camera or an authorized operator updates it.
     await connection.execute("UPDATE parking_slots SET physical_state = 'unknown', physical_state_updated_at = UTC_TIMESTAMP(3) WHERE id = ?", [booking.slot_id]);

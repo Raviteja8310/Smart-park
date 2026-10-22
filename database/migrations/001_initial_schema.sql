@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS parking_slots (
   slot_code VARCHAR(30) NOT NULL,
   vehicle_type ENUM('motorcycle','car','suv','van','truck','other','any') NOT NULL DEFAULT 'any',
   covered BOOLEAN NOT NULL DEFAULT FALSE,
-  accessible BOOLEAN NOT NULL DEFAULT FALSE,
+  `accessible` BOOLEAN NOT NULL DEFAULT FALSE,
   operational_status ENUM('open','disabled','maintenance') NOT NULL DEFAULT 'open',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_slot_code (parking_lot_id, slot_code),

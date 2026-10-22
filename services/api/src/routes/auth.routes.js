@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { randomUUID } from 'node:crypto';
+import { randomBytes, randomUUID, randomInt } from 'node:crypto';
 import { z } from 'zod';
 import { pool } from '../config/database.js';
 import { env } from '../config/env.js';
@@ -7,24 +7,29 @@ import { requireAuth, clearSessionCookie, setSessionCookie, SESSION_COOKIE_NAME 
 import { createRateLimiter } from '../middleware/rate-limit.js';
 import { hashPassword, verifyPassword } from '../security/password.js';
 import { createOpaqueToken, hashOpaqueToken, readCookie } from '../security/tokens.js';
-import { sendVerificationEmail, sendPasswordResetEmail } from '../services/mailer.js';
+import { sendVerificationEmail, sendPasswordResetOtpEmail } from '../services/mailer.js';
 
 const router = Router();
 
 // Express 4 does not automatically forward rejected async handlers to error middleware.
 const asyncHandler = (handler) => (req, res, next) => Promise.resolve(handler(req, res, next)).catch(next);
 const VERIFY_TTL_MS = 30 * 60 * 1000;
+const PASSWORD_RESET_OTP_TTL_MS = 10 * 60 * 1000;
+const MAX_PASSWORD_RESET_OTP_ATTEMPTS = 5;
 const SESSION_TTL_MS = env.SESSION_TTL_HOURS * 60 * 60 * 1000;
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const registerLimiter = createRateLimiter({ windowMs: RATE_WINDOW_MS, max: 6, keyPrefix: 'auth-register' });
 const loginLimiter = createRateLimiter({ windowMs: RATE_WINDOW_MS, max: 12, keyPrefix: 'auth-login' });
 const resendLimiter = createRateLimiter({ windowMs: RATE_WINDOW_MS, max: 4, keyPrefix: 'auth-resend' });
-const passwordResetLimiter = createRateLimiter({ windowMs: RATE_WINDOW_MS, max: 4, keyPrefix: 'auth-password-reset' });
+const passwordResetLimiter = createRateLimiter({ windowMs: RATE_WINDOW_MS, max: 4, keyPrefix: 'auth-password-reset-request' });
+const passwordResetVerifyLimiter = createRateLimiter({ windowMs: RATE_WINDOW_MS, max: 10, keyPrefix: 'auth-password-reset-verify' });
+const changePasswordLimiter = createRateLimiter({ windowMs: RATE_WINDOW_MS, max: 5, keyPrefix: 'auth-change-password' });
 
 const registerSchema = z.object({
   fullName: z.string().trim().min(2, 'Enter your full name.').max(120),
   email: z.string().trim().email('Enter a valid email address.').max(254),
   phone: z.string().trim().max(30).optional().or(z.literal('')),
+  referralCode: z.string().trim().max(16).optional().or(z.literal('')),
   password: z.string().min(12, 'Use at least 12 characters.').max(128)
 });
 const loginSchema = z.object({
@@ -33,7 +38,8 @@ const loginSchema = z.object({
 });
 const emailSchema = z.object({ email: z.string().trim().email().max(254) });
 const verifySchema = z.object({ token: z.string().min(30).max(200).regex(/^[A-Za-z0-9_-]+$/) });
-const resetPasswordSchema = z.object({ token: z.string().min(30).max(200).regex(/^[A-Za-z0-9_-]+$/), password: z.string().min(12, 'Use at least 12 characters.').max(128) });
+const resetPasswordSchema = z.object({ token: z.string().min(6).max(200).regex(/^(?:[0-9]{6}|[A-Za-z0-9_-]{30,200})$/, 'Enter the six-digit email code.'), email: z.string().trim().email().max(254).optional(), password: z.string().min(12, 'Use at least 12 characters.').max(128) }).refine((value) => !/^[0-9]{6}$/.test(value.token) || Boolean(value.email), { message: 'Enter the email address used to request the code.', path: ['email'] });
+const changePasswordSchema = z.object({ currentPassword: z.string().min(1).max(128), newPassword: z.string().min(12, 'Use at least 12 characters.').max(128) }).strict();
 
 // Calculated once so an unknown email still costs approximately one password verification.
 const DUMMY_PASSWORD_HASH = await hashPassword('SmartPark timing-only dummy password 2026!');
@@ -109,6 +115,7 @@ router.post('/register', registerLimiter, asyncHandler(async (req, res, next) =>
   const phone = parsed.data.phone?.trim() || null;
   const passwordHash = await hashPassword(parsed.data.password);
   const userId = randomUUID();
+  const referralCodeInput = parsed.data.referralCode?.trim().toUpperCase() || null;
   const connection = await pool.getConnection();
   let verificationToken;
 
@@ -122,6 +129,20 @@ router.post('/register', registerLimiter, asyncHandler(async (req, res, next) =>
       });
     }
 
+    let referrerUserId = null;
+    if (referralCodeInput) {
+      const [referrerRows] = await connection.execute('SELECT user_id FROM referral_codes WHERE code = ? LIMIT 1 FOR UPDATE', [referralCodeInput]);
+      if (!referrerRows.length) {
+        await connection.rollback();
+        return res.status(422).json({ error: { code: 'INVALID_REFERRAL_CODE', message: 'This referral code is not valid. Check it and try again, or leave the field blank.' } });
+      }
+      referrerUserId = referrerRows[0].user_id;
+      if (referrerUserId === userId) {
+        await connection.rollback();
+        return res.status(422).json({ error: { code: 'SELF_REFERRAL_NOT_ALLOWED', message: 'You cannot refer your own account.' } });
+      }
+    }
+
     const [driverRoles] = await connection.execute('SELECT id FROM roles WHERE role_key = ? LIMIT 1', ['driver']);
     if (!driverRoles.length) throw new Error('Required driver role is missing. Apply the initial database migration.');
 
@@ -131,6 +152,12 @@ router.post('/register', registerLimiter, asyncHandler(async (req, res, next) =>
       [userId, fullName, email, passwordHash, phone]
     );
     await connection.execute('INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)', [userId, driverRoles[0].id]);
+    const ownReferralCode = `SP${randomBytes(5).toString('hex').toUpperCase()}`;
+    await connection.execute('INSERT INTO referral_codes (user_id, code) VALUES (?, ?)', [userId, ownReferralCode]);
+    if (referrerUserId) {
+      await connection.execute('INSERT INTO referrals (id, referrer_user_id, referred_user_id, referral_code) VALUES (?, ?, ?, ?)', [randomUUID(), referrerUserId, userId, referralCodeInput]);
+      await audit(connection, userId, 'referral.signup_attributed', userId, { referralCode: referralCodeInput });
+    }
     verificationToken = await createVerificationToken(connection, userId);
     await audit(connection, userId, 'auth.registered', userId, { registrationMethod: 'email_password' });
     await connection.commit();
@@ -237,7 +264,7 @@ router.post('/forgot-password', passwordResetLimiter, asyncHandler(async (req, r
   const email = normalizedEmail(parsed.data.email);
   const connection = await pool.getConnection();
   let userId = null;
-  let rawToken = null;
+  let otp = null;
   try {
     await connection.beginTransaction();
     const [users] = await connection.execute(
@@ -246,11 +273,12 @@ router.post('/forgot-password', passwordResetLimiter, asyncHandler(async (req, r
     );
     if (users.length) {
       userId = users[0].id;
-      rawToken = createOpaqueToken(32);
+      // Six-digit OTPs are short-lived and stored only as a user-bound hash.
+      otp = String(randomInt(0, 1_000_000)).padStart(6, '0');
       await connection.execute('DELETE FROM password_reset_tokens WHERE user_id = ?', [userId]);
       await connection.execute(
-        'INSERT INTO password_reset_tokens (id, user_id, token_hash, expires_at) VALUES (?, ?, ?, ?)',
-        [randomUUID(), userId, hashOpaqueToken(rawToken), new Date(Date.now() + VERIFY_TTL_MS)]
+        'INSERT INTO password_reset_tokens (id, user_id, token_hash, expires_at, attempt_count) VALUES (?, ?, ?, ?, 0)',
+        [randomUUID(), userId, hashOpaqueToken(`${userId}:${otp}`), new Date(Date.now() + PASSWORD_RESET_OTP_TTL_MS)]
       );
     }
     await connection.commit();
@@ -261,47 +289,121 @@ router.post('/forgot-password', passwordResetLimiter, asyncHandler(async (req, r
     connection.release();
   }
 
-  if (userId && rawToken) {
+  if (userId && otp) {
     try {
-      await sendPasswordResetEmail(email, rawToken);
+      await sendPasswordResetOtpEmail(email, otp);
     } catch (error) {
       console.error('SmartPark password reset email delivery failed:', error.message);
+      // Remove a code that could not be delivered; the response remains non-enumerating.
+      await pool.execute('DELETE FROM password_reset_tokens WHERE user_id = ?', [userId]).catch(() => {});
     }
   }
   // Never reveal whether an email belongs to an account.
-  return res.status(200).json({ message: 'If an active account matches that email, a password reset link has been sent. In local development, check the API terminal.' });
+  return res.status(200).json({ message: 'If an active account matches that email, a six-digit password reset code has been sent. The code expires in 10 minutes. In local development, check the API terminal.' });
 }));
 
-router.post('/reset-password', passwordResetLimiter, asyncHandler(async (req, res, next) => {
+router.post('/reset-password', passwordResetVerifyLimiter, asyncHandler(async (req, res, next) => {
   const parsed = resetPasswordSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ error: { code: 'VALIDATION_ERROR', message: parsed.error.issues[0]?.message ?? 'Check the submitted fields.' } });
   }
 
-  const tokenHash = hashOpaqueToken(parsed.data.token);
-  const passwordHash = await hashPassword(parsed.data.password);
+  const suppliedToken = parsed.data.token;
+  const isOtp = /^[0-9]{6}$/.test(suppliedToken);
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
-    const [tokens] = await connection.execute(
-      `SELECT pr.user_id FROM password_reset_tokens pr
-       JOIN users u ON u.id = pr.user_id
-       WHERE pr.token_hash = ? AND pr.expires_at > UTC_TIMESTAMP() AND u.account_status = 'active'
-       LIMIT 1 FOR UPDATE`,
-      [tokenHash]
-    );
-    if (!tokens.length) {
-      await connection.rollback();
-      return res.status(400).json({ error: { code: 'INVALID_RESET_TOKEN', message: 'The password reset link is invalid or has expired. Request a new one.' } });
+    let userId = null;
+
+    if (isOtp) {
+      const email = normalizedEmail(parsed.data.email);
+      const [users] = await connection.execute(
+        `SELECT id FROM users WHERE email = ? AND account_status = 'active' LIMIT 1 FOR UPDATE`,
+        [email]
+      );
+      if (!users.length) {
+        await connection.rollback();
+        return res.status(400).json({ error: { code: 'INVALID_RESET_CODE', message: 'The code is invalid, expired, or no longer available. Request a new code.' } });
+      }
+      userId = users[0].id;
+      const [resetRows] = await connection.execute(
+        `SELECT id, token_hash, (expires_at > UTC_TIMESTAMP()) AS is_unexpired, attempt_count
+           FROM password_reset_tokens WHERE user_id = ? LIMIT 1 FOR UPDATE`,
+        [userId]
+      );
+      const reset = resetRows[0];
+      if (!reset || !Number(reset.is_unexpired) || Number(reset.attempt_count) >= MAX_PASSWORD_RESET_OTP_ATTEMPTS) {
+        await connection.execute('DELETE FROM password_reset_tokens WHERE user_id = ?', [userId]);
+        await connection.commit();
+        return res.status(400).json({ error: { code: 'INVALID_RESET_CODE', message: 'The code is invalid, expired, or no longer available. Request a new code.' } });
+      }
+      if (reset.token_hash !== hashOpaqueToken(`${userId}:${suppliedToken}`)) {
+        const nextAttempts = Number(reset.attempt_count || 0) + 1;
+        if (nextAttempts >= MAX_PASSWORD_RESET_OTP_ATTEMPTS) {
+          await connection.execute('DELETE FROM password_reset_tokens WHERE user_id = ?', [userId]);
+        } else {
+          await connection.execute('UPDATE password_reset_tokens SET attempt_count = ? WHERE id = ?', [nextAttempts, reset.id]);
+        }
+        await connection.commit();
+        return res.status(400).json({ error: { code: nextAttempts >= MAX_PASSWORD_RESET_OTP_ATTEMPTS ? 'RESET_CODE_LOCKED' : 'INVALID_RESET_CODE', message: nextAttempts >= MAX_PASSWORD_RESET_OTP_ATTEMPTS ? 'Too many incorrect codes. Request a new code.' : 'That code is incorrect. Check the email and try again.' } });
+      }
+    } else {
+      // Compatibility for previously-issued high-entropy reset links during rollout.
+      const tokenHash = hashOpaqueToken(suppliedToken);
+      const [tokens] = await connection.execute(
+        `SELECT pr.user_id FROM password_reset_tokens pr
+         JOIN users u ON u.id = pr.user_id
+         WHERE pr.token_hash = ? AND pr.expires_at > UTC_TIMESTAMP() AND u.account_status = 'active'
+         LIMIT 1 FOR UPDATE`,
+        [tokenHash]
+      );
+      if (!tokens.length) {
+        await connection.rollback();
+        return res.status(400).json({ error: { code: 'INVALID_RESET_TOKEN', message: 'The password reset link is invalid or has expired. Request a new code.' } });
+      }
+      userId = tokens[0].user_id;
     }
-    const userId = tokens[0].user_id;
+
+    const passwordHash = await hashPassword(parsed.data.password);
     await connection.execute('UPDATE users SET password_hash = ? WHERE id = ? AND account_status = \'active\'', [passwordHash, userId]);
     await connection.execute('DELETE FROM password_reset_tokens WHERE user_id = ?', [userId]);
-    // Password resets revoke every existing browser session for that account.
+    // Password recovery revokes every browser session for the account.
     await connection.execute('DELETE FROM user_sessions WHERE user_id = ?', [userId]);
-    await audit(connection, userId, 'auth.password_reset', userId, {});
+    await audit(connection, userId, 'auth.password_reset', userId, { method: isOtp ? 'email_otp' : 'legacy_reset_link' });
     await connection.commit();
     return res.status(200).json({ message: 'Password updated. Sign in with your new password.' });
+  } catch (error) {
+    await connection.rollback().catch(() => {});
+    return next(error);
+  } finally {
+    connection.release();
+  }
+}));
+
+router.post('/change-password', changePasswordLimiter, requireAuth, asyncHandler(async (req, res, next) => {
+  const parsed = changePasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: { code: 'VALIDATION_ERROR', message: parsed.error.issues[0]?.message ?? 'Check the submitted fields.' } });
+  }
+  if (parsed.data.currentPassword === parsed.data.newPassword) {
+    return res.status(400).json({ error: { code: 'PASSWORD_UNCHANGED', message: 'Choose a password different from your current password.' } });
+  }
+
+  const [users] = await pool.execute('SELECT password_hash FROM users WHERE id = ? AND account_status = \'active\' LIMIT 1', [req.user.id]);
+  if (!users.length || !(await verifyPassword(parsed.data.currentPassword, users[0].password_hash))) {
+    return res.status(400).json({ error: { code: 'CURRENT_PASSWORD_INVALID', message: 'Your current password is incorrect.' } });
+  }
+
+  const nextHash = await hashPassword(parsed.data.newPassword);
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    await connection.execute('UPDATE users SET password_hash = ? WHERE id = ? AND account_status = \'active\'', [nextHash, req.user.id]);
+    // Keep this session active while revoking the other devices/sessions on the account.
+    await connection.execute('DELETE FROM user_sessions WHERE user_id = ? AND id <> ?', [req.user.id, req.authSessionId]);
+    await audit(connection, req.user.id, 'auth.password_changed', req.user.id, { otherSessionsRevoked: true });
+    await connection.commit();
+    return res.status(200).json({ message: 'Password changed successfully. Other signed-in sessions have been signed out.' });
   } catch (error) {
     await connection.rollback().catch(() => {});
     return next(error);

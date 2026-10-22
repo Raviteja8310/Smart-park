@@ -38,7 +38,7 @@ export function productionConfigIssues(value) {
 
   // The email worker only claims and delivers outbox rows. It does not need
   // payment credentials, QR signing keys, or the vision service token.
-  if (processType === 'email-worker') return issues;
+  if (['email-worker', 'sms-worker', 'operations-worker'].includes(processType)) return issues;
 
   if (value.PAYMENT_PROVIDER !== 'razorpay') add(issues, 'PAYMENT_PROVIDER', 'Production requires PAYMENT_PROVIDER=razorpay; simulated payments are development-only.');
   if (!String(value.RAZORPAY_KEY_ID ?? '').trim()) add(issues, 'RAZORPAY_KEY_ID', 'RAZORPAY_KEY_ID is required in production.');

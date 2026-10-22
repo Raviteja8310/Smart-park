@@ -212,3 +212,14 @@ Authenticated role: attendant/operator/admin. Body: `{ "token": "signed-qr-token
 A `shared_space` quote or hold requires a complete seven-day availability schedule. The start time must be inside the local day's interval; departure may occur exactly at closing. Multi-day stays validate the arrival's and departure's respective local days; the car may remain parked while the host is not accepting arrivals between those times. The listing's IANA timezone is used to evaluate local weekday and time. General facility listings continue to use their facility opening/closing hours.
 
 The host earning ledger is written in the same database transaction that confirms a verified captured payment. It is unique by booking and payment; the status remains `pending` until a separate controlled settlement process exists. This phase does not implement payouts or refunds.
+
+
+# Phase 8 — referral programme
+
+All endpoints require an authenticated session.
+
+- `GET /api/referrals/me` — creates a stable referral code for legacy accounts if needed, then returns the personal referral link, referral counts, referral activity, and internal-credit balance.
+- `GET /api/referrals/rewards` — returns the signed-in user's referral-credit ledger.
+- `POST /api/auth/register` accepts an optional `referralCode`. Unknown codes are rejected before account creation.
+
+The current qualification rule awards INR 100 in internal credits to each party after the referred account completes a gate-recorded parking session and a verified paid payment exists, provided there is no refund request for that booking. These ledger credits are not cash and are not withdrawable or redeemable in this phase.
