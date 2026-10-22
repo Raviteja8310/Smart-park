@@ -27,6 +27,7 @@
 8. `database/migrations/008_operations_analytics_alerts.sql`
 9. `database/migrations/009_transactional_email_outbox.sql`
 10. `database/migrations/010_refunds_and_host_payouts.sql`
+11. `database/migrations/011_favorites_search_reviews.sql`
 
 Use `npm run migrate` for a fresh database; it tracks migration checksums and applied state. For an existing database that was migrated manually before the runner existed, back up and follow the baseline procedure in `docs/production-deployment.md`. Do not re-run successful SQL migrations manually.
 
@@ -96,3 +97,17 @@ Pure API/helper tests cover refund and payout eligibility, status transitions, d
 - Run concurrent review submissions for one booking and verify the unique constraint and API 409 response.
 - Confirm hidden reviews disappear from both review listings and aggregate rating counts, and verify moderator audit entries.
 - Run Vite production build, browser tests and role-based end-to-end tests after `npm install`.
+
+
+## Phase 13: integration and release checks
+
+- Added `scripts/integration-smoke.mjs` for live API health, response-contract, security-header, Origin-guard, unauthorized-access, 404, and optional authenticated read checks.
+- Added source-contract tests that compare all literal frontend API calls to the API route table, verify router mount points, confirm Razorpay raw-body parser order, check migration numbering and baseline coverage, and inspect production Compose assumptions.
+- Added `docs/integration-testing.md` with local setup steps and a staging end-to-end checklist.
+- Automated validation in this workspace: 88 API tests and 14 Python vision tests pass; API JavaScript syntax and Python compilation pass; Compose YAML files parse.
+
+## Remaining environment-specific validation
+
+- `npm install` could not reach `registry.npmjs.org` in this workspace (`EAI_AGAIN`), so no lockfile could be generated here and Vite is not installed. Run `npm install` on the development machine, commit the generated `package-lock.json`, and confirm `npm run build` passes before deploying.
+- Run `npm run test:integration` with a migrated MySQL database and running API. Optional login collection checks require a verified, active staging account set through `SMARTPARK_SMOKE_EMAIL` and `SMARTPARK_SMOKE_PASSWORD`.
+- Still required: real Razorpay staging order/webhook tests, SMTP delivery tests, backup/restore validation, HTTPS issuance, camera accuracy checks, and hardware gate acceptance testing.

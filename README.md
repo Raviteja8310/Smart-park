@@ -559,3 +559,17 @@ Read `docs/financial-operations.md` for the status transitions, role responsibil
 - Public cards expose aggregate average rating and count, while public review records display a shortened reviewer name and do not include booking IDs. Users can edit/delete their own reviews, and administrators can hide or republish reviews.
 - Apply migration `011_favorites_search_reviews.sql` after migration 010. Run `npm run migrate` when migration history has been verified.
 - API pure-logic tests cover input normalization, review validation and privacy-safe public mapping. The migration and API endpoints still require live MySQL integration testing.
+
+## Phase 13: integration smoke tests and release contracts
+
+Phase 13 adds a live HTTP smoke-test harness and source contract tests to reduce the risk of frontend/backend route mismatches and configuration regressions. The smoke test checks database health, public parking response shapes, authentication boundaries, security headers, Origin enforcement and consistent 404 responses. Optional credentials enable authenticated read-only collection checks and verify session invalidation after logout.
+
+Run deterministic tests with `npm run test:all`. With MySQL migrated and the API running, run `npm run test:integration`. Use `npm run verify:release` to run tests, build the production frontend and run the live smoke checks in sequence. See `docs/integration-testing.md` for setup, expected behavior and the end-to-end staging checklist.
+
+The live API smoke tests, full Vite build, MySQL-backed business workflows, provider checkout/webhooks, SMTP delivery, production HTTPS and camera/hardware accuracy must be validated in the target environment. Passing unit and source-contract tests alone is not production certification.
+
+### Phase 13: integration verification and release contracts
+
+Phase 13 adds a read-mostly live API smoke suite (`npm run test:integration`) plus source-contract tests that verify router mounts, frontend-to-backend endpoint correspondence, raw webhook-body ordering, migration sequence/baseline coverage, and production network/secret assumptions. Run `npm run test:all` for deterministic API/vision tests, then `npm run build`, followed by the live smoke suite with the API and MySQL running. See `docs/integration-testing.md` and the Phase 13 section in `docs/release-checklist.md`.
+
+The current environment could run the deterministic tests but could not download npm dependencies from the registry, and has no running MySQL/Docker runtime. Therefore the production frontend build, database-backed HTTP smoke tests, Razorpay staging checkout/webhooks, SMTP delivery, and physical camera/hardware flow must still be verified on the development computer or staging server.

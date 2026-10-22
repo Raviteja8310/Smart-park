@@ -1,6 +1,6 @@
 {
   "name": "smartpark",
-  "version": "2.1.0",
+  "version": "2.3.0",
   "private": true,
   "engines": {
     "node": ">=22"
@@ -27,7 +27,9 @@
     "seed:demo": "npm run seed:demo --workspace @smartpark/api",
     "vision:dev": "cd services/vision && python -m uvicorn smartpark_vision.main:app --host 127.0.0.1 --port 8000",
     "worker:email": "npm run worker:email --workspace @smartpark/api",
-    "worker:email:once": "npm run worker:email:once --workspace @smartpark/api"
+    "worker:email:once": "npm run worker:email:once --workspace @smartpark/api",
+    "test:integration": "node scripts/integration-smoke.mjs",
+    "verify:release": "npm run test:all && npm run build && npm run test:integration"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

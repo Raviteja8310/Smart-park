@@ -40,3 +40,16 @@
 
 - [ ] Verify favorite ownership isolation, recent-search deletion, completed-booking review eligibility, unique-review constraint and administrator moderation against MySQL.
 - [ ] Confirm public review responses never expose booking IDs, email addresses or full reviewer names.
+
+## Phase 13 — Integration validation
+
+- [ ] `npm run test:all` passes.
+- [ ] `npm run build` completes without errors.
+- [ ] Apply migrations with the controlled migration runner; verify history has no `running` or `failed` entry.
+- [ ] Start the API with the migrated MySQL database and verify `/api/health` reports `database: connected`.
+- [ ] Run `npm run test:integration`; verify API identity, public inventory response shapes, authentication boundaries, Origin guard, and 404 contract.
+- [ ] With a verified staging account set `SMARTPARK_SMOKE_EMAIL` and `SMARTPARK_SMOKE_PASSWORD`, run the integration smoke suite again to exercise authenticated read endpoints and session revocation.
+- [ ] Complete the manual end-to-end scenarios in `docs/integration-testing.md` using test-only payment credentials and test data.
+- [ ] Verify browser and API access, payment/webhook, email-worker, and camera/vision behavior in the intended deployment environment.
+
+A passing smoke test is not equivalent to production certification. Payment providers, SMTP, TLS issuance, database restore, camera detection accuracy and gate hardware require environment-specific validation.
