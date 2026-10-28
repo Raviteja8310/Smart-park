@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   ShieldCheck, Save, CheckCircle2, ChevronDown, ChevronUp, CircleHelp, Accessibility,
   UserRound, KeyRound, LockKeyhole, Eye, EyeOff, Palette, Sun, Moon, BellRing,
-  Languages, RotateCcw, Download, MonitorCog, Mail, ArrowRight, Sparkles, Building2, CarFront, Store, TicketCheck, Send, MessageSquare, CircleAlert
+  Languages, RotateCcw, Download, MonitorCog, Mail, ArrowRight, Sparkles, Building2, CarFront, Store, TicketCheck, Send, MessageSquare, CircleAlert, RefreshCw
 } from 'lucide-react';
 import { supportedLanguages } from '../i18n.js';
 
