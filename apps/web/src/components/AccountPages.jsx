@@ -12,7 +12,7 @@ const preferenceDefaults = {
   parkingAlerts: true,
   compactTables: false,
   language: 'en',
-  theme: 'light',
+  theme: 'dark',
   highContrast: false,
   largeText: false,
   reduceMotion: false

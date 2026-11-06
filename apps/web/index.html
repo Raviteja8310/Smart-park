@@ -1,11 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="sp-dark-theme">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#111827" />
-    <meta name="description" content="SmartPark — unified parking discovery, booking and occupancy management." />
-    <title>SmartPark — Parking, simplified</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#070b14" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f7fb" media="(prefers-color-scheme: light)" />
+    <meta name="description" content="SmartPark — Your drive. Our intelligence. Parking discovery, reservations, live occupancy and facility operations in one platform." />
+    <link rel="icon" type="image/gif" href="/assets/branding/smartpark-logo.gif" />
+    <link rel="apple-touch-icon" href="/assets/branding/smartpark-logo.gif" />
+    <link rel="preload" as="image" href="/assets/branding/smartpark-logo.gif" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+    <title>SmartPark — Your Drive. Our Intelligence.</title>
+    <script>
+      // Apply the saved theme before first paint to avoid a light/dark flash. Dark is the default.
+      try { var p = JSON.parse(localStorage.getItem('smartpark.preferences') || '{}'); if (p.theme === 'light') document.documentElement.classList.remove('sp-dark-theme'); } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

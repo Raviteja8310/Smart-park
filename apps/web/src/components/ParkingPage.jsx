@@ -4,6 +4,7 @@ import {
   Layers3, LoaderCircle, MapPin, Plus, RefreshCw, Search, ShieldCheck,
   SlidersHorizontal, SquareParking, X, Heart, Star, MessageSquareText, LocateFixed, Map, List, Navigation
 } from 'lucide-react';
+import { ConfirmationAnimation } from './animations/ParkingAnimations.jsx';
 
 async function apiRequest(path, options = {}) {
   const response = await fetch(path, {
@@ -575,7 +576,7 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
         {bookingSlot && !isManager && <article className="sp-panel sp-booking-builder">
           <div className="sp-panel-header"><div><p className="sp-kicker">RESERVE A SPACE</p><h2>{bookingSlot.code} · {selectedLot.name}</h2><p>Choose your arrival time and duration to get a server-calculated price. Times use {selectedLot.timezone || 'Asia/Kolkata'}.</p></div><button className="sp-button ghost" onClick={() => { setBookingSlot(null); setBookingQuote(null); setActiveHold(null); }}><X size={14} /> Close</button></div>
           {activeHold ? <div className="sp-hold-confirmation">
-            <div className="sp-hold-check"><Check size={20} /></div>
+            <ConfirmationAnimation size={76} kind="reservation" />
             <div><strong>Temporary reservation created</strong><p>Booking code: <b>{activeHold.bookingCode}</b></p><p>Hold expires: {activeHold.holdExpiresAt ? new Date(activeHold.holdExpiresAt).toLocaleString() : 'in approximately 10 minutes'}</p><small>This is an unpaid temporary hold. It becomes confirmed only after the payment provider verifies checkout.</small></div>
             <button className="sp-button primary" onClick={() => onViewBookings?.()}>View my bookings <ArrowUpRight size={14} /></button>
           </div> : <>

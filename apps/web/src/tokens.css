@@ -1,0 +1,370 @@
+/* =============================================================================
+   SmartPark Mobility OS — design tokens
+   Three layers:  primitive (raw values) → semantic (purpose) → component.
+   UI rules reference semantic/component tokens. Themes redefine the semantic
+   layer only (plus the pastel tint stops, which invert in dark mode).
+   Dark ("Midnight") is the default theme; light ("Daylight") is opt-in.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1. PRIMITIVES
+   ------------------------------------------------------------------------ */
+:root {
+  /* Ion — brand accent, matched to the official logo's electric blue → violet glow. */
+  --ion-50: #eef2ff;
+  --ion-100: #e0e7ff;
+  --ion-200: #c7d2fe;
+  --ion-300: #a5b4fc;
+  --ion-400: #818cf8;
+  --ion-500: #6366f1;
+  --ion-600: #4f46e5;
+  --ion-700: #4338ca;
+  --ion-800: #3730a3;
+  --sky-300: #93c5fd;
+  --sky-400: #60a5fa;
+  --brand-blue: #2563eb;
+  --brand-violet: #a855f7;
+
+  /* Emerald — "available / success". Kept under the --green-* names the
+     migrated stylesheets reference. */
+  --green-50: #ecfdf5;
+  --green-100: #d1fae5;
+  --green-200: #a7f3d0;
+  --green-300: #6ee7b7;
+  --green-400: #34d399;
+  --green-500: #10b981;
+  --green-600: #059669;
+  --green-700: #047857;
+  --green-800: #065f46;
+  --green-900: #064e3b;
+  --green-950: #022c22;
+
+  /* Graphite / navy neutrals */
+  --neutral-0: #ffffff;
+  --neutral-25: #fafbfd;
+  --neutral-50: #f5f7fb;
+  --neutral-100: #eef1f6;
+  --neutral-150: #e3e8f0;
+  --neutral-200: #d5dce7;
+  --neutral-300: #b9c3d3;
+  --neutral-400: #8d99ad;
+  --neutral-500: #6b778c;
+  --neutral-600: #525d71;
+  --neutral-700: #3a4457;
+  --neutral-800: #252e40;
+  --neutral-900: #151c2c;
+  --neutral-950: #0c1220;
+  --neutral-1000: #070b14;
+
+  /* Status hues */
+  --red-50: #fff1f3;
+  --red-100: #ffe1e6;
+  --red-300: #fda4b4;
+  --red-500: #f43f5e;
+  --red-600: #e11d48;
+  --red-700: #be123c;
+
+  --amber-50: #fffaeb;
+  --amber-100: #fef0c7;
+  --amber-300: #fcd34d;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+  --amber-700: #a15c07;
+
+  --blue-50: #eef4ff;
+  --blue-100: #dde8ff;
+  --blue-300: #a4c1fd;
+  --blue-500: #4f7cf7;
+  --blue-600: #3b63e0;
+  --blue-700: #2f4fb8;
+
+  --violet-50: #f5f3ff;
+  --violet-100: #ede9fe;
+  --violet-300: #c4b5fd;
+  --violet-500: #8b5cf6;
+  --violet-600: #7c3aed;
+  --violet-700: #6d28d9;
+
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 22px;
+  --text-4xl: 24px;
+  --text-5xl: 28px;
+  --text-6xl: 32px;
+  --text-7xl: 36px;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 420ms;
+  --ease-standard: cubic-bezier(.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(.16, 1, .3, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   2. SEMANTIC — Daylight (light) values
+   ------------------------------------------------------------------------ */
+:root {
+  color-scheme: light;
+  --color-bg: var(--neutral-50);
+  --color-surface: var(--neutral-0);
+  --color-surface-subtle: var(--neutral-25);
+  --color-surface-muted: var(--neutral-100);
+  --color-surface-sunken: var(--neutral-150);
+  --color-surface-inverse: var(--neutral-950);
+  --color-surface-glass: rgba(255, 255, 255, .72);
+  --color-surface-raised: var(--neutral-0);
+
+  --color-text-strong: #0b1222;
+  --color-text: var(--neutral-800);
+  --color-text-secondary: var(--neutral-600);
+  --color-text-muted: var(--neutral-500);
+  --color-text-subtle: #667287;
+  --color-text-on-accent: #ffffff;
+
+  --color-border-subtle: var(--neutral-100);
+  --color-border: var(--neutral-150);
+  --color-border-strong: var(--neutral-300);
+  --color-hairline: rgba(15, 23, 42, .08);
+
+  --color-primary: var(--ion-600);
+  --color-primary-hover: var(--ion-700);
+  --color-primary-active: var(--ion-800);
+  --color-primary-soft: var(--ion-50);
+  --color-primary-muted: var(--ion-100);
+  --color-primary-border: var(--ion-200);
+  --color-primary-text: var(--ion-700);
+  --color-accent-gradient: linear-gradient(135deg, #2563eb, #7c3aed);
+
+  --color-success: var(--green-600);
+  --color-danger: var(--red-600);
+  --color-danger-soft: var(--red-50);
+  --color-danger-text: var(--red-700);
+  --color-warning: var(--amber-500);
+  --color-warning-soft: var(--amber-50);
+  --color-warning-text: var(--amber-700);
+  --color-info: var(--blue-600);
+  --color-info-soft: var(--blue-50);
+  --color-info-text: var(--blue-700);
+
+  /* Parking-state vocabulary — shared by maps, legends, pills and charts. */
+  --state-available: #10b981;
+  --state-occupied: #f43f5e;
+  --state-reserved: #8b5cf6;
+  --state-unknown: #94a3b8;
+  --state-maintenance: #f59e0b;
+  --state-ev: #0ea5e9;
+  --state-accessible: #3b82f6;
+
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-primary) 30%, transparent);
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, .05);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .04), 0 4px 14px rgba(15, 23, 42, .05);
+  --shadow-md: 0 2px 4px rgba(15, 23, 42, .04), 0 12px 28px rgba(15, 23, 42, .08);
+  --shadow-lg: 0 24px 60px rgba(15, 23, 42, .18);
+  --shadow-primary: 0 8px 22px color-mix(in srgb, var(--color-primary) 28%, transparent);
+  --glow-primary: 0 0 0 1px color-mix(in srgb, var(--color-primary) 35%, transparent), 0 0 24px color-mix(in srgb, var(--color-primary) 18%, transparent);
+
+  --ambient-a: rgba(59, 130, 246, .10);
+  --ambient-b: rgba(139, 92, 246, .08);
+  --ambient-c: rgba(56, 189, 248, .06);
+  --grid-line: rgba(15, 23, 42, .045);
+}
+
+/* Midnight (dark, default) */
+html.sp-dark-theme {
+  color-scheme: dark;
+  --color-bg: var(--neutral-1000);
+  --color-surface: #0d1424;
+  --color-surface-subtle: #0a101d;
+  --color-surface-muted: #121a2c;
+  --color-surface-sunken: #172036;
+  --color-surface-inverse: #f1f5f9;
+  --color-surface-glass: rgba(13, 20, 36, .66);
+  --color-surface-raised: #111a2e;
+
+  --color-text-strong: #f1f5f9;
+  --color-text: #d3dae6;
+  --color-text-secondary: #aab4c5;
+  --color-text-muted: #8a95a9;
+  --color-text-subtle: #7b869c;
+
+  --color-border-subtle: rgba(148, 163, 184, .08);
+  --color-border: rgba(148, 163, 184, .13);
+  --color-border-strong: rgba(148, 163, 184, .24);
+  --color-hairline: rgba(148, 163, 184, .1);
+
+  /* Fill tone stays deep enough for white text (>= 4.5:1); text tone is bright. */
+  --color-primary: #4f46e5;
+  --color-primary-hover: #5b53ee;
+  --color-primary-active: #6d65f5;
+  --color-primary-soft: rgba(99, 102, 241, .1);
+  --color-primary-muted: rgba(99, 102, 241, .17);
+  --color-primary-border: rgba(129, 140, 248, .35);
+  --color-primary-text: var(--ion-300);
+
+  --color-danger-soft: rgba(244, 63, 94, .1);
+  --color-danger-text: #fda4b4;
+  --color-warning-soft: rgba(245, 158, 11, .1);
+  --color-warning-text: #fcd34d;
+  --color-info-soft: rgba(79, 124, 247, .12);
+  --color-info-text: #a4c1fd;
+
+  --state-available: #34d399;
+  --state-occupied: #fb7185;
+  --state-reserved: #a78bfa;
+  --state-unknown: #64748b;
+  --state-maintenance: #fbbf24;
+  --state-ev: #38bdf8;
+  --state-accessible: #60a5fa;
+
+  /* Pastel tint stops become translucent washes over navy. */
+  --green-50: rgba(52, 211, 153, .08);
+  --green-100: rgba(52, 211, 153, .13);
+  --green-200: rgba(52, 211, 153, .22);
+  --red-50: rgba(244, 63, 94, .09);
+  --red-100: rgba(244, 63, 94, .14);
+  --amber-50: rgba(245, 158, 11, .09);
+  --amber-100: rgba(245, 158, 11, .14);
+  --blue-50: rgba(79, 124, 247, .1);
+  --blue-100: rgba(79, 124, 247, .16);
+  --violet-50: rgba(139, 92, 246, .1);
+  --violet-100: rgba(139, 92, 246, .16);
+  /* Mid stops brighten for legibility on navy. */
+  --green-600: #34d399;
+  --green-700: #6ee7b7;
+  --red-600: #fb7185;
+  --red-700: #fda4b4;
+  --amber-600: #fbbf24;
+  --amber-700: #fcd34d;
+  --blue-600: #7ea2fb;
+  --blue-700: #a4c1fd;
+  --violet-500: #a78bfa;
+  --violet-600: #b59cfb;
+  --violet-700: #c4b5fd;
+
+  --shadow-xs: 0 1px 0 rgba(255, 255, 255, .02) inset;
+  --shadow-sm: 0 1px 0 rgba(255, 255, 255, .03) inset, 0 6px 18px rgba(0, 0, 0, .28);
+  --shadow-md: 0 1px 0 rgba(255, 255, 255, .04) inset, 0 16px 36px rgba(0, 0, 0, .36);
+  --shadow-lg: 0 30px 80px rgba(0, 0, 0, .55);
+
+  --ambient-a: rgba(59, 130, 246, .17);
+  --ambient-b: rgba(139, 92, 246, .14);
+  --ambient-c: rgba(56, 189, 248, .08);
+  --grid-line: rgba(148, 163, 184, .05);
+}
+
+html.sp-high-contrast {
+  --color-text-strong: #000;
+  --color-text: #0b1222;
+  --color-text-secondary: #1f2937;
+  --color-text-muted: #334155;
+  --color-text-subtle: #475569;
+  --color-border: #64748b;
+  --color-border-strong: #334155;
+  --color-primary: #3730a3;
+  --color-primary-hover: #312e81;
+  --color-primary-text: #312e81;
+}
+html.sp-dark-theme.sp-high-contrast {
+  --color-text-strong: #fff;
+  --color-text: #f1f5f9;
+  --color-text-secondary: #e2e8f0;
+  --color-text-muted: #cbd5e1;
+  --color-text-subtle: #a3aec0;
+  --color-border: rgba(203, 213, 225, .45);
+  --color-border-strong: rgba(226, 232, 240, .7);
+  --color-primary: var(--ion-300);
+  --color-primary-text: var(--ion-200);
+}
+
+/* ---------------------------------------------------------------------------
+   3. COMPONENT
+   ------------------------------------------------------------------------ */
+:root {
+  --sidebar-width: 272px;
+  --sidebar-rail: 76px;
+  --topbar-height: 64px;
+  --sidebar-bg: var(--color-surface-glass);
+  --nav-link-fg: var(--color-text-muted);
+  --nav-link-hover-bg: color-mix(in srgb, var(--color-text-strong) 5%, transparent);
+  --nav-link-active-bg: var(--color-primary-soft);
+  --nav-link-active-fg: var(--color-text-strong);
+
+  --card-bg: var(--color-surface);
+  --card-border: var(--color-border);
+  --card-radius: var(--radius-2xl);
+  --card-shadow: var(--shadow-sm);
+
+  --button-primary-bg: var(--color-primary);
+  --button-primary-bg-hover: var(--color-primary-hover);
+  --button-primary-fg: var(--color-text-on-accent);
+  --button-radius: var(--radius-lg);
+
+  --input-bg: var(--color-surface-subtle);
+  --input-border: var(--color-border);
+  --input-border-focus: var(--color-primary);
+  --input-radius: var(--radius-lg);
+
+  /* Legacy aliases */
+  --ink: var(--color-text-strong);
+  --muted: var(--color-text-muted);
+  --line: var(--color-border);
+  --green: var(--color-primary);
+  --green-dark: var(--color-primary-hover);
+  --mint: var(--color-primary-muted);
+  --panel: var(--color-surface);
+  --sidebar: var(--sidebar-width);
+}
+
+/* ---------------------------------------------------------------------------
+   Base interaction polish
+   ------------------------------------------------------------------------ */
+body { background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans); font-feature-settings: 'cv11', 'ss01'; }
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+:where(input, select, textarea):focus-visible {
+  outline: none;
+  border-color: var(--input-border-focus);
+  box-shadow: var(--focus-ring);
+}
+:where(button, a, input, select, textarea) {
+  transition-property: background-color, border-color, color, box-shadow, transform, opacity;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-standard);
+}
+::selection { background: color-mix(in srgb, var(--color-primary) 30%, transparent); color: var(--color-text-strong); }
+.sp-num, .stat-value, .availability-number, .amount-cell { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; animation-iteration-count: 1 !important; }
+}
+html.sp-reduce-motion *, html.sp-reduce-motion *::before, html.sp-reduce-motion *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; animation-iteration-count: 1 !important; }

@@ -1,0 +1,158 @@
+/* =============================================================================
+   SmartPark — page backdrops, functional animations, animated nav icons.
+   Loaded after mobility.css.
+   ========================================================================== */
+
+/* ---------- Page backdrops (original per-section parking scenes) ---------- */
+.sp-backdrop { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: radial-gradient(120% 90% at 70% 0%, #0f1a33, #05070d 70%); }
+.sp-backdrop-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+.sp-backdrop-overlay { position: absolute; inset: 0; }
+/* Workspace pages: the scene is atmosphere; content must always win. */
+html.sp-dark-theme .sp-backdrop-page .sp-backdrop-overlay { background: linear-gradient(180deg, rgba(7, 11, 20, .6) 0%, rgba(7, 11, 20, .8) 38%, rgba(7, 11, 20, .93) 100%), linear-gradient(90deg, rgba(7, 11, 20, .55), transparent 40%); }
+html:not(.sp-dark-theme) .sp-backdrop { background: var(--color-bg); }
+html:not(.sp-dark-theme) .sp-backdrop-page .sp-backdrop-img { filter: saturate(.55) brightness(1.15); opacity: .9; }
+html:not(.sp-dark-theme) .sp-backdrop-page .sp-backdrop-overlay { background: linear-gradient(180deg, rgba(245, 247, 251, .8) 0%, rgba(245, 247, 251, .9) 35%, rgba(245, 247, 251, .97) 100%); }
+/* Hero scenes (login, registration, loading): cinematic, lightly veiled. */
+.sp-backdrop-hero .sp-backdrop-overlay { background: radial-gradient(90% 70% at 30% 40%, rgba(5, 7, 13, .3), rgba(5, 7, 13, .78)), linear-gradient(180deg, rgba(5, 7, 13, .15), rgba(5, 7, 13, .7)); }
+.auth-story .sp-backdrop { position: absolute; z-index: -1; }
+/* Content surfaces get extra separation over scenes. */
+html.sp-dark-theme .sp-content :is(.sp-card, .sp-metric, .sp-hero) { -webkit-backdrop-filter: blur(10px) saturate(130%); backdrop-filter: blur(10px) saturate(130%); }
+html.sp-dark-theme .sp-topbar.scrolled { background: rgba(7, 11, 20, .72); }
+
+/* ---------- Functional animations ---------- */
+.sp-anim { display: inline-grid; justify-items: center; gap: 10px; color: var(--color-text-muted); }
+.sp-anim svg { display: block; overflow: visible; }
+.sp-anim-label { font-size: var(--text-sm); font-weight: 600; letter-spacing: .02em; }
+.sp-anim * { transform-box: view-box; }
+
+/* Parking loader: approach, turn in, align, sensor confirms */
+.pk-ground { fill: color-mix(in srgb, var(--color-surface) 70%, transparent); stroke: var(--color-border); }
+.pk-line { fill: none; stroke: var(--color-border-strong); stroke-width: 2; stroke-linecap: round; }
+.pk-lane { fill: none; stroke: var(--color-border); stroke-width: 2; stroke-dasharray: 8 8; }
+.pk-parked { fill: var(--color-surface-sunken); stroke: var(--color-border); }
+.pk-target { fill: none; stroke: var(--color-primary-text); stroke-width: 1.6; stroke-dasharray: 4 4; animation: pk-target 4.8s var(--ease-standard) infinite; }
+.pk-sensor { fill: var(--state-maintenance); animation: pk-sensor 4.8s steps(1) infinite; }
+.pk-car { transform: translate(83px, 44px); animation: pk-car 4.8s cubic-bezier(.45, 0, .2, 1) infinite; }
+.pk-car-body { fill: var(--color-primary); filter: drop-shadow(0 4px 8px color-mix(in srgb, var(--color-primary) 45%, transparent)); }
+.pk-car-glass { fill: rgba(5, 8, 20, .55); }
+.pk-car-head { fill: #fff; }
+@keyframes pk-car {
+  0% { transform: translate(-24px, 98px) rotate(90deg); opacity: 0; }
+  8% { opacity: 1; }
+  40% { transform: translate(64px, 98px) rotate(90deg); }
+  56% { transform: translate(83px, 78px) rotate(0deg); }
+  74%, 92% { transform: translate(83px, 44px) rotate(0deg); opacity: 1; }
+  100% { transform: translate(83px, 44px) rotate(0deg); opacity: 0; }
+}
+@keyframes pk-target { 0%, 70% { stroke: var(--color-primary-text); stroke-dasharray: 4 4; } 76%, 100% { stroke: var(--state-available); stroke-dasharray: 200 0; } }
+@keyframes pk-sensor { 0% { fill: var(--state-maintenance); } 74% { fill: var(--state-available); } }
+
+/* Gate entry: approach, ANPR scan, barrier lifts, drive through */
+.gt-road { stroke: var(--color-border-strong); stroke-width: 2; }
+.gt-lane { stroke: var(--color-border); stroke-width: 2; stroke-dasharray: 10 10; }
+.gt-booth, .gt-cam { fill: var(--color-surface-sunken); stroke: var(--color-border-strong); }
+.gt-post { fill: var(--color-border-strong); }
+.gt-pivot { fill: var(--color-text-muted); }
+.gt-light { fill: var(--state-maintenance); animation: gt-light 6s steps(1) infinite; }
+.gt-beam { fill: var(--color-primary-text); opacity: 0; animation: gt-beam 6s ease-in-out infinite; }
+.gt-arm { transform-origin: 200px 81px; animation: gt-arm 6s cubic-bezier(.6, 0, .3, 1) infinite; }
+.gt-arm-bar { fill: #e2e8f0; }
+.gt-arm-stripe { fill: var(--state-occupied); }
+.gt-car { animation: gt-car 6s cubic-bezier(.45, 0, .3, 1) infinite; }
+.gt-car-body { fill: var(--color-primary); }
+.gt-car-glass { fill: rgba(5, 8, 20, .5); }
+.gt-wheel { fill: #0b0f1c; stroke: var(--color-border-strong); stroke-width: 1.5; }
+.gt-car-head { fill: #fff; filter: drop-shadow(0 0 4px #fff); }
+@keyframes gt-car { 0% { transform: translateX(-130px); } 28%, 56% { transform: translateX(-14px); } 86%, 100% { transform: translateX(330px); } }
+@keyframes gt-beam { 0%, 30% { opacity: 0; } 34%, 44% { opacity: .28; } 48%, 100% { opacity: 0; } }
+@keyframes gt-light { 0% { fill: var(--state-maintenance); } 46% { fill: var(--state-available); } 92% { fill: var(--state-maintenance); } }
+@keyframes gt-arm { 0%, 46% { transform: rotate(0); } 54%, 84% { transform: rotate(-78deg); } 94%, 100% { transform: rotate(0); } }
+
+/* Confirmation (plays once) */
+.cf-halo { fill: color-mix(in srgb, var(--state-available) 14%, transparent); transform-origin: 48px 48px; animation: cf-halo 1.4s var(--ease-emphasized) both; }
+.cf-ring { fill: none; stroke: var(--state-available); stroke-width: 3; stroke-dasharray: 1; stroke-dashoffset: 1; transform: rotate(-90deg); transform-origin: 48px 48px; animation: cf-draw .7s var(--ease-emphasized) .05s forwards; }
+.cf-bay path { stroke: var(--color-border-strong); stroke-width: 2; stroke-linecap: round; fill: none; }
+.cf-car rect:first-child { fill: var(--color-primary); }
+.cf-car-glass { fill: rgba(5, 8, 20, .5); }
+.cf-car { animation: cf-car .7s cubic-bezier(.22, 1, .36, 1) .25s both; }
+.cf-check { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .4)); animation: cf-draw .45s var(--ease-emphasized) .85s forwards; }
+@keyframes cf-halo { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes cf-draw { to { stroke-dashoffset: 0; } }
+@keyframes cf-car { from { transform: translateY(34px); opacity: 0; } }
+
+/* EV charging */
+.ev-pillar { fill: var(--color-surface-sunken); stroke: var(--color-border-strong); }
+.ev-screen { fill: color-mix(in srgb, var(--state-ev) 18%, transparent); }
+.ev-bolt { fill: var(--state-ev); animation: ev-bolt 1.6s ease-in-out infinite; }
+.ev-cable { fill: none; stroke: var(--color-border-strong); stroke-width: 5; stroke-linecap: round; }
+.ev-flow { fill: none; stroke: var(--state-ev); stroke-width: 2; stroke-dasharray: 3 9; animation: ev-flow .9s linear infinite; }
+.ev-batt { fill: none; stroke: var(--color-border-strong); stroke-width: 2; }
+.ev-fill { fill: var(--state-ev); transform-box: fill-box; transform-origin: left center; animation: ev-fill 5s var(--ease-standard) infinite; }
+@keyframes ev-flow { to { stroke-dashoffset: -12; } }
+@keyframes ev-bolt { 50% { opacity: .45; } }
+@keyframes ev-fill { 0% { transform: scaleX(.08); } 85% { transform: scaleX(1); } 100% { transform: scaleX(1); opacity: .5; } }
+
+/* Live bay indicator (re-keyed on state change, so the change itself animates) */
+.sp-bay-dot { display: inline-flex; align-items: center; gap: 7px; font-size: var(--text-xs); color: var(--color-text-secondary); }
+.sp-bay-dot i { width: 8px; height: 8px; border-radius: 50%; background: var(--state-unknown); animation: bay-change .6s var(--ease-emphasized); }
+.sp-bay-dot.available i { background: var(--state-available); animation: bay-change .6s var(--ease-emphasized), sp-slot-pulse 2.6s .6s infinite; }
+.sp-bay-dot.occupied i { background: var(--state-occupied); }
+.sp-bay-dot.reserved i { background: var(--state-reserved); }
+@keyframes bay-change { from { transform: scale(2.2); opacity: 0; } }
+
+/* Final, meaningful frames when motion is reduced (system or in-app setting) */
+@media (prefers-reduced-motion: reduce) {
+  .pk-car { animation: none; transform: translate(83px, 44px); opacity: 1; }
+  .pk-target { animation: none; stroke: var(--state-available); stroke-dasharray: none; }
+  .pk-sensor { animation: none; fill: var(--state-available); }
+  .gt-car { animation: none; transform: translateX(-14px); }
+  .gt-arm { animation: none; transform: rotate(-78deg); }
+  .gt-light { animation: none; fill: var(--state-available); }
+  .cf-ring, .cf-check { animation: none; stroke-dashoffset: 0; }
+  .ev-fill { animation: none; transform: scaleX(.7); }
+}
+html.sp-reduce-motion .pk-car { animation: none !important; transform: translate(83px, 44px); opacity: 1; }
+html.sp-reduce-motion .pk-target { stroke: var(--state-available); stroke-dasharray: none; }
+html.sp-reduce-motion .pk-sensor { fill: var(--state-available); }
+html.sp-reduce-motion .gt-car { animation: none !important; transform: translateX(-14px); }
+html.sp-reduce-motion .gt-arm { animation: none !important; transform: rotate(-78deg); }
+html.sp-reduce-motion .gt-light { fill: var(--state-available); }
+html.sp-reduce-motion :is(.cf-ring, .cf-check) { animation: none !important; stroke-dashoffset: 0; }
+html.sp-reduce-motion .ev-fill { animation: none !important; transform: scaleX(.7); }
+
+/* Placements */
+.sp-scene-banner { display: flex; align-items: center; gap: 20px; padding: 14px 18px; border: 1px solid var(--color-border); border-radius: var(--card-radius); background: color-mix(in srgb, var(--color-surface) 80%, transparent); }
+.sp-scene-banner .sp-anim { flex-shrink: 0; }
+.sp-scene-banner strong { display: block; font-size: var(--text-md); color: var(--color-text-strong); }
+.sp-scene-banner p { margin: 4px 0 0; font-size: var(--text-sm); color: var(--color-text-muted); line-height: 1.5; }
+.sp-confirm-toast { position: fixed; left: 50%; bottom: 28px; z-index: 90; display: flex; align-items: center; gap: 14px; padding: 12px 20px 12px 12px; border: 1px solid color-mix(in srgb, var(--state-available) 35%, var(--color-border)); border-radius: 18px; background: var(--color-surface-raised); box-shadow: var(--shadow-lg); }
+.sp-confirm-toast strong { display: block; color: var(--color-text-strong); font-size: var(--text-md); }
+.sp-confirm-toast span { font-size: var(--text-sm); color: var(--color-text-muted); }
+@media (max-width: 700px) {
+  .sp-scene-banner { flex-direction: column; align-items: flex-start; }
+  .sp-confirm-toast { bottom: calc(96px + env(safe-area-inset-bottom)); width: calc(100% - 32px); }
+}
+
+/* Boot / loading screen */
+.sp-boot { position: relative; min-height: 100vh; min-height: 100dvh; display: grid; place-content: center; justify-items: center; gap: 22px; padding: 24px; }
+.sp-boot > :not(.sp-backdrop) { position: relative; z-index: 1; }
+.sp-boot .sp-brand-hero { justify-items: center; text-align: center; }
+.sp-boot .sp-anim { --color-surface: #0d1424; --color-border: rgba(148, 163, 184, .16); --color-border-strong: rgba(148, 163, 184, .3); --color-surface-sunken: #172036; color: #a9b6c8; }
+
+/* Animated navigation icons */
+.sp-nav-link:hover .sp-nav-icon svg { animation: nav-nudge .5s var(--ease-emphasized); }
+.sp-nav-link.active .sp-nav-icon svg { animation: nav-pop .45s var(--ease-emphasized); }
+.sp-tabbar button.active svg { animation: nav-pop .45s var(--ease-emphasized); }
+@keyframes nav-nudge { 30% { transform: translateY(-2px) rotate(-6deg); } 65% { transform: translateY(1px) rotate(3deg); } }
+@keyframes nav-pop { 0% { transform: scale(.8); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+
+/* Auth brand lockup */
+.auth-brand { display: block !important; z-index: auto !important; }
+.auth-story { background: #05070d !important; }
+.auth-mobile-brand .sp-wordmark-name { letter-spacing: .14em; }
+.sp-page-loading { justify-items: center; padding: 48px 0 24px; }
+.sp-page-loading .sp-skeleton { width: min(560px, 100%); }
+@media (max-width: 700px) {
+  html.sp-dark-theme .auth-page { background: linear-gradient(180deg, rgba(5, 7, 13, .55), rgba(7, 11, 20, .94) 42%), url('/assets/backgrounds/login/underground-garage-static.svg') center top / cover no-repeat, #05070d !important; }
+  html.sp-dark-theme .auth-form-side { background: transparent !important; }
+}

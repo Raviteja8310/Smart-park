@@ -4,6 +4,8 @@ import {
   Download, ExternalLink, LoaderCircle, MapPin, QrCode, RefreshCw, ShieldCheck,
   X, XCircle
 } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { ConfirmationAnimation } from './animations/ParkingAnimations.jsx';
 
 async function apiRequest(path, options = {}) {
   const response = await fetch(path, {
@@ -61,6 +63,7 @@ export default function BookingsPage({ currentUser }) {
   const [paymentActionId, setPaymentActionId] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [confirmedAt, setConfirmedAt] = useState(0);
   const [statusFilter, setStatusFilter] = useState('all');
   const [mockCheckout, setMockCheckout] = useState(null);
   const [ticketModal, setTicketModal] = useState(null);
@@ -120,7 +123,7 @@ export default function BookingsPage({ currentUser }) {
               body: JSON.stringify({ bookingId: booking.id, ...response })
             });
             if (result.requiresReview) setError(result.message || 'Payment was received, but the booking needs manual reconciliation.');
-            else setNotice(result.message || 'Payment verified and booking confirmed. Your QR entry ticket is ready.');
+            else { setNotice(result.message || 'Payment verified and booking confirmed. Your QR entry ticket is ready.'); setConfirmedAt(Date.now()); }
             await reload();
           } catch (requestError) {
             setError(`${requestError.message} Refresh transactions before attempting another payment.`);
@@ -142,6 +145,12 @@ export default function BookingsPage({ currentUser }) {
     }
   }
 
+  useEffect(() => {
+    if (!confirmedAt) return undefined;
+    const id = window.setTimeout(() => setConfirmedAt(0), 4200);
+    return () => window.clearTimeout(id);
+  }, [confirmedAt]);
+
   async function completeMockPayment() {
     if (!mockCheckout) return;
     const { booking, payment } = mockCheckout;
@@ -150,7 +159,7 @@ export default function BookingsPage({ currentUser }) {
       const result = await apiRequest('/api/payments/mock/complete', { method: 'POST', body: JSON.stringify({ paymentId: payment.id }) });
       setMockCheckout(null);
       if (result.requiresReview) setError(result.message || 'The test payment was simulated, but the booking requires review.');
-      else setNotice(result.message || 'TEST MODE: payment simulated. The booking is confirmed.');
+      else { setNotice(result.message || 'TEST MODE: payment simulated. The booking is confirmed.'); setConfirmedAt(Date.now()); }
       await reload();
     } catch (requestError) {
       setError(requestError.message || 'Test payment could not be completed.');
@@ -172,6 +181,14 @@ export default function BookingsPage({ currentUser }) {
 
   return (
     <section className="sp-page sp-bookings-page">
+      <AnimatePresence>
+        {confirmedAt > 0 && (
+          <motion.div key={confirmedAt} className="sp-confirm-toast" role="status" initial={{ opacity: 0, y: 16, x: '-50%' }} animate={{ opacity: 1, y: 0, x: '-50%' }} exit={{ opacity: 0, y: 10, x: '-50%' }} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
+            <ConfirmationAnimation size={56} kind="payment" />
+            <div><strong>Payment complete</strong><span>Your booking is confirmed and the QR entry ticket is ready.</span></div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="sp-page-heading">
         <div className="sp-heading-title-row">
           <div><p className="sp-kicker">RESERVATION HISTORY</p><h1>My bookings</h1><p>Manage checkout, entry tickets and your reservation history.</p></div>

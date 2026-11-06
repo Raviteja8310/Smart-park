@@ -1,0 +1,164 @@
+/* =============================================================================
+   SmartPark micro-interactions
+   Every small control animates in a way that matches its meaning. Icons are
+   lucide SVGs, which carry a `lucide-<name>` class, so one rule set covers the
+   whole app. Animations play once per hover/focus/press (never loop on idle),
+   use transform/opacity only, and are disabled by the global reduced-motion
+   rules in tokens.css (system setting and in-app "Reduce motion").
+   ========================================================================== */
+
+:root { --mi-ease: cubic-bezier(.34, 1.56, .64, 1); --mi-out: cubic-bezier(.16, 1, .3, 1); }
+svg.lucide { transform-box: fill-box; transform-origin: center; }
+
+/* Interactive hosts: anything a user can point at or tab to. */
+:is(button, a, label, summary, [role="button"], [role="tab"], [role="menuitem"], [role="option"]):is(:hover, :focus-visible) > svg.lucide,
+:is(button, a, label, summary, [role="button"], [role="tab"], [role="menuitem"], [role="option"]):is(:hover, :focus-visible) > span > svg.lucide {
+  animation: mi-lift .45s var(--mi-out);
+}
+
+/* ---- Icon vocabulary ---------------------------------------------------- */
+/* Search: the lens sweeps as if scanning */
+:is(button, a, label, [role="button"], [role="option"]):is(:hover, :focus-visible) svg.lucide-search { animation: mi-search .9s var(--mi-out); }
+/* Notifications: the bell swings */
+:is(button, a, [role="button"], [role="menuitem"]):is(:hover, :focus-visible) :is(svg.lucide-bell, svg.lucide-bell-ring) { animation: mi-swing .8s var(--mi-out); transform-origin: 50% 8%; }
+/* Refresh / retry / undo: one turn */
+:is(button, a, [role="button"]):is(:hover, :focus-visible) :is(svg.lucide-refresh-cw, svg.lucide-rotate-cw) { animation: mi-spin .7s var(--mi-out); }
+:is(button, a, [role="button"]):is(:hover, :focus-visible) svg.lucide-rotate-ccw { animation: mi-spin-rev .7s var(--mi-out); }
+/* Add / close: quarter turn */
+:is(button, a, [role="button"], [role="menuitem"]):is(:hover, :focus-visible) :is(svg.lucide-plus, svg.lucide-x, svg.lucide-circle-x) { animation: mi-quarter .45s var(--mi-ease); }
+/* Delete: the bin shakes */
+:is(button, a, [role="button"]):is(:hover, :focus-visible) [class*="lucide-trash"] { animation: mi-shake .5s ease-in-out; }
+/* Forward / open / sign in / external */
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-arrow-right, svg.lucide-chevron-right, svg.lucide-chevrons-right, svg.lucide-log-in, svg.lucide-log-out, svg.lucide-corner-down-left) { animation: mi-nudge-x .55s var(--mi-out); }
+:is(button, a, [role="button"]):is(:hover, :focus-visible) svg.lucide-arrow-up-right { animation: mi-nudge-diag .55s var(--mi-out); }
+:is(button, a, [role="button"]):is(:hover, :focus-visible) svg.lucide-chevrons-left { animation: mi-nudge-x-rev .55s var(--mi-out); }
+:is(button, a, [role="button"], summary):is(:hover, :focus-visible) svg.lucide-chevron-down { animation: mi-nudge-y .55s var(--mi-out); }
+/* Download / receive */
+:is(button, a, [role="button"]):is(:hover, :focus-visible) :is(svg.lucide-arrow-down-to-line, svg.lucide-arrow-down-left) { animation: mi-drop .6s var(--mi-out); }
+/* Favourites & rewards */
+:is(button, a, [role="button"]):is(:hover, :focus-visible) svg.lucide-heart { animation: mi-beat .7s ease-in-out; }
+:is(button, a, [role="button"], label):is(:hover, :focus-visible) svg.lucide-star { animation: mi-twinkle .7s var(--mi-ease); }
+:is(button, a, [role="button"]):is(:hover, :focus-visible) :is(svg.lucide-gift, svg.lucide-badge-percent) { animation: mi-wiggle .6s ease-in-out; }
+:is(button, a, [role="button"]):is(:hover, :focus-visible) svg.lucide-sparkles { animation: mi-twinkle .8s var(--mi-ease); }
+/* Places & vehicles */
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-map-pin, svg.lucide-map-pinned) { animation: mi-pin .65s var(--mi-out); transform-origin: 50% 100%; }
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-car-front, svg.lucide-car) { animation: mi-drive .7s var(--mi-out); }
+:is(button, a, [role="button"]):is(:hover, :focus-visible) :is(svg.lucide-door-open, svg.lucide-door-closed) { animation: mi-door .6s var(--mi-out); transform-origin: 20% 50%; }
+/* Time */
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-calendar-days, [class*="lucide-clock"]) { animation: mi-tick .6s var(--mi-ease); }
+/* Money */
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-credit-card, svg.lucide-wallet, svg.lucide-wallet-cards, svg.lucide-banknote, svg.lucide-badge-indian-rupee) { animation: mi-swipe .6s var(--mi-out); }
+/* Settings & theme */
+:is(button, a, [role="button"], [role="option"], [role="menuitem"]):is(:hover, :focus-visible) svg.lucide-settings { animation: mi-gear .8s var(--mi-out); }
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) svg.lucide-sun { animation: mi-gear .8s var(--mi-out); }
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) svg.lucide-moon { animation: mi-moon .7s var(--mi-out); }
+/* Visibility & security */
+:is(button, a, [role="button"]):is(:hover, :focus-visible) :is(svg.lucide-eye, svg.lucide-eye-off) { animation: mi-blink .45s ease-in-out; }
+:is(button, a, [role="button"], label):is(:hover, :focus-visible) :is(svg.lucide-lock-keyhole, svg.lucide-key-round) { animation: mi-jiggle .5s ease-in-out; }
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-shield-check, svg.lucide-badge-check) { animation: mi-pop .5s var(--mi-ease); }
+/* Energy */
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-zap, svg.lucide-plug-zap) { animation: mi-flash .6s steps(2) 2; }
+/* Confirm / save / done */
+:is(button, a, [role="button"], [role="option"], label):is(:hover, :focus-visible) :is(svg.lucide-check, svg.lucide-check-check, svg.lucide-circle-check, svg.lucide-circle-check-big, [class*="lucide-file-check"], svg.lucide-save) { animation: mi-pop .5s var(--mi-ease); }
+/* Scanning & cameras */
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-scan-line, svg.lucide-scan-eye, svg.lucide-qr-code, svg.lucide-camera, svg.lucide-camera-off) { animation: mi-scan .7s var(--mi-out); }
+/* Copy & link */
+:is(button, a, [role="button"]):is(:hover, :focus-visible) :is(svg.lucide-copy, [class*="lucide-link"]) { animation: mi-copy .5s var(--mi-out); }
+/* Edit */
+:is(button, a, [role="button"]):is(:hover, :focus-visible) svg.lucide-pencil { animation: mi-write .6s ease-in-out; transform-origin: 15% 85%; }
+/* Messages */
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-mail, svg.lucide-message-square-text, svg.lucide-life-buoy, svg.lucide-circle-help) { animation: mi-hop .55s var(--mi-ease); }
+/* Menus */
+:is(button, a, [role="button"]):is(:hover, :focus-visible) :is(svg.lucide-menu, svg.lucide-ellipsis, svg.lucide-more-horizontal) { animation: mi-wiggle-x .5s ease-in-out; }
+/* People */
+:is(button, a, [role="button"], [role="option"], [role="menuitem"]):is(:hover, :focus-visible) :is(svg.lucide-users, svg.lucide-user-round) { animation: mi-hop .55s var(--mi-ease); }
+/* Live data */
+:is(button, a, [role="button"], [role="option"]):is(:hover, :focus-visible) :is(svg.lucide-activity, svg.lucide-gauge, svg.lucide-wifi) { animation: mi-pulse .6s var(--mi-out); }
+/* Toggles */
+:is(button, a, [role="button"], label):is(:hover, :focus-visible) :is(svg.lucide-toggle-left, svg.lucide-toggle-right) { animation: mi-nudge-x .45s var(--mi-out); }
+/* Warnings draw attention once */
+:is(button, a, [role="button"]):is(:hover, :focus-visible) :is(svg.lucide-triangle-alert, svg.lucide-circle-alert) { animation: mi-shake .5s ease-in-out; }
+
+/* Work in progress: spinners always turn (also covers disabled busy buttons). */
+svg.lucide-loader-circle, svg.lucide-loader, .sp-spin, .sp-eng-spin { animation: mi-spin-loop .9s linear infinite !important; }
+
+/* ---- Search fields --------------------------------------------------------
+   The lens brightens on focus; while the user types (micro.js adds
+   .sp-searching for a moment) it scans back and forth. */
+:is(label, div, form, .search-box, .sp-search-bar, .sp-field-search):focus-within > svg.lucide-search { color: var(--color-primary-text); transform: scale(1.08); transition: transform .25s var(--mi-ease), color .2s; }
+.sp-searching svg.lucide-search { animation: mi-search-scan .8s ease-in-out infinite !important; color: var(--color-primary-text); }
+.sp-searching { --sp-search-glow: 1; }
+:is(.search-box, .sp-search-bar, .sp-field-search, .sp-cmdk-input).sp-searching { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent); }
+
+/* ---- Buttons -------------------------------------------------------------- */
+:is(.sp-button, .sp-btn, .primary-button, .sp-icon-btn, .quiet-button, .filter-button, .sp-link-btn, .sp-nav-link, .sp-quick button, .sp-zone-list button):active:not(:disabled) { transform: scale(.97); transition-duration: 60ms; }
+:is(.sp-button, .sp-btn, .primary-button, .auth-page button[type="submit"]) { position: relative; overflow: hidden; isolation: isolate; }
+.sp-ripple { position: absolute; z-index: -1; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: currentColor; opacity: .28; pointer-events: none; animation: mi-ripple .6s var(--mi-out) forwards; }
+/* Click acknowledgement on the icon itself */
+.sp-clicked > svg.lucide, .sp-clicked > span > svg.lucide { animation: mi-press .35s var(--mi-ease) !important; }
+.sp-copied :is(svg.lucide-copy, [class*="lucide-link"]) { color: var(--state-available); animation: mi-pop .4s var(--mi-ease) !important; }
+
+/* ---- Form controls -------------------------------------------------------- */
+input[type="checkbox"]:checked, input[type="radio"]:checked { animation: mi-pop .3s var(--mi-ease); }
+:is(input, select, textarea)[aria-invalid="true"], .sp-field-error :is(input, select, textarea) { animation: mi-shake-x .4s ease-in-out; }
+label:focus-within { color: var(--color-text-strong); }
+select { transition: border-color .2s, box-shadow .2s; }
+
+/* ---- Feedback messages appear with intent --------------------------------- */
+:is(.sp-alert, .sp-ops-message, .auth-message, .sp-inline-alert, .sp-vision-alert, .sp-hold-confirmation) { animation: mi-slide-in .4s var(--mi-out); }
+:is(.sp-alert, .sp-ops-message, .auth-message, .sp-vision-alert).error { animation: mi-slide-in .4s var(--mi-out), mi-shake-x .4s ease-in-out .35s; }
+.sp-badge-dot, .sp-nav-badge { animation: mi-pop .4s var(--mi-ease); }
+
+/* ---- Content enters softly as it renders ---------------------------------- */
+.sp-content :is(.sp-lot-card, .sp-vehicle-card, .sp-booking-card, .sp-notification-card, .sp-slot-card, .sp-enterprise-charger, .sp-finance-record, .sp-enterprise-list-row, .sp-quick button, .sp-zone-list li, .sp-alert-list li, tbody tr) { animation: mi-rise .45s var(--mi-out) both; }
+.sp-content :is(.sp-lot-card, .sp-vehicle-card, .sp-booking-card, .sp-notification-card, .sp-slot-card, .sp-enterprise-charger, .sp-finance-record, .sp-enterprise-list-row, .sp-zone-list li, tbody tr):nth-child(2) { animation-delay: 40ms; }
+.sp-content :is(.sp-lot-card, .sp-vehicle-card, .sp-booking-card, .sp-notification-card, .sp-slot-card, .sp-enterprise-charger, .sp-finance-record, .sp-enterprise-list-row, .sp-zone-list li, tbody tr):nth-child(3) { animation-delay: 80ms; }
+.sp-content :is(.sp-lot-card, .sp-vehicle-card, .sp-booking-card, .sp-notification-card, .sp-slot-card, .sp-enterprise-charger, .sp-finance-record, .sp-enterprise-list-row, .sp-zone-list li, tbody tr):nth-child(4) { animation-delay: 120ms; }
+.sp-content :is(.sp-lot-card, .sp-vehicle-card, .sp-booking-card, .sp-notification-card, .sp-slot-card, .sp-enterprise-charger, .sp-finance-record, .sp-enterprise-list-row, .sp-zone-list li, tbody tr):nth-child(5) { animation-delay: 160ms; }
+.sp-content :is(.sp-lot-card, .sp-vehicle-card, .sp-booking-card, .sp-notification-card, .sp-slot-card, .sp-enterprise-charger, .sp-finance-record, .sp-enterprise-list-row, .sp-zone-list li, tbody tr):nth-child(n+6) { animation-delay: 200ms; }
+/* Empty-state icons breathe gently so "nothing here" still feels alive. */
+.sp-content :is(.sp-empty-icon, .sp-empty-state > svg, .sp-empty-panel > svg, .sp-ops-empty > svg) { animation: mi-float 3.6s ease-in-out infinite; }
+/* Live status dots in pills */
+:is(.status-pill, .sp-status-pill) :is(.status-dot, i) { animation: mi-pop .4s var(--mi-ease); }
+
+/* ---- Keyframes ------------------------------------------------------------ */
+@keyframes mi-lift { 40% { transform: translateY(-2px); } }
+@keyframes mi-search { 0% { transform: none; } 25% { transform: translate(-1.5px, -1px) rotate(-10deg); } 55% { transform: translate(1.5px, 1px) rotate(8deg); } 80% { transform: scale(1.08); } 100% { transform: none; } }
+@keyframes mi-search-scan { 0%, 100% { transform: translateX(-1.5px) rotate(-8deg); } 50% { transform: translateX(1.5px) rotate(8deg) scale(1.06); } }
+@keyframes mi-swing { 15% { transform: rotate(16deg); } 35% { transform: rotate(-12deg); } 55% { transform: rotate(8deg); } 75% { transform: rotate(-4deg); } 100% { transform: rotate(0); } }
+@keyframes mi-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes mi-spin-rev { from { transform: rotate(0); } to { transform: rotate(-360deg); } }
+@keyframes mi-spin-loop { to { transform: rotate(360deg); } }
+@keyframes mi-quarter { from { transform: rotate(0); } to { transform: rotate(90deg); } }
+@keyframes mi-shake { 20% { transform: rotate(-10deg); } 40% { transform: rotate(9deg); } 60% { transform: rotate(-6deg); } 80% { transform: rotate(3deg); } }
+@keyframes mi-shake-x { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+@keyframes mi-nudge-x { 45% { transform: translateX(3px); } }
+@keyframes mi-nudge-x-rev { 45% { transform: translateX(-3px); } }
+@keyframes mi-nudge-y { 45% { transform: translateY(2px); } }
+@keyframes mi-nudge-diag { 45% { transform: translate(2px, -2px); } }
+@keyframes mi-drop { 0% { transform: none; } 40% { transform: translateY(3px); } 60% { transform: translateY(-1px); } 100% { transform: none; } }
+@keyframes mi-beat { 20% { transform: scale(1.22); } 40% { transform: scale(.94); } 60% { transform: scale(1.12); } }
+@keyframes mi-twinkle { 50% { transform: rotate(72deg) scale(1.2); } 100% { transform: rotate(144deg); } }
+@keyframes mi-wiggle { 25% { transform: rotate(-12deg); } 50% { transform: rotate(10deg); } 75% { transform: rotate(-5deg); } }
+@keyframes mi-wiggle-x { 30% { transform: translateX(-2px); } 60% { transform: translateX(2px); } }
+@keyframes mi-pin { 0% { transform: none; } 35% { transform: translateY(-4px) scale(1.04, .96); } 60% { transform: translateY(0) scale(.94, 1.06); } 80% { transform: translateY(-1px); } 100% { transform: none; } }
+@keyframes mi-drive { 0% { transform: none; } 30% { transform: translateY(-1.5px) rotate(-3deg); } 60% { transform: translateX(2px); } 100% { transform: none; } }
+@keyframes mi-door { 50% { transform: skewY(-8deg) scaleX(.86); } }
+@keyframes mi-tick { 30% { transform: rotate(-14deg); } 60% { transform: rotate(8deg); } }
+@keyframes mi-swipe { 40% { transform: translateX(3px) rotate(-6deg); } 70% { transform: translateX(-1px); } }
+@keyframes mi-gear { to { transform: rotate(90deg); } }
+@keyframes mi-moon { 40% { transform: rotate(-22deg) scale(1.05); } }
+@keyframes mi-blink { 50% { transform: scaleY(.1); } }
+@keyframes mi-jiggle { 20% { transform: rotate(-12deg); } 40% { transform: rotate(10deg); } 60% { transform: rotate(-6deg); } }
+@keyframes mi-pop { 0% { transform: scale(.7); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+@keyframes mi-press { 0% { transform: scale(1); } 40% { transform: scale(.8); } 100% { transform: scale(1); } }
+@keyframes mi-flash { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@keyframes mi-scan { 0% { transform: none; } 40% { transform: scale(1.14); } 70% { transform: scale(.96); } 100% { transform: none; } }
+@keyframes mi-copy { 40% { transform: translate(-2px, -2px); } 70% { transform: translate(1px, 1px); } }
+@keyframes mi-write { 25% { transform: rotate(-14deg); } 50% { transform: rotate(6deg) translateX(1px); } 75% { transform: rotate(-6deg); } }
+@keyframes mi-hop { 40% { transform: translateY(-3px); } 70% { transform: translateY(.5px); } }
+@keyframes mi-pulse { 40% { transform: scale(1.15); } }
+@keyframes mi-ripple { to { transform: scale(var(--sp-ripple-scale, 40)); opacity: 0; } }
+@keyframes mi-slide-in { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes mi-rise { from { opacity: 0; transform: translateY(6px); } }
+@keyframes mi-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }

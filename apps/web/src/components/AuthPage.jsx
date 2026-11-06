@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, CarFront, CheckCircle2, Eye, EyeOff, LockKeyhole, MapPinned, ShieldCheck, Sparkles } from 'lucide-react';
+import { motion } from 'motion/react';
+import Logo, { BrandHero } from './brand/Logo.jsx';
+import PageBackdrop from './shell/PageBackdrop.jsx';
+import { stagger } from './ui/primitives.jsx';
+import { ArrowRight, CheckCircle2, Eye, EyeOff, LockKeyhole, MapPinned, ShieldCheck, Sparkles } from 'lucide-react';
 
 const verificationRequestCache = new Map();
 
@@ -194,24 +198,22 @@ export default function AuthPage({ onAuthenticated }) {
   return (
     <div className="auth-page">
       <section className="auth-story" aria-label="SmartPark introduction">
-        <div className="auth-brand"><span className="auth-brand-icon"><CarFront size={24} /></span><span><strong>smartpark</strong><small>YOUR SPACE. YOUR TIME.</small></span></div>
-        <div className="auth-story-body">
-          <div className="auth-eyebrow"><Sparkles size={14} /> A calmer way to park</div>
-          <h1>Make room for what matters.</h1>
-          <p>Find a space, plan your arrival and keep every parking detail in one place.</p>
-          <div className="auth-feature-list">
-            <div><span><MapPinned size={17} /></span><div><strong>Parking that fits your day</strong><small>Explore locations and space options.</small></div></div>
-            <div><span><ShieldCheck size={17} /></span><div><strong>Bookings with clarity</strong><small>Your reservations and receipts, together.</small></div></div>
-            <div><span><LockKeyhole size={17} /></span><div><strong>Account-first security</strong><small>Verified access and protected sessions.</small></div></div>
-          </div>
-        </div>
-        <div className="auth-story-footer"><span className="auth-live-dot" /> Built for a smoother parking experience</div>
-        <div className="auth-orb auth-orb-one" /><div className="auth-orb auth-orb-two" />
+        <PageBackdrop scene="login" intensity="hero" />
+        <div className="auth-brand"><BrandHero size={150} /></div>
+        <motion.div className="auth-story-body" initial="hidden" animate="show" variants={stagger.container}>
+          <motion.div className="auth-eyebrow" variants={stagger.item}><Sparkles size={14} /> Smart mobility infrastructure</motion.div>
+          <motion.div className="auth-feature-list" variants={stagger.container}>
+            <motion.div variants={stagger.item}><span><MapPinned size={17} /></span><div><strong>Live availability</strong><small>Space-level state from sensors and reservations.</small></div></motion.div>
+            <motion.div variants={stagger.item}><span><ShieldCheck size={17} /></span><div><strong>Reservations & payments</strong><small>Quotes, holds, receipts and refunds in one flow.</small></div></motion.div>
+            <motion.div variants={stagger.item}><span><LockKeyhole size={17} /></span><div><strong>Role-based operations</strong><small>Drivers, owners, operators and admins, each scoped.</small></div></motion.div>
+          </motion.div>
+        </motion.div>
+        <div className="auth-story-footer"><span className="auth-live-dot" /> SmartPark Mobility OS</div>
       </section>
 
       <section className="auth-form-side">
         <div className="auth-form-wrap">
-          <div className="auth-mobile-brand"><span className="auth-brand-icon"><CarFront size={22} /></span><strong>smartpark</strong></div>
+          <div className="auth-mobile-brand"><Logo size={52} /></div>
           <div className="auth-form-heading">
             <span className="auth-step-label">{heading[0]}</span>
             <h2>{heading[1]}</h2>
@@ -242,7 +244,6 @@ export default function AuthPage({ onAuthenticated }) {
           {mode === 'reset' && resetMethod === 'otp' && <button className="auth-resend-link auth-reset-resend" type="button" disabled={busy || !email.trim()} onClick={resendPasswordResetCode}>Didn’t receive the code? Send a new one</button>}
 
           {mode === 'login' && <div className="auth-account-links"><button className="auth-resend-link" type="button" disabled={busy} onClick={() => changeMode('forgot')}>Forgot password?</button><button className="auth-resend-link" type="button" disabled={busy} onClick={() => { setVerificationEmail(email.trim()); setVerificationResendAvailable(true); setError(''); setMessage('Enter your email above, then request a new verification link.'); }}>Need a new verification link?</button></div>}
-          <div className="auth-privacy-note"><LockKeyhole size={14} /><span>Passwords are never stored as plain text. Sessions are protected by an HttpOnly cookie.</span></div>
           <p className="auth-legal">By continuing, you agree to use SmartPark in accordance with its terms and privacy policy.</p>
         </div>
       </section>

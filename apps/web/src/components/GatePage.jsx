@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { Camera, CameraOff, CheckCircle2, CircleAlert, LoaderCircle, LogIn, LogOut, ScanLine, ShieldCheck } from 'lucide-react';
+import { GateEntryAnimation } from './animations/ParkingAnimations.jsx';
 
 async function apiRequest(path, options = {}) {
   const response = await fetch(path, { credentials: 'same-origin', ...options, headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.headers ?? {}) } });
@@ -53,6 +54,7 @@ export default function GatePage({ currentUser }) {
 
   return <section className="sp-page sp-bookings-page">
     <div className="sp-page-heading"><div><p className="sp-kicker">FACILITY OPERATIONS</p><h1>Gate access</h1><p>Scan a SmartPark QR ticket to authorize entry or record a completed exit.</p></div></div>
+    <div className="sp-scene-banner"><GateEntryAnimation width={260} /><div><strong>Automated entry flow</strong><p>Ticket or plate is verified, the barrier opens, and the visit is recorded against the booking. Scan results below reflect the server’s decision.</p></div></div>
     {error && <div className="sp-alert error"><CircleAlert size={17} /><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error">×</button></div>}
     {result && <div className="sp-alert success"><CheckCircle2 size={17} /><span>{result.message} {result.booking?.bookingCode ? `Booking ${result.booking.bookingCode}, slot ${result.booking.slotCode}.` : ''} {result.physicalCheckRequired ? 'Occupancy data was unknown; visually confirm the assigned space before admitting the vehicle.' : ''} {result.physicalCheckRequired ? 'Occupancy data was unknown; visually confirm the assigned space before admitting the vehicle.' : ''}</span></div>}
     <div className="sp-gate-grid">

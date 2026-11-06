@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Building2, CarFront, Check, Clock3, PlugZap, Plus, RefreshCw, ShieldCheck, Users, Zap } from 'lucide-react';
+import { EvChargingAnimation } from './animations/ParkingAnimations.jsx';
 
 async function readJson(response) { const data = await response.json().catch(() => ({})); if (!response.ok) throw new Error(data?.error?.message ?? 'Could not complete this request.'); return data; }
 const money = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(value ?? 0));
@@ -65,6 +66,7 @@ export default function CorporateEvPage({ currentUser, workspaceMode = 'driver' 
         </>}
       </section>
     </div>
+    <div className="sp-scene-banner"><EvChargingAnimation width={210} /><div><strong>EV charging sessions</strong><p>Start, monitor and stop charger sessions for your vehicles. Energy and status shown below come from the charger records, not this illustration.</p></div></div>
     <section className="panel sp-account-card"><div className="sp-help-title"><PlugZap size={22}/><div><h2>EV charging inventory</h2><p className="muted-copy">Owners can register charger details at their existing parking facilities.</p></div></div>
       {canManageChargers && <form className="sp-enterprise-form" onSubmit={(event)=>submit(event,'/api/charging', { ...chargerForm, powerKw:Number(chargerForm.powerKw), pricePerKwh:Number(chargerForm.pricePerKwh), quantity:Number(chargerForm.quantity) },'EV charger inventory added.')}>
         <label>Parking facility<select required value={chargerForm.parkingLotId} onChange={(e)=>setChargerForm({...chargerForm,parkingLotId:e.target.value})}><option value="">Select a facility</option>{listings.map((listing)=><option key={listing.id} value={listing.id}>{listing.name} · {listing.city}</option>)}</select></label>
