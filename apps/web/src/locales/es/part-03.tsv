@@ -1,0 +1,237 @@
+560	Solicitud de reembolso
+561	Región / estado
+562	Región eliminada
+563	La solicitud falló
+564	Solicitar reembolso
+565	Resolver ticket
+566	INFORME DE INGRESOS
+567	Reseña eliminada
+568	Vehículos guardados
+569	Anfitrión de SmartPark
+570	Logotipo de SmartPark
+571	Usuario de SmartPark
+572	Estado / región
+573	Estado de {0}
+574	Dirección
+575	CONTROL DEL SISTEMA
+576	El ticket caduca
+577	Capacidad total
+578	CONFIANZA Y SEGURIDAD
+579	Estado desconocido
+580	Usuario no encontrado
+581	Escribir una reseña
+582	Tu nombre completo
+583	Precio {0} guardado
+584	Sesiones activas
+585	Nota del administrador: {0}
+586	Dirección de facturación
+587	Historial de reservas
+588	Cámara desactivada
+589	Cambiar contraseña
+590	Cerrar ticket QR
+591	Aparcamiento cubierto
+592	Vehículo predeterminado
+593	REGISTRO DE DISPOSITIVOS
+594	LIBRO DE GANANCIAS
+595	Editar mi cuenta
+596	Envíame un código por correo
+597	Entrada admitida
+598	Centro de carga de VE
+599	Explorar aparcamientos
+600	Estado de la instalación
+601	Ventana de previsión
+602	Olvidé la contraseña
+603	Soporte general
+604	Pago al anfitrión {0}
+605	LIQUIDACIÓN DEL ANFITRIÓN
+606	CONFIGURACIÓN DEL INVENTARIO
+607	Última carga {0}
+608	PERFIL DEL ANUNCIO
+609	Cargando dispositivos
+610	Cargando tickets
+611	Navegación principal
+612	Mapa que muestra {0}
+613	Miembros y flota
+614	Mis reservas
+615	Sin control de salida
+616	Sin número de teléfono
+617	Abrir mi perfil
+618	Abrir navegación
+619	DETALLES DEL APARCAMIENTO
+620	ANUNCIO DE APARCAMIENTO
+621	resultados de aparcamiento
+622	Superficie
+623	Adoquines / bloques
+624	Solicitudes de pago
+625	Pago pendiente
+626	Fotos subidas
+627	Perfil actualizado
+628	Token del ticket QR
+629	Reservas recientes
+630	Comandos recientes
+631	Búsquedas recientes
+632	Registrar como reembolsado
+633	Actualizar vista previa
+634	Actualizar tickets
+635	Actualizando datos
+636	Solicitudes de reembolso
+637	Registrar dispositivo
+638	RESERVA UNA PLAZA
+639	Nota de resolución
+640	Guardados y reseñas
+641	Buscar anuncios
+642	Selecciona una cámara
+643	Seleccionar instalación
+644	COMPARTE SMARTPARK
+645	Estado o región
+646	Problema técnico
+647	Recomendaciones totales
+648	Zona sin asignar
+649	Actualizar contraseña
+650	USD — Dólar estadounidense
+651	Usar mi ubicación
+652	Gestión de usuarios
+653	Usos por conductor
+654	DATOS DEL VEHÍCULO
+655	Vehículo eliminado
+656	Importe verificado
+657	Esperando al usuario
+658	HORARIO SEMANAL
+659	Escribe una actualización
+660	Tu QR de aparcamiento
+661	RECUPERACIÓN DE LA CUENTA
+662	SEGURIDAD DE LA CUENTA
+663	Todas las solicitudes
+664	Todos los sistemas activos
+665	Aprobar instalación
+666	Archivar instalación
+667	Esperando el pago
+668	Luminoso y despejado
+669	Detección por cámara
+670	Se requieren cambios
+671	Cerrar navegación
+672	Contraer barra lateral
+673	Confirmar contraseña
+674	Coste no disponible
+675	Crear promoción
+676	Contraseña actual
+677	Base de datos sin conexión
+678	Ganancia aprobada
+679	Ganancia revertida
+680	Cámaras de la instalación
+681	Datos de la instalación
+682	Filtrar por estado
+683	PRECIOS FLEXIBLES
+684	MERCADO DE ANFITRIONES
+685	Última solicitud
+686	Cargando cuentas
+687	Cargando reservas
+688	Cargando ganancias
+689	Cargando anuncios
+690	regiones mapeadas ·
+691	Descuento máximo
+692	Capacidad de la red
+693	NUEVO ANUNCIO DE ANFITRIÓN
+694	Sin control de entrada
+695	No se encontraron miembros
+696	Aún no hay recomendaciones
+697	Sin resultados para “
+698	Notas (opcional)
+699	Número de plazas
+700	Acceso nocturno
+701	Instalación de aparcamiento
+702	Actividad de pagos
+703	Intentos de pago
+704	Pago completado
+705	PAGO VERIFICADO
+706	Teléfono (opcional)
+707	Inténtalo de nuevo
+708	puntos del polígono ·
+709	Registros del proveedor
+710	Navegación rápida
+711	Alertas en tiempo real
+712	Registrar una matrícula
+713	Solicitud rechazada
+714	Restablecer valores predeterminados
+715	Restaurar instalación
+716	Ruta al aparcamiento
+717	Guardar región de la plaza
+718	Buscar en SmartPark
+719	Iniciar sesión de forma segura
+720	Iniciar procesamiento
+721	Esta instalación está
+722	Perfiles de vehículos
+723	Ver mis reservas
+724	← Volver a iniciar sesión
+726	Conectores activos
+727	Instalaciones activas
+728	Añadir el primer vehículo
+729	Añadir vehículo de flota
+730	Añadir plaza de aparcamiento
+731	Aprobar y publicar
+732	Créditos disponibles
+733	Pendiente de aprobación
+734	Reserva candidata
+735	Detectada ocupada
+736	p. ej., Planta baja
+737	registro(s) de ganancias
+738	resumen de ganancias
+739	Transferencia externa
+740	Operador de la instalación
+741	Ocultar nueva contraseña
+742	En solicitud de pago
+743	CONFIGURACIÓN DE INTEGRACIÓN
+744	Disponibilidad en vivo
+745	Cargando ocupación
+746	Mis abonos mensuales
+747	Ocupación de la red
+748	Abrir pagos a anfitriones
+749	Nota del propietario: {0} ·
+750	Transacciones pagadas
+751	Encargado del aparcamiento
+752	DESCUBRE APARCAMIENTOS
+753	Ubicaciones de aparcamiento
+754	Pago o reembolso
+755	Referencia del pago
+756	Planifica tu llegada
+757	Reconocimiento de matrículas
+758	Precio por kWh (₹)
+759	Registrar resolución
+760	Pagado registrado {0}
+761	Reducir animaciones
+762	Actividad de recomendaciones
+764	Moderación de reseñas
+765	Guardar regla de precio
+766	Busca o salta a
+767	Selecciona una instalación
+768	Mostrar nueva contraseña
+769	CUENTA CONECTADA
+770	OCUPACIÓN INTELIGENTE ·
+771	Aparcamiento inteligente
+772	Composición de plazas
+773	Ticket marcado como {0}
+774	Canjes totales
+775	pagos verificados
+776	Barra lateral del espacio de trabajo
+777	TUS RESERVAS
+778	{0} de 5 estrellas
+779	{0} plazas creadas
+780	Aparcamiento accesible
+781	CUENTA Y SEGURIDAD
+782	Añadir plazas en bloque
+783	Alerta confirmada
+784	Alertas no disponibles
+786	Consultar otra hora
+787	Elegir fotos
+788	Hora de cierre sin definir
+789	Cámaras configuradas
+790	Cuentas de empresa
+791	Crear una promoción
+792	Descargar ticket QR
+793	INVENTARIO DE LA INSTALACIÓN
+794	Consejo para propietarios
+795	ESPACIO DE LA INSTALACIÓN
+796	Importe del libro del anfitrión
+797	INR — Rupia india
+798	Idioma de la interfaz
+799	Valor de fecha no válido

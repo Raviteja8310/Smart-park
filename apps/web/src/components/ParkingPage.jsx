@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft, ArrowUpRight, Building2, CalendarClock, CarFront, Check, CircleAlert, Clock3,
   Layers3, LoaderCircle, MapPin, Plus, RefreshCw, Search, ShieldCheck,
   SlidersHorizontal, SquareParking, X, Heart, Star, MessageSquareText, LocateFixed, Map, List, Navigation
 } from 'lucide-react';
 import { ConfirmationAnimation } from './animations/ParkingAnimations.jsx';
+import MapErrorBoundary from './MapErrorBoundary.jsx';
+import SpaceAvailability from './booking/SpaceAvailability.jsx';
+// Interactive OpenStreetMap view; Leaflet is downloaded only when the Map view is opened.
+const SmartParkMap = lazy(() => import('./SmartParkMap.jsx'));
 
 async function apiRequest(path, options = {}) {
   const response = await fetch(path, {
@@ -52,6 +56,19 @@ function osmEmbedUrl(lot) {
   const delta = 0.012;
   const bbox = [lon - delta, lat - delta, lon + delta, lat + delta].join('%2C');
   return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lon}`;
+}
+
+// "Hourly rate · 2 hours" — whole phrases (not "unit(s)") so they read naturally and translate cleanly.
+function quoteRateLabel(rateType, units) {
+  const n = Number(units) || 0;
+  const one = n === 1;
+  switch (rateType) {
+    case 'hourly': return one ? 'Hourly rate · 1 hour' : `Hourly rate · ${n} hours`;
+    case 'daily': return one ? 'Daily rate · 1 day' : `Daily rate · ${n} days`;
+    case 'weekly': return one ? 'Weekly rate · 1 week' : `Weekly rate · ${n} weeks`;
+    case 'monthly': return one ? 'Monthly rate · 1 month' : `Monthly rate · ${n} months`;
+    default: return `${rateType} rate · ${n}`;
+  }
 }
 
 function directionsUrl({ origin, destination, travelMode = 'driving' }) {
@@ -118,7 +135,7 @@ function StatePill({ state }) {
 }
 
 function LotCard({ lot, mode, onOpen, onSubmitForApproval, onSetStatus, isAdmin, canCreate, isFavorite = false, onToggleFavorite, distance = null, userLocation = null }) {
-  const hasCoordinates =
+  const lotHasCoordinates =
     lot.latitude !== null &&
     lot.latitude !== undefined &&
     lot.longitude !== null &&
@@ -151,7 +168,7 @@ function LotCard({ lot, mode, onOpen, onSubmitForApproval, onSetStatus, isAdmin,
         <div><strong>{lot.occupiedNow}</strong><span>Occupied</span></div>
       </div>
       <div className="sp-lot-rate"><span>From</span><strong>{formatMoney(lot.hourlyRate, lot.currency)}<small>/ hour</small></strong></div>
-      {mode === 'discover' && hasCoordinates && (
+      {mode === 'discover' && lotHasCoordinates && (
         <a
           className="sp-map-link"
           href={directionsUrl({
@@ -213,6 +230,16 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
   const [discoveryView, setDiscoveryView] = useState('list');
   const [activeMapLotId, setActiveMapLotId] = useState('');
   const [arrivalDestination, setArrivalDestination] = useState('');
+  // "Route to parking" draws the route on the SmartPark map to the facility's exact pin.
+  // (Google Maps reinterprets bare coordinates and can show a nearby business as the destination.)
+  const [mapRouteRequest, setMapRouteRequest] = useState(null);
+  const interactiveMapReady = useRef(false);
+  // "Choose time" brings the booking form into view (it renders above the space grid).
+  const bookingPanelRef = useRef(null);
+  // When the chosen space is free (booked windows + next bookable start) — see SpaceAvailability.
+  const [bookingSchedule, setBookingSchedule] = useState(null);
+  const [bookingAutoNote, setBookingAutoNote] = useState('');
+  const autoStartAppliedFor = useRef('');
   const [destinationTravelMode, setDestinationTravelMode] = useState('walking');
   const [favoriteLotIds, setFavoriteLotIds] = useState(() => new Set());
   const [lotReviews, setLotReviews] = useState([]);
@@ -515,7 +542,74 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
     } catch (requestError) { setError(requestError.message); }
   }
 
+  // Smoothly scroll to the booking form whenever a space is chosen, then move keyboard focus into it.
+  useEffect(() => {
+    if (!bookingSlot?.id) return undefined;
+    const frame = window.requestAnimationFrame(() => {
+      const panel = bookingPanelRef.current;
+      if (!panel) return;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('sp-reduce-motion');
+      panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      (panel.querySelector('input, select') ?? panel.querySelector('button'))?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [bookingSlot?.id]);
+
+  useEffect(() => {
+    if (!bookingSlot?.id) { setBookingSchedule(null); return undefined; }
+    const controller = new AbortController();
+    const slotId = bookingSlot.id;
+    setBookingSchedule((current) => (current?.slotId === slotId ? { ...current, loading: true } : { slotId, loading: true }));
+    fetch(`/api/bookings/slots/${slotId}/schedule?durationMinutes=${Math.round(Number(bookingDuration) * 60)}`, { credentials: 'same-origin', signal: controller.signal })
+      .then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data?.error?.message || 'Unable to load when this space is free.');
+        setBookingSchedule({ slotId, loading: false, data });
+      })
+      .catch((scheduleError) => { if (scheduleError.name !== 'AbortError') setBookingSchedule({ slotId, loading: false, error: scheduleError.message }); });
+    return () => controller.abort();
+  }, [bookingSlot?.id, bookingDuration]);
+
+  const bookingTimeZone = selectedLot?.timezone || 'Asia/Kolkata';
+  const startFieldsFromIso = (iso) => {
+    const parts = localPartsInZone(new Date(iso), bookingTimeZone);
+    return { date: `${parts.year}-${parts.month}-${parts.day}`, time: `${parts.hour}:${parts.minute}` };
+  };
+  const selectedBookingInterval = useMemo(() => {
+    try {
+      const start = zonedLocalDateTimeToUtc(bookingStart.date, bookingStart.time, bookingTimeZone);
+      return { start: start.getTime(), end: start.getTime() + Number(bookingDuration) * 3_600_000 };
+    } catch { return null; }
+  }, [bookingStart.date, bookingStart.time, bookingDuration, bookingTimeZone]);
+  const bookingConflict = useMemo(() => {
+    const windows = bookingSchedule?.data?.booked;
+    if (!selectedBookingInterval || !windows) return null;
+    return windows.find((window) => new Date(window.startAt).getTime() < selectedBookingInterval.end && new Date(window.endAt).getTime() > selectedBookingInterval.start) ?? null;
+  }, [bookingSchedule, selectedBookingInterval]);
+  const occupiedTooSoon = Boolean(bookingSchedule?.data && bookingSchedule.data.slot.physicalState !== 'empty' && selectedBookingInterval && selectedBookingInterval.start < Date.now() + 30 * 60_000);
+
+  // On opening a space: if the default start can't be booked (occupied, reserved, or outside opening
+  // hours), start from the next available time instead and say so.
+  useEffect(() => {
+    const data = bookingSchedule?.data;
+    if (!data || !bookingSlot?.id || autoStartAppliedFor.current === bookingSlot.id) return;
+    autoStartAppliedFor.current = bookingSlot.id;
+    if (!data.nextAvailable || !selectedBookingInterval) return;
+    if (selectedBookingInterval.start < new Date(data.nextAvailable.startAt).getTime()) {
+      setBookingStart(startFieldsFromIso(data.nextAvailable.startAt));
+      setBookingAutoNote('Start time set to the next available time for this space.');
+    }
+  }, [bookingSchedule]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function applyNextAvailableTime(iso) {
+    setBookingStart(startFieldsFromIso(iso));
+    setBookingQuote(null);
+    setBookingAutoNote('');
+  }
+
   function openBooking(slot) {
+    autoStartAppliedFor.current = '';
+    setBookingAutoNote('');
     setBookingSlot(slot);
     setBookingStart(defaultBookingStart(selectedLot?.timezone || 'Asia/Kolkata'));
     setBookingDuration('2');
@@ -573,7 +667,7 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
       {error && <div className="sp-alert error"><CircleAlert size={17} /><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error"><X size={14} /></button></div>}
         {notice && <div className="sp-alert success"><Check size={17} /><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss notice"><X size={14} /></button></div>}
 
-        {bookingSlot && !isManager && <article className="sp-panel sp-booking-builder">
+        {bookingSlot && !isManager && <article key={bookingSlot.id} ref={bookingPanelRef} className="sp-panel sp-booking-builder">
           <div className="sp-panel-header"><div><p className="sp-kicker">RESERVE A SPACE</p><h2>{bookingSlot.code} · {selectedLot.name}</h2><p>Choose your arrival time and duration to get a server-calculated price. Times use {selectedLot.timezone || 'Asia/Kolkata'}.</p></div><button className="sp-button ghost" onClick={() => { setBookingSlot(null); setBookingQuote(null); setActiveHold(null); }}><X size={14} /> Close</button></div>
           {activeHold ? <div className="sp-hold-confirmation">
             <ConfirmationAnimation size={76} kind="reservation" />
@@ -588,9 +682,10 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
               <label>Promotion code <span className="sp-optional">Optional</span><input value={bookingPromoCode} onChange={(event) => { setBookingPromoCode(event.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 32)); setBookingQuote(null); }} placeholder="e.g. WELCOME10" autoComplete="off" /></label>
             </div>
             {!vehicles.length && <p className="sp-form-hint">You can add vehicles under My vehicles. Adding a vehicle helps parking staff match your reservation.</p>}
-            <div className="sp-booking-builder-actions"><p>Holds expire after 10 minutes. Once held, open My bookings to continue to secure checkout.</p><button className="sp-button primary" onClick={requestBookingQuote} disabled={bookingBusy}><CalendarClock size={15} /> {bookingBusy ? 'Calculating…' : 'Check price'}</button></div>
+            <SpaceAvailability schedule={bookingSchedule?.slotId === bookingSlot.id ? bookingSchedule : null} timeZone={bookingTimeZone} durationHours={bookingDuration} conflict={bookingConflict} occupiedTooSoon={occupiedTooSoon} onUseTime={applyNextAvailableTime} autoNote={bookingAutoNote} />
+            <div className="sp-booking-builder-actions"><p>Holds expire after 10 minutes. Once held, open My bookings to continue to secure checkout.</p><button className="sp-button primary" onClick={requestBookingQuote} disabled={bookingBusy || Boolean(bookingConflict) || occupiedTooSoon}><CalendarClock size={15} /> {bookingBusy ? 'Calculating…' : 'Check price'}</button></div>
             {bookingQuote && <div className="sp-quote-card">
-              <div className="sp-quote-header"><div><span>Price estimate</span><strong>{formatMoney(bookingQuote.quote.totalAmount, bookingQuote.quote.currency)}</strong></div><span className="sp-quote-rate">{bookingQuote.quote.rateType} rate · {bookingQuote.quote.units} unit(s)</span></div>
+              <div className="sp-quote-header"><div><span>Price estimate</span><strong>{formatMoney(bookingQuote.quote.totalAmount, bookingQuote.quote.currency)}</strong></div><span className="sp-quote-rate">{quoteRateLabel(bookingQuote.quote.rateType, bookingQuote.quote.units)}</span></div>
               <div className="sp-quote-line"><span>Parking charge</span><strong>{formatMoney(bookingQuote.quote.baseAmount, bookingQuote.quote.currency)}</strong></div>
               <div className="sp-quote-line"><span>Service fee</span><strong>{formatMoney(bookingQuote.quote.serviceFee, bookingQuote.quote.currency)}</strong></div>
               <div className="sp-quote-line"><span>Tax ({bookingQuote.quote.taxRatePercent}%)</span><strong>{formatMoney(bookingQuote.quote.taxAmount, bookingQuote.quote.currency)}</strong></div>
@@ -740,7 +835,7 @@ export default function ParkingPage({ mode = 'discover', currentUser, onViewBook
             </button>)}
             {!mapLots.length && <p className="sp-muted">No published facilities have coordinates yet. Owners can add latitude and longitude in their facility details.</p>}
           </div>
-          <div className="sp-map-preview-wrap">{activeMapLot ? <><iframe title={`Map showing ${activeMapLot.name}`} className="sp-map-iframe" src={osmEmbedUrl(activeMapLot)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />          <div className="sp-map-preview-footer"><div><strong>{activeMapLot.name}</strong><span>{facilityLocation(activeMapLot)}</span></div><div className="sp-map-footer-actions"><a href={directionsUrl({ origin: hasCoordinates(userLocation) ? `${userLocation.latitude},${userLocation.longitude}` : undefined, destination: `${activeMapLot.latitude},${activeMapLot.longitude}` })} target="_blank" rel="noreferrer"><Navigation size={13} /> Route to parking</a><a href={`https://www.openstreetmap.org/?mlat=${Number(activeMapLot.latitude)}&mlon=${Number(activeMapLot.longitude)}#map=16/${Number(activeMapLot.latitude)}/${Number(activeMapLot.longitude)}`} target="_blank" rel="noreferrer">Open map <ArrowUpRight size={13} /></a></div></div>
+          <div className="sp-map-preview-wrap">{activeMapLot ? <><MapErrorBoundary fallback={<iframe title={`Map showing ${activeMapLot.name}`} className="sp-map-iframe" src={osmEmbedUrl(activeMapLot)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />}><Suspense fallback={<div className="sp-loading"><LoaderCircle className="sp-spin" size={20} /> Loading map…</div>}><SmartParkMap visibleLotIds={mapLots.map(({ lot }) => lot.id)} selectedLotId={activeMapLot.id} onSelectLot={setActiveMapLotId} onOpenLot={(lotId) => { const lot = lots.find((item) => item.id === lotId); if (lot) loadLotDetails(lot); }} userLocation={hasCoordinates(userLocation) ? { latitude: Number(userLocation.latitude), longitude: Number(userLocation.longitude) } : null} onRequestLocation={requestUserLocation} radiusKm={Number(radiusKm)} formatPrice={formatMoney} routeRequest={mapRouteRequest} onReady={(ready) => { interactiveMapReady.current = ready; }} /></Suspense></MapErrorBoundary>          <div className="sp-map-preview-footer"><div><strong>{activeMapLot.name}</strong><span>{facilityLocation(activeMapLot)}</span></div><div className="sp-map-footer-actions"><a href={directionsUrl({ origin: hasCoordinates(userLocation) ? `${userLocation.latitude},${userLocation.longitude}` : undefined, destination: `${activeMapLot.latitude},${activeMapLot.longitude}` })} target="_blank" rel="noreferrer" onClick={(event) => { if (!interactiveMapReady.current) return; event.preventDefault(); setMapRouteRequest({ lotId: activeMapLot.id, nonce: Date.now() }); }}><Navigation size={13} /> Route to parking</a><a href={`https://www.openstreetmap.org/?mlat=${Number(activeMapLot.latitude)}&mlon=${Number(activeMapLot.longitude)}#map=16/${Number(activeMapLot.latitude)}/${Number(activeMapLot.longitude)}`} target="_blank" rel="noreferrer">Open map <ArrowUpRight size={13} /></a></div></div>
             <div className="sp-arrival-planner"><div className="sp-arrival-planner-heading"><strong>Plan your arrival</strong><span>Route to this parking space, then continue to your destination.</span></div><label className="sp-arrival-destination"><MapPin size={15} /><input value={arrivalDestination} onChange={(event) => setArrivalDestination(event.target.value)} placeholder="Destination after parking (optional)" aria-label="Destination after parking" /></label><div className="sp-arrival-actions"><label>From parking<select value={destinationTravelMode} onChange={(event) => setDestinationTravelMode(event.target.value)}><option value="walking">Walking</option><option value="bicycling">Cycling</option><option value="driving">Driving</option><option value="transit">Public transit</option></select></label><button className="sp-button secondary" disabled={!arrivalDestination.trim()} onClick={() => window.open(directionsUrl({ origin: `${activeMapLot.latitude},${activeMapLot.longitude}`, destination: arrivalDestination.trim(), travelMode: destinationTravelMode }), '_blank', 'noopener,noreferrer')}>Route to destination <ArrowUpRight size={14} /></button></div>
             {activeMapLot.specialInstructions && <div className="sp-arrival-instructions"><strong><MapPin size={14} /> Arrival instructions</strong><p>{activeMapLot.specialInstructions}</p></div>}
           </div></> : <div className="sp-map-empty"><MapPin size={25} /><strong>Map coordinates unavailable</strong><span>Add coordinates to parking facilities to show their map pins.</span></div>}</div>

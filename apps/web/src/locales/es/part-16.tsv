@@ -1,0 +1,17 @@
+2341	En uso
+2342	En espera
+2343	Usar este horario
+2344	Libre ahora
+2345	Disponibilidad de
+2346	Ocupada ahora
+2347	Reservada ahora
+2348	Comprobando cuándo está libre esta plaza
+2349	Próxima disponibilidad para {0}: {1} – {2}
+2350	No se pudo cargar cuándo está libre esta plaza
+2351	El identificador de la plaza no es válido
+2352	+{0} reservas más en los próximos 14 días
+2353	No hay reservas para esta plaza en los próximos 14 días
+2354	Hora de inicio ajustada a la próxima hora disponible de esta plaza
+2355	No hay un intervalo libre de {0} en los próximos 14 días. Prueba una duración más corta u otra plaza
+2356	La hora elegida se solapa con una reserva ({0}). Elige otra hora o usa la próxima hora disponible
+2357	Esta plaza está ocupada ahora, así que solo se puede reservar a partir de dentro de 30 minutos. Elige una hora posterior o usa la próxima hora disponible

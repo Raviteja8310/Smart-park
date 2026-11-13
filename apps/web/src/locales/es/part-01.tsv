@@ -1,0 +1,298 @@
+0	Coche
+1	Fin
+2	Esc
+3	Tarifa
+4	Baja
+5	Mapa
+6	Ops
+7	SUV
+8	impuesto
+9	Furgoneta
+10	Ciudad
+11	Ctrl
+12	Oscuro
+13	FECHA
+14	Editar
+15	Termina
+16	Buscar
+17	Desde
+18	Alta
+19	Retener
+20	Inicio
+21	Lista
+22	Marca
+23	Más
+24	Siguiente
+25	Solo
+26	Abierto
+27	Rol
+28	Guardar
+29	Mostrar
+30	Plaza
+31	USUARIO
+32	Zona
+33	Borrar
+34	Cerrar
+35	Color
+36	Diario
+37	Vacío
+38	Claro
+39	Modelo
+40	Abre
+41	Otro
+42	Propietario
+43	Pausar
+44	Teléfono
+45	Potencia
+46	Responder
+47	Reintentar
+48	ROLES
+49	Alcance
+50	Plaza
+51	Inicio
+52	Impuesto (
+53	Título
+54	Total
+55	Camión
+56	1 hora
+57	2 días
+58	7 días
+59	Activo
+60	Importe
+61	Cancelar
+62	Cerrado
+63	Cierra
+64	Eliminar
+65	Dispositivo
+66	Conductor
+67	Exportar
+68	Viernes
+69	Amigo
+70	Garaje
+71	Grava
+72	Por hora
+73	Se unió
+74	Gestionar
+75	Lunes
+76	Sin límite
+77	Normal
+78	En línea
+79	Abierta
+80	tarifa ·
+81	Valoración
+82	Motivo
+83	Rechazar
+84	Quitar
+85	Guardando
+86	Buscar
+87	Seguro
+88	Empieza
+89	Estado
+90	Domingo
+91	Urgente
+92	Semanal
+93	En un radio de
+94	2 horas
+95	3 horas
+96	4 horas
+97	8 horas
+98	Cuenta
+99	Acciones
+100	Aprobar
+101	Asfalto
+102	Volver a
+103	Reserva
+104	CCS2 DC
+105	CHAdeMO
+106	Comando
+107	Confirmar
+108	CONTACTO
+109	Cubierto
+110	Creado
+111	En bici
+112	Predeterminado
+113	Eliminado
+114	En coche
+115	Caducado
+116	Caduca
+117	Cargando
+118	Gestor
+119	Máx. {0}
+120	Mínimo
+121	Mensual
+122	Sin zona
+123	Sin definir
+124	Sin conexión
+125	Pagar ahora
+126	Pago
+127	Pendiente
+128	por kWh
+129	Precios
+130	Actualizar
+131	Resolver
+132	Retirado
+133	Ingresos
+134	Revertir
+135	Reseñas
+136	Enviando
+137	Liquidado
+138	Mostrando
+139	Iniciar sesión
+140	FUENTES
+141	Asunto
+142	Martes
+143	Desconocido
+144	Actualizado
+145	Vehículo
+146	A pie
+147	{0}% de descuento
+148	hace {0} d
+149	hace {0} h
+150	hace {0} min
+151	1 — Malo
+152	2 — Regular
+153	24 horas
+154	3 — Bueno
+155	Activar
+156	Añadir zona
+157	Importe (
+158	Aprobado
+159	Reservas
+160	Categoría
+161	Comprobando
+162	Contraer
+163	Hormigón
+164	Creando
+165	Moneda
+166	Desactivado
+167	DESCUENTO
+168	Entrada de vehículos
+169	Duración
+170	Ganancias
+171	Apto
+172	Empleado
+173	Activando
+174	Instalación
+175	Desde {0}
+176	Inactivo
+177	justo ahora
+178	Idioma
+179	Latitud
+180	Ubicación
+181	Navegar
+182	Sin coincidencias
+183	Ocupado
+184	Solo {0}
+185	Abrir mapa
+186	Opcional
+187	Resumen
+188	Contraseña
+189	PAGOS
+190	pago ·
+191	Anterior
+192	Prioridad
+193	Proveedor
+194	Rechazado
+195	Reservado
+196	Resuelto
+197	Revertido
+198	Revisado
+199	Sábado
+200	Ahorra {0}
+201	Ajustes
+202	Cerrar sesión
+203	Jueves
+204	Actualizando
+205	Vehículos
+206	Verificado
+207	Todo en orden
+208	Servicios
+209	Disponible
+210	Básico {0}
+211	Cancelada
+212	Completada
+213	Confirmada
+214	Conector
+215	Copiar código
+216	Copiar enlace
+217	p. ej., Ciudad
+218	Editar usuario
+219	Nombre completo
+220	Longitud
+221	Marcar como leída
+222	miembros ·
+223	NUEVA OFERTA
+224	Nota: {0}
+225	Ocupación
+226	Promoción
+227	Cualificado
+228	Tipo de tarifa
+229	Grabando
+230	Volver a publicar
+231	Solicitado
+232	Reservando
+233	Guardar tarifa
+234	Programado
+236	MAPA DE PLAZAS
+237	Enviado
+238	Suspendido
+239	Tipo 2 CA
+240	Ilimitado
+241	Hasta {0}
+242	Miércoles
+244	Espacio de trabajo
+245	Nombre de la zona
+246	a {0} m
+247	Accesible
+248	Añadir cámara
+249	Añadir miembro
+250	Todas las alertas
+251	Todas las plazas
+252	Apariencia
+253	Ruta de navegación
+254	Registrado
+255	Cerrar formulario
+256	Confianza
+257	Configurado
+258	Tarifa diaria
+259	Desactivar
+260	Cómo llegar
+261	p. ej., Honda
+262	p. ej., Blanco
+263	Editar roles
+264	terminada en {0}
+265	EUR — Euro
+266	Instalaciones
+267	REGLAS DE ACCESO
+268	En marcha
+269	Último fotograma
+270	Razón social
+271	Gestionar {0}
+272	Altura máxima
+273	Año del modelo
+274	Moderación
+275	mes(es) ·
+276	Moto
+277	Mi perfil
+278	Navegación
+279	NUEVA CÁMARA
+280	Sin resultados
+281	Operaciones
+282	Nota del propietario
+283	Porcentaje
+284	Potencia (kW)
+285	Promociones
+286	Cola abierta
+287	Reactivar
+288	Actualizando
+289	Guardar roles
+290	Enviar respuesta
+291	Códigos de plaza
+292	Fecha de inicio
+293	Hora de inicio
+294	Enviando
+295	Pedido de prueba
+296	desconocido de
+297	Validando
+298	TU BANDEJA DE ENTRADA
+299	a {0} km

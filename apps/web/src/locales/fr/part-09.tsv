@@ -1,0 +1,140 @@
+1760	Votre thème s’applique immédiatement et est mémorisé sur cet appareil
+1761	Caméra créée. Configurez les zones de place avant de lancer la détection
+1762	Les dates doivent être au format AAAA-MM-JJ et valides
+1763	L’envoi d’e-mails n’est pas configuré. Contactez l’administrateur du site
+1764	Explorez les établissements publiés et la disponibilité en direct
+1765	Un des fichiers importés n’est pas une image JPEG, PNG ou WebP valide
+1766	Seul un administrateur de la plateforme peut configurer des sources réseau RTSP
+1767	Seuls les propriétaires, gestionnaires ou administrateurs de l’entreprise peuvent ajouter des membres
+1768	Seul le propriétaire de l’annonce ou un administrateur peut modifier la disponibilité
+1769	Seul le propriétaire de l’annonce ou un administrateur peut la modifier
+1770	L’horodatage de l’événement de plaque doit être récent et non futur
+1771	Indiquez un motif de refus clair d’au moins 8 caractères
+1772	La plaque normalisée doit contenir 2 à 24 lettres ou chiffres
+1773	Vous avez déjà utilisé cette promotion le nombre maximal de fois
+1774	Votre session de stationnement à {0}, place {1}, est marquée comme terminée
+1775	Les sept jours sont requis. Les jours fermés sont enregistrés comme indisponibles
+1776	Si un compte actif correspond à cet e-mail, un nouveau code a été envoyé
+1777	Les notifications de cette boîte sont privées et liées à votre compte
+1778	Seule une réservation terminée dans cet établissement peut être évaluée
+1779	Vous seul pouvez voir ou modifier les véhicules associés à votre compte
+1780	Le paiement a été reçu, mais la réservation nécessite un rapprochement manuel
+1781	Les revenus apparaissent ici à mesure que les paiements de vos établissements sont vérifiés
+1782	{0} à {1} est hors ligne. La détection des places peut être indisponible
+1783	Le presse-papiers est indisponible. Sélectionnez et copiez le lien manuellement
+1784	Créez ou sélectionnez une caméra pour configurer ses places détectées
+1785	Créez votre premier établissement, ajoutez des zones et configurez les places
+1786	Les demandes de remboursement des clients apparaîtront ici pour examen
+1787	Chaque polygone indique où une place apparaît dans l’image de la caméra
+1788	Gardez l’emplacement, les équipements et les instructions à jour pour les conducteurs
+1789	Seul le personnel d’assistance ou de l’établissement autorisé peut modifier le statut
+1790	Seul le propriétaire de l’annonce ou un administrateur peut la soumettre
+1791	Le code expire dans 10 minutes. Vérifiez aussi vos courriers indésirables
+1792	Le lien de vérification n’est pas valide ou a expiré. Demandez-en un nouveau
+1793	Ce blocage de réservation a expiré. Créez-en un nouveau avant de payer
+1794	La disponibilité reflète l’état enregistré des capteurs et les réservations actives
+1795	Seules les annonces en attente d’examen peuvent être approuvées ou refusées
+1796	Note d’approbation ou motif de refus facultatif (obligatoire en cas de refus)
+1797	L’occupation physique est distincte d’une réservation actuelle ou future
+1798	La vérification Razorpay n’est disponible que si Razorpay est configuré
+1799	Les utilisations comptent les usages vérifiés et les blocages non expirés
+1800	Se résout automatiquement lorsque le flux de la caméra est rétabli ou désactivé
+1801	Ce fournisseur et cet identifiant externe d’appareil sont déjà enregistrés
+1802	Cette immatriculation est déjà enregistrée dans une flotte SmartPark
+1803	Vous avez déjà un abonnement en attente ou approuvé sur ces dates
+1804	Votre position est indisponible. Réessayez ou recherchez par ville
+1805	Un remboursement actif ou terminé existe déjà pour ce paiement
+1806	Ne partagez pas de mots de passe, codes OTP ou données de paiement dans la description
+1807	Expliquez pourquoi le résultat du fournisseur externe nécessite un rapprochement manuel
+1808	Enregistrez une fois les détails de votre véhicule pour vos réservations
+1809	Le webhook signé n’a pas pu être traité. Le fournisseur peut réessayer
+1810	Les gains approuvés sont réservés lorsqu’un hôte demande un versement
+1811	Créez un compte conducteur. Les autres rôles sont attribués par un administrateur
+1812	Les remises s’appliquent aux frais de stationnement ; la taxe est recalculée par l’API
+1813	Aucun compte entreprise. Créez-en un ci-dessus pour gérer une flotte
+1814	Aucun établissement géré. Créez-en un ou obtenez d’abord un accès
+1815	Les propriétaires doivent d’abord publier une annonce approuvée avec un tarif mensuel
+1816	Paiement vérifié et réservation confirmée. Votre ticket QR d’entrée est prêt
+1817	Ajoutez une note expliquant pourquoi le résultat du fournisseur doit être examiné
+1818	Le rôle conducteur est absent. Appliquez la migration initiale de la base
+1819	Le lien de réinitialisation n’est pas valide ou a expiré. Demandez un nouveau code
+1820	Ce paiement doit être rapproché avant toute demande de remboursement
+1821	Un blocage temporaire a été créé. Le paiement n’est pas encore finalisé
+1822	Créez des offres validées par le serveur et suivez les limites d’utilisation
+1823	Regroupé par devise ; paiements échoués, en attente et signalés exclus
+1824	Vérifiez la protection du compte et gérez les préférences enregistrées dans ce navigateur
+1825	Examinez les demandes pour vos annonces. Les administrateurs voient tout
+1826	Choisissez la langue de toute l’interface SmartPark
+1827	Nous enverrons un code à six chiffres si un compte actif correspond à votre e-mail
+1828	Votre demande de versement de {0} {1} est {2}. Consultez la note ou contactez l’assistance
+1829	Actualisé automatiquement toutes les 10 secondes depuis l’API d’inventaire SmartPark
+1830	Si un compte actif correspond à cet e-mail, un code à six chiffres a été envoyé
+1831	L’accès à la position a été refusé. Vous pouvez toujours rechercher par ville ou adresse
+1832	Gérez vos informations personnelles et votre mot de passe en un seul endroit sécurisé
+1833	Seuls les gains en attente ou approuvés peuvent être annulés par cette action
+1834	Seul le propriétaire de l’établissement ou un administrateur peut modifier ses détails
+1835	Indiquez exactement un horaire par jour (du dimanche au samedi)
+1836	Impossible de charger le script de paiement. Vérifiez la connexion et réessayez
+1837	Quand les clients publieront des avis vérifiés, les plus récents apparaîtront ici
+1838	La disponibilité repose sur l’état physique enregistré et les réservations actives
+1839	Mises à jour de réservation, paiement, barrière et opérations enregistrées pour votre compte
+1840	Seul un remboursement en cours ou en examen manuel peut être marqué comme remboursé
+1841	Les propriétaires peuvent enregistrer des chargeurs dans leurs établissements
+1842	Ajoutez une note d’au moins cinq caractères pour la piste d’audit financière
+1843	Scannez un ticket QR SmartPark pour autoriser l’entrée ou enregistrer la sortie
+1844	Le code n’est pas valide, a expiré ou n’est plus disponible. Demandez-en un nouveau
+1845	Cet établissement n’a pas encore de places. Ajoutez-en dans Places de parking
+1846	Cette demande a changé pendant l’annulation. Actualisez et réessayez
+1847	Importez au moins une vraie photo de la place avant de soumettre
+1848	Importez de vraies images JPEG, PNG ou WebP. Huit photos maximum, 5 Mo chacune
+1849	Les appareils restent configurés jusqu’à ce que l’adaptateur connecté envoie un signal
+1850	Les gains d’une réservation terminée ont été approuvés pour versement : {0} {1}
+1851	Les annonces d’hôtes sont créées en brouillon et examinées avant publication
+1852	Aucun établissement approuvé n’a actuellement de borne de recharge disponible
+1853	Publiez des places privées, définissez la disponibilité et gérez vos annonces
+1854	Les rapports se limitent aux établissements auxquels votre compte a accès
+1855	Le remboursement de la réservation {0} est enregistré comme effectué. Référence : {1}
+1856	Compte créé. Consultez vos e-mails pour le vérifier avant de vous connecter
+1857	Barrière d’entrée, code d’accès, limite de hauteur ou autres instructions
+1858	Seuls les propriétaires, gestionnaires ou administrateurs de l’entreprise peuvent gérer la flotte
+1859	Zone de place enregistrée. Les coordonnées sont normalisées sur l’image de la caméra
+1860	Demande de remboursement créée pour la réservation {0}. Elle apparaîtra ci-dessous après actualisation
+1861	Consultez les gains issus des paiements clients vérifiés pour vos places
+1862	La commande encaissée du fournisseur n’est pas encore liée à un paiement SmartPark
+1863	Mettez à jour votre nom et téléphone d’administrateur sans changer votre rôle
+1864	Vos paramètres masquent ces catégories. Vous pouvez les modifier dans Paramètres
+1865	{0} à {1} n’a encore envoyé aucune image. Terminez la configuration et vérifiez le flux
+1866	L’e-mail est protégé. Le modifier nécessite une procédure de vérification distincte
+1867	Seuls les paiements encaissés et vérifiés sans signalement sont inclus
+1868	Utilisez la bonne immatriculation pour que le personnel retrouve votre réservation
+1869	Vous pouvez enregistrer jusqu’à 20 véhicules. Supprimez-en un avant d’en ajouter
+1870	Un prestataire de paiement de production doit être configuré avant le paiement
+1871	Selon le tarif mensuel affiché. Les conditions finales nécessitent l’accord du propriétaire
+1872	Décrivez l’entrée, la taille des véhicules, les repères et les infos utiles
+1873	Un ou plusieurs codes de place existent déjà dans cet établissement. Aucune place créée
+1874	Seule une réservation confirmée sans entrée ni fin peut être prise en compte
+1875	Mot de passe modifié. Les autres sessions ont été déconnectées
+1876	Texte de recherche et filtres de ville enregistrés. Les coordonnées ne sont pas stockées ici
+1877	Démarrez le service de vision et vérifiez que la source configurée est accessible
+1878	Le prestataire de paiement a renvoyé une commande avec un montant ou une devise inattendus
+1879	Ce compte est indisponible. Contactez l’assistance si vous pensez qu’il s’agit d’une erreur
+1880	Configurez GATE_DEVICE_SERVICE_TOKEN avant de connecter un adaptateur de barrière
+1881	N’indiquez pas de numéro d’identité complet et n’importez pas de documents confidentiels ici
+1882	Ce ticket est résolu ou fermé. Créez-en un nouveau si le problème persiste
+1883	Essayez une autre recherche ou revenez quand plus d’établissements seront publiés
+1884	Tous les gains approuvés n’ont pas pu être réservés. Actualisez le solde et réessayez
+1885	Seul le propriétaire, un opérateur désigné ou un administrateur peut configurer les caméras
+1886	La place devient inconnue jusqu’à ce que la caméra ou un opérateur confirme qu’elle est libre
+1887	Cette demande a été examinée par un autre administrateur ou propriétaire. Actualisez la file
+1888	Un propriétaire d’établissement ou un administrateur peut affecter un établissement à votre compte
+1889	Un événement d’occupation concerne une place non associée à cette caméra
+1890	Expliquez ce que le propriétaire doit corriger avant de soumettre à nouveau (au moins 8 caractères)
+1891	Le paiement n’a pas abouti. Votre blocage peut rester disponible jusqu’à son expiration
+1892	La réservation ne peut plus être annulée via ce processus de remboursement
+1893	Le paiement n’est pas éligible au remboursement pour l’instant. Rapprochez-le d’abord
+1894	Lorsque vous lancerez le paiement d’une réservation, la tentative apparaîtra ici
+1895	{0}, place {1}, est bloquée pendant 10 minutes. Finalisez le paiement avant l’expiration
+1896	Une annonce peut contenir au plus huit photos. Supprimez-en une avant d’en importer
+1897	Changez votre mot de passe dans Mon profil. La récupération utilise un code unique par e-mail
+1898	Inventaire des chargeurs ajouté. La télémétrie matérielle n’est pas configurée automatiquement
+1899	Aucun compte SmartPark actif pour cet e-mail. Demandez-lui de s’inscrire d’abord

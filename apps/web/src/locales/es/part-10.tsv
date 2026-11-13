@@ -1,0 +1,120 @@
+1900	No se pudieron liberar todas las ganancias del pago. Concilia este pago antes de reintentarlo
+1901	Solo el propietario, el operador asignado o un administrador puede cambiar el estado operativo
+1902	Añade una nota que confirme que el reembolso falló o no se envió al proveedor
+1903	Registra cámaras, asigna plazas, activa o desactiva la detección y supervisa el vídeo
+1904	Anuncio de plaza compartida creado como borrador. Añade fotos y envíalo para aprobación
+1905	No se pudo cargar la cola de revisión financiera. Asegúrate de aplicar la migración 010
+1906	Cuando una sesión de aparcamiento se marque como completada, podrás dejar aquí una reseña verificada
+1907	Elige la hora de llegada y la duración para obtener un precio calculado por el servidor. Las horas usan
+1908	Gestiona el aparcamiento de la empresa, los vehículos de flota y los cargadores de VE en un solo espacio
+1909	El estado del pago cambió al mismo tiempo. Concílialo antes de registrar el reembolso
+1910	Este código de recomendación no es válido. Revísalo y vuelve a intentarlo, o deja el campo vacío
+1911	Ya existe una cuenta con este correo. Inicia sesión o solicita un correo de verificación
+1912	Los comandos de entrada/salida requieren un latido actual del adaptador. Envía primero una comprobación de estado
+1913	Otro administrador ya resolvió la revisión de este anuncio. Actualiza el anuncio
+1914	Introduce coordenadas JSON válidas, por ejemplo [[0.1,0.1],[0.4,0.1],[0.4,0.5],[0.1,0.5]]
+1915	Guarda tus plazas favoritas, valora visitas completadas y vuelve a búsquedas recientes
+1916	Una reseña por reserva completada. Tu nombre público se acorta por privacidad
+1917	Esa hora local no es válida en la zona horaria del aparcamiento. Elige otra
+1918	La nueva instalación no aparecerá en las búsquedas hasta que se apruebe y active
+1919	Otra operación actualizó este pago. Actualiza y revisa su estado actual
+1920	Ya existe una solicitud de reembolso para este pago. Actualiza la página para ver su estado
+1921	Describe lo ocurrido, la hora aproximada y cualquier número de referencia no sensible
+1922	Espacio de conductor seleccionado. Tus instalaciones, precios e historial de propietario siguen intactos
+1923	Solo el propietario, el operador asignado o un administrador puede revisar eventos de matrícula
+1924	Revisa reembolsos, pagos y conciliaciones que requieren atención del administrador
+1925	No se puede desactivar al último administrador activo. Asigna otro primero
+1926	El escaneo con cámara requiere permiso del navegador y HTTPS fuera de localhost
+1927	Registra controladores de barrera compatibles y pon en cola comandos auditables para un adaptador
+1928	El estado de la reserva cambió durante el reembolso. Concílialo manualmente
+1929	Esta solicitud de verificación ya se revisó o ya no existe. Actualiza la cola
+1930	Solo puedes configurar dispositivos de barrera en instalaciones tuyas o que operes
+1931	{0} plaza(s) creada(s). Define el estado físico antes de anunciarlas como disponibles
+1932	El recibo solo está disponible cuando el pago del proveedor se verifica como capturado
+1933	El registro no está disponible temporalmente hasta que se configure la verificación por correo
+1934	Configura VISION_API_TOKEN en el entorno de la API antes de conectar el servicio de visión
+1935	Crea primero una instalación o pide a un administrador que te asigne como operador
+1936	Estado de las instalaciones en vivo, ingresos verificados, ocupación y alertas del sistema
+1937	La reserva en línea no está disponible temporalmente. Puedes seguir explorando aparcamientos
+1938	Publica una entrada privada, un garaje o una plaza reservada para que los conductores la encuentren y reserven
+1939	Cambia de espacio cuando quieras. Conservas tu capacidad de propietario en modo conductor
+1940	Este ticket de reserva ha caducado. Contacta con la instalación si sigues en el lugar
+1941	Existe una sesión de aparcamiento activa; contacta con soporte financiero antes de completar este reembolso
+1942	Las tarifas se aplican a todo el anuncio. Los precios por plaza se gestionan en Plazas de aparcamiento
+1943	Envíalo para aprobación del administrador antes de que aparezca en la búsqueda pública
+1944	Se registró el reembolso procesado externamente. SmartPark no ejecutó el reembolso
+1945	Las preferencias de tema, idioma, accesibilidad y visualización se guardan localmente en este dispositivo
+1946	Tu reserva {0} está confirmada. Abre Mis reservas para ver tu ticket y código QR
+1947	Tu retención {0} se canceló. Este proceso de cancelación no cobró ningún pago
+1948	{0} en {1} no ha enviado fotogramas recientes. Revisa la conexión de la cámara y el servicio de visión
+1949	Al continuar, aceptas usar SmartPark conforme a sus términos y su política de privacidad
+1950	Crea instalaciones, zonas y plazas; edita precios y publica, pausa o archiva ubicaciones
+1951	Las retenciones caducan a los 10 minutos. Después, abre Mis reservas para completar el pago seguro
+1952	Notificaciones por SMS activadas. Los mensajes solo se envían si el proveedor de SMS está configurado
+1953	Este vehículo está vinculado a una reserva y no se puede eliminar. Aún puedes editar sus datos
+1954	Consulta el estado de la revisión y la referencia de transferencia registrada por finanzas
+1955	Los ajustes del dispositivo de barrera requieren una cuenta de propietario, operador asignado o administrador
+1956	Solo pueden cancelarse solicitudes pendientes o aprobadas sin pagar. Contacta con soporte para abonos pagados
+1957	Busca usuarios, consulta roles y verificación, edita datos básicos y gestiona el estado de las cuentas
+1958	Se registró la revisión sin reembolso del administrador. El estado de la reserva no cambió
+1959	Se aprobó tu solicitud de pago de {0} {1}. La transferencia real debe realizarse externamente
+1960	Añade el vehículo con el que aparcas. Puedes guardar matrícula, tipo, marca, modelo y color
+1961	El adaptador autenticado puede recoger los comandos, según el estado del dispositivo y su caducidad
+1962	Añade una nota que confirme que el reembolso se revisó y se procesará externamente
+1963	Revisa la disponibilidad, el estado de las cámaras, las alertas de conciliación y las incidencias
+1964	Elige cuándo pueden llegar los conductores. Esta versión del horario no admite franjas nocturnas
+1965	Dispositivo de barrera registrado. No estará activo físicamente hasta que se conecte un adaptador compatible
+1966	Los datos de ocupación eran desconocidos; confirma visualmente la plaza asignada antes de admitir el vehículo
+1967	No se pudo acceder a la cámara. Revisa los permisos del navegador o pega el token QR manualmente
+1968	Confirma que la transferencia del banco/proveedor se ha completado. Introduce la nota de conciliación
+1969	Crea primero un borrador. Se requieren fotos y un horario completo antes de la revisión
+1970	El acceso por barrera solo está disponible para encargados autorizados, operadores asignados y administradores
+1971	Asigna al menos una región de plaza. Instala el detector YOLO opcional e inicia el servicio de visión
+1972	Indica la referencia de reembolso del proveedor y una nota que confirme que se completó
+1973	Repara o desactiva primero la cámara. La alerta se resolverá sola cuando el vídeo funcione
+1974	Aún no hay fotos. Añade una foto real para facilitar la revisión y ayudar a los conductores a identificar la plaza
+1975	No se pudieron cargar los datos de operaciones. Aplica la migración 008 y revisa la conexión API/base de datos
+1976	Cuando se confirme una reserva pagada en uno de tus anuncios, su ganancia aparecerá aquí
+1977	Aún puedes explorar plazas, ver disponibilidad y precios, y usar mapas y rutas
+1978	Las referencias de pago las genera el proveedor. SmartPark no guarda datos de tarjeta ni de UPI
+1979	Las fotos son públicas en el anuncio. No subas documentos de identidad, tarjetas ni otros documentos sensibles
+1980	Introduce una referencia externa válida (3–180 letras, números, punto, guion, barra, dos puntos o guion bajo)
+1981	Las referencias de pago externas se registran para auditoría; SmartPark no inicia transferencias bancarias
+1982	Revisa intentos de pago, recibos y solicitudes de reembolso. Los pedidos pendientes no son pagos completados
+1983	Esto solo registra una decisión del proveedor/caso. No inicia un reembolso ni confirma la reserva
+1984	El ticket QR de entrada solo está disponible para una reserva pagada y confirmada que no se haya completado
+1985	Confirma que el reembolso se completó en el proveedor de pagos. Indica la comprobación realizada
+1986	Confirmo que estos datos son correctos y que estoy autorizado para ofrecer este aparcamiento
+1987	Cuando un administrador apruebe ganancias de reservas completadas, podrás solicitar el pago aquí
+1988	Tu historial de reservas aparecerá aquí cuando retengas una plaza disponible
+1989	Proporciona información exacta. SmartPark no te pide aquí un número completo de identificación oficial
+1990	Tus ganancias aprobadas se han reservado para esta solicitud. Esto no inicia una transferencia bancaria
+1991	Oculta reseñas que incumplan las normas. Las reseñas ocultas no cuentan en la valoración pública
+1992	No se encontraron aparcamientos geolocalizados en este radio. Amplía el radio o busca por ciudad
+1993	Este pago tiene una marca de conciliación aparte. Resuélvela antes de registrar el reembolso
+1994	Puedes añadir vehículos en Mis vehículos. Así el personal puede identificar tu reserva
+1995	El servidor comprueba la firma del QR, la caducidad, la titularidad de la reserva y los permisos de la instalación
+1996	Envía tus datos de propietario para una revisión manual y que los conductores vean que tu cuenta está verificada
+1997	El pago asociado no figura como capturado. Concílialo antes de registrar un reembolso
+1998	Los cambios se guardan en el perfil del anuncio; los precios y la disponibilidad semanal se editan abajo
+1999	Los costes estimados usan el precio unitario guardado al iniciar la sesión. En esta fase no se cobra nada
+2000	Anuncia una entrada privada, un garaje, una plaza de edificio o un aparcamiento comercial y fija tus tarifas
+2001	Solicita un abono mensual en plazas de propietarios y sigue sus decisiones en un solo lugar
+2002	La hora de cierre debe ser posterior a la de apertura. Los horarios nocturnos llegarán en una versión posterior
+2003	Comando en cola para el adaptador de barrera configurado. SmartPark no ha activado directamente el hardware
+2004	Busca cuentas, consulta roles y verificación, y actualiza los campos de perfil permitidos o el estado de la cuenta
+2005	El estado de la reserva cambió al mismo tiempo. Concilia el reembolso del proveedor antes de cambiar la reserva
+2006	Conecta una cámara de aparcamiento, asigna cada plaza visible a una plaza de SmartPark y supervisa la ocupación
+2007	Crea un ticket, sigue las respuestas y el estado de incidencias de reservas, pagos, instalaciones y cuentas
+2008	Funciones de propietario activadas. Tus nuevos anuncios siguen necesitando aprobación antes de reservarse
+2009	Anuncio creado como borrador. Añade fotos reales, revisa el horario semanal y envíalo para aprobación
+2010	Este pago de prueba local ya no se puede pagar. Crea una nueva retención si la anterior caducó
+2011	Inglés, hindi, canarés y telugu están disponibles en toda la aplicación
+2012	Gestiona operaciones, instalaciones, personas, detección por cámara y finanzas de SmartPark desde un solo lugar
+2013	Se inició el reembolso de la reserva {0}. La entrada está bloqueada temporalmente mientras se resuelve
+2014	Esta es una retención temporal sin pagar. Solo se confirma cuando el proveedor de pagos verifica el pago
+2015	Esta reserva necesita conciliación del pago. Revisa Transacciones o contacta con soporte antes de reintentarlo
+2016	Este vehículo tiene una sesión de aparcamiento activa. El reembolso no puede empezar hasta resolverla
+2017	Usa un índice de webcam (0), un archivo de vídeo de la carpeta sample-videos o una URL RTSP aprobada
+2018	Configura GATE_DEVICE_SERVICE_TOKEN y conecta un adaptador compatible antes de enviar comandos de barrera
+2019	La ganancia del anfitrión está en liquidación o revisión; soporte debe resolverla antes de solicitar este reembolso

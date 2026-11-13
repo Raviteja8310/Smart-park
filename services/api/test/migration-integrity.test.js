@@ -12,9 +12,9 @@ async function migrationFiles() {
   return (await readdir(migrationsDir)).filter((name) => /^\d{3}_.+\.sql$/.test(name)).sort();
 }
 
-test('database migration numbering is contiguous from 001 through 021', async () => {
+test('database migration numbering is contiguous from 001 through 022', async () => {
   const names = await migrationFiles();
-  assert.equal(names.length, 21);
+  assert.equal(names.length, 22);
   names.forEach((name, index) => assert.equal(Number(name.slice(0, 3)), index + 1, `Unexpected migration order at ${name}`));
 });
 
@@ -220,4 +220,14 @@ test('remaining-phases migration adds overstay, hardware, support and SMS delive
   }
   const baseline = await readFile(join(projectRoot, 'services/api/src/scripts/migrate.js'), 'utf8');
   assert.match(baseline, /version: 21, tables: \['overstay_incidents', 'gate_devices', 'gate_device_commands', 'support_tickets', 'support_ticket_messages', 'user_notification_preferences'\]/);
+});
+
+test('profile photo migration is additive and registered for baseline checks', async () => {
+  const sql = await readFile(join(migrationsDir, '022_user_profile_photo.sql'), 'utf8');
+  assert.match(sql, /ALTER TABLE users/i);
+  assert.match(sql, /ADD COLUMN avatar_storage_name VARCHAR\(80\) NULL/i);
+  assert.match(sql, /ADD COLUMN avatar_updated_at DATETIME NULL/i);
+  assert.doesNotMatch(sql, /DROP|DELETE|TRUNCATE/i);
+  const runner = await readFile(new URL('../src/scripts/migrate.js', import.meta.url), 'utf8');
+  assert.match(runner, /version: 22, columns: \[\{ table: 'users', column: 'avatar_storage_name' \}/);
 });

@@ -373,7 +373,8 @@ export async function settleCapturedPayment({ paymentId, provider, providerOrder
       return { paid: true, bookingId: row.booking_id, bookingCode: row.booking_code, bookingStatus: ['cancelled', 'completed', 'confirmed', 'checked_in'].includes(row.booking_status) ? row.booking_status : 'payment_failed', requiresReview: true, reviewReason };
     }
 
-    const ticket = createBookingTicket(row, env.QR_SIGNING_SECRET);
+    // `row` joins payments and bookings, so row.id is the PAYMENT id: sign the ticket with the booking's own id.
+    const ticket = createBookingTicket({ id: row.booking_id, end_at: row.end_at }, env.QR_SIGNING_SECRET);
     await connection.execute(
       "UPDATE bookings SET status = 'confirmed', hold_expires_at = NULL, qr_token_hash = ? WHERE id = ?",
       [ticket.tokenHash, row.booking_id]
@@ -406,6 +407,26 @@ export async function settleCapturedPayment({ paymentId, provider, providerOrder
         amount: String(row.amount), currency: row.currency
       } }
     });
+    // Let the facility owner know about the new confirmed booking (in-app; skipped for platform-owned lots
+    // and when owners book a space at their own facility).
+    const [ownerRows] = await connection.execute(
+      `SELECT l.owner_user_id, l.timezone, he.net_amount, he.currency
+         FROM parking_lots l LEFT JOIN host_earnings he ON he.booking_id = ?
+        WHERE l.id = ? LIMIT 1`,
+      [row.booking_id, row.parking_lot_id]
+    );
+    const owner = ownerRows[0];
+    if (owner?.owner_user_id && owner.owner_user_id !== row.user_id) {
+      let when;
+      try {
+        when = new Intl.DateTimeFormat('en-IN', { timeZone: owner.timezone || 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(row.start_at));
+      } catch { when = new Date(row.start_at).toISOString(); }
+      const earning = owner.net_amount !== null && owner.net_amount !== undefined ? ` Your earning: ${owner.currency} ${Number(owner.net_amount).toFixed(2)}.` : '';
+      await createNotification(connection, {
+        userId: owner.owner_user_id, eventType: 'booking.owner_new_booking', title: 'New booking received',
+        message: `New booking at ${row.parking_lot_name}: ${row.booking_code}, space ${row.slot_code}, starting ${when}.${earning}`
+      });
+    }
     await connection.commit();
     return { paid: true, bookingId: row.booking_id, bookingCode: row.booking_code, bookingStatus: 'confirmed', requiresReview: false, ticketExpiresAt: ticket.expiresAt };
   } catch (error) {

@@ -1,0 +1,140 @@
+1760	El tema se aplica al instante y se recuerda en este dispositivo
+1761	Cámara creada. Configura las regiones de plaza antes de iniciar la detección
+1762	Las fechas deben tener formato AAAA-MM-DD y ser fechas válidas
+1763	El envío de correos no está configurado. Contacta con el administrador del sitio
+1764	Explora instalaciones publicadas y consulta la disponibilidad en vivo
+1765	Uno de los archivos subidos no es una imagen JPEG, PNG o WebP válida
+1766	Solo un administrador de la plataforma puede configurar fuentes de red RTSP
+1767	Solo propietarios, gestores o administradores de la empresa pueden añadir miembros
+1768	Solo el propietario del anuncio o un administrador puede editar la disponibilidad
+1769	Solo el propietario del anuncio o un administrador puede editar este anuncio
+1770	La marca de tiempo del evento de matrícula debe ser reciente y no futura
+1771	Indica un motivo de rechazo claro de al menos 8 caracteres
+1772	La matrícula normalizada debe tener entre 2 y 24 letras o dígitos
+1773	Ya has usado esta promoción el número máximo de veces
+1774	Tu sesión de aparcamiento en {0}, plaza {1}, se ha marcado como completada
+1775	Los siete días son obligatorios. Los días cerrados se guardan como no disponibles
+1776	Si una cuenta activa coincide con ese correo, se ha enviado un código nuevo
+1777	Las notificaciones de esta bandeja son privadas para tu cuenta
+1778	Solo se puede valorar una reserva completada en esta instalación
+1779	Solo tú puedes ver o cambiar los vehículos asociados a tu cuenta
+1780	Se recibió el pago, pero la reserva necesita conciliación manual
+1781	Los ingresos aparecen aquí a medida que se verifican los pagos de tus instalaciones
+1782	{0} en {1} aparece sin conexión. La detección de plazas puede no estar disponible
+1783	El portapapeles no está disponible. Selecciona y copia el enlace manualmente
+1784	Crea o selecciona una cámara para configurar sus plazas detectadas
+1785	Crea tu primera instalación, añade zonas y configura plazas
+1786	Las solicitudes de reembolso de clientes aparecerán aquí para revisión
+1787	Cada polígono indica dónde aparece una plaza en el encuadre de la cámara
+1788	Mantén la ubicación, los servicios y las instrucciones al día para los conductores
+1789	Solo el personal autorizado de soporte o de la instalación puede cambiar el estado
+1790	Solo el propietario del anuncio o un administrador puede enviar este anuncio
+1791	El código caduca en 10 minutos. Revisa también la carpeta de spam
+1792	El enlace de verificación no es válido o ha caducado. Solicita uno nuevo
+1793	Esta retención de reserva ha caducado. Crea una nueva antes de pagar
+1794	La disponibilidad refleja el estado registrado de los sensores y las reservas activas
+1795	Solo se pueden aprobar o rechazar anuncios pendientes de revisión
+1796	Nota de aprobación o motivo de rechazo opcional (obligatorio al rechazar)
+1797	La ocupación física es distinta de una reserva actual o futura
+1798	La verificación de Razorpay solo está disponible si Razorpay está configurado
+1799	Los canjes incluyen usos verificados y retenciones de reserva vigentes
+1800	Se resuelve automáticamente cuando el vídeo de la cámara funciona o se desactiva
+1801	Ese proveedor e identificador externo de dispositivo ya están registrados
+1802	Esa matrícula ya está registrada en una flota de SmartPark
+1803	Ya tienes un abono pendiente o aprobado que coincide con estas fechas
+1804	Tu ubicación no está disponible ahora. Inténtalo de nuevo o busca por ciudad
+1805	Ya existe un registro de reembolso activo o completado para este pago
+1806	No compartas contraseñas, códigos OTP ni datos de pago en la descripción
+1807	Explica por qué el resultado del proveedor externo necesita conciliación manual
+1808	Guarda los datos de tu vehículo una vez y úsalos en tus reservas
+1809	No se pudo procesar el webhook firmado. El proveedor puede reintentarlo
+1810	Las ganancias aprobadas se reservarán cuando un anfitrión solicite un pago
+1811	Crea una cuenta de conductor. Los demás roles los asigna un administrador
+1812	Los descuentos se aplican al cargo de aparcamiento; la API recalcula el impuesto
+1813	Aún no hay cuentas de empresa. Crea una arriba para gestionar una flota
+1814	No hay instalaciones gestionadas. Crea una o consigue acceso primero
+1815	Los propietarios deben publicar antes un anuncio aprobado con precio mensual
+1816	Pago verificado y reserva confirmada. Tu ticket QR de entrada está listo
+1817	Añade una nota que explique por qué el resultado del proveedor necesita revisión
+1818	Falta el rol de conductor. Aplica la migración inicial de la base de datos
+1819	El enlace para restablecer la contraseña no es válido o ha caducado. Solicita un código nuevo
+1820	Este pago debe conciliarse antes de abrir una solicitud de reembolso
+1821	Se creó una retención temporal de la reserva. El pago aún no se ha completado
+1822	Crea ofertas validadas por el servidor y controla los límites de canje
+1823	Agrupado por moneda; se excluyen pagos fallidos, pendientes y marcados
+1824	Revisa la protección de la cuenta y gestiona las preferencias guardadas en este navegador
+1825	Revisa las solicitudes de tus anuncios. Los administradores ven todas
+1826	Elige el idioma de toda la interfaz de SmartPark
+1827	Te enviaremos un código de seis dígitos si una cuenta activa coincide con tu correo
+1828	Tu solicitud de pago de {0} {1} está {2}. Revisa la nota o contacta con soporte
+1829	Se actualiza automáticamente cada 10 segundos desde la API de inventario de SmartPark
+1830	Si una cuenta activa coincide con ese correo, se ha enviado un código de seis dígitos
+1831	Se denegó el permiso de ubicación. Aún puedes buscar por ciudad o dirección
+1832	Gestiona tus datos personales y la contraseña desde un lugar seguro
+1833	Solo las ganancias pendientes o aprobadas pueden revertirse con esta acción
+1834	Solo el propietario de la instalación o un administrador puede cambiar sus datos
+1835	Indica exactamente un horario para cada día (de domingo a sábado)
+1836	No se pudo cargar el script de pago. Revisa la conexión y vuelve a intentarlo
+1837	Cuando los clientes envíen reseñas verificadas, las recientes aparecerán aquí
+1838	La disponibilidad se basa en el estado físico registrado y las reservas activas
+1839	Actualizaciones de reservas, pagos, barreras y operaciones registradas para tu cuenta
+1840	Solo un reembolso en proceso o en revisión manual puede registrarse como reembolsado
+1841	Los propietarios pueden registrar cargadores en sus instalaciones existentes
+1842	Añade una nota de al menos cinco caracteres para la auditoría financiera
+1843	Escanea un ticket QR de SmartPark para autorizar la entrada o registrar la salida
+1844	El código no es válido, ha caducado o ya no está disponible. Solicita uno nuevo
+1845	Esta instalación aún no tiene plazas. Añádelas en Plazas de aparcamiento
+1846	Esta solicitud cambió mientras la cancelabas. Actualiza y vuelve a intentarlo
+1847	Sube al menos una foto real de la plaza antes de enviar
+1848	Sube imágenes JPEG, PNG o WebP reales. Máximo ocho fotos de 5 MB cada una
+1849	Los dispositivos siguen configurados hasta que el adaptador conectado envíe un latido
+1850	Se aprobaron para revisión de pago las ganancias de una reserva completada: {0} {1}
+1851	Los anuncios de anfitriones se crean como borradores y requieren revisión antes de publicarse
+1852	Ninguna instalación aprobada tiene cargadores de VE disponibles ahora
+1853	Publica plazas privadas, define la disponibilidad y gestiona tus anuncios
+1854	Los informes se limitan a las instalaciones a las que tu cuenta tiene acceso
+1855	El reembolso de la reserva {0} se registró como completado. Referencia: {1}
+1856	Cuenta creada. Revisa tu correo para verificarla antes de iniciar sesión
+1857	Barrera de entrada, código de acceso, límites de altura u otras instrucciones
+1858	Solo propietarios, gestores o administradores de la empresa pueden gestionar vehículos de flota
+1859	Región de plaza guardada. Las coordenadas se normalizan al encuadre de la cámara
+1860	Solicitud de reembolso creada para la reserva {0}. Aparecerá abajo al actualizar
+1861	Revisa las ganancias de pagos verificados de clientes en tus plazas
+1862	El pedido capturado del proveedor aún no está vinculado a un pago de SmartPark
+1863	Actualiza tu nombre y teléfono de administrador sin cambiar tu rol
+1864	Tus ajustes guardados ocultan estas categorías. Puedes cambiarlos en Ajustes
+1865	{0} en {1} aún no ha enviado ningún fotograma. Completa la configuración y verifica el vídeo
+1866	El correo está protegido. Para cambiarlo se requiere un proceso de verificación aparte
+1867	Solo se incluyen pagos capturados y verificados sin marca de conciliación
+1868	Usa la matrícula correcta para que el personal pueda identificar tu reserva
+1869	Puedes guardar hasta 20 vehículos. Elimina uno antiguo antes de añadir otro
+1870	Hay que configurar un proveedor de pagos de producción antes de usar el pago
+1871	Según la tarifa mensual publicada. Las condiciones finales requieren aprobación del propietario
+1872	Describe la entrada, el tamaño de vehículo, puntos cercanos y datos útiles
+1873	Uno o más códigos de plaza ya existen en esta instalación. No se creó ninguna
+1874	Solo puede considerarse una reserva confirmada que no haya entrado ni terminado
+1875	Contraseña cambiada. Se ha cerrado la sesión en los demás dispositivos
+1876	Texto de búsqueda y filtros de ciudad guardados. Aquí no se guardan coordenadas
+1877	Inicia el servicio de visión y comprueba que la fuente configurada es accesible
+1878	El proveedor de pagos devolvió un pedido con un importe o moneda inesperados
+1879	Esta cuenta no está disponible. Contacta con soporte si crees que es un error
+1880	Configura GATE_DEVICE_SERVICE_TOKEN antes de conectar un adaptador de barrera físico
+1881	No introduzcas un número de identificación completo ni subas documentos confidenciales aquí
+1882	Este ticket está resuelto o cerrado. Crea uno nuevo si el problema continúa
+1883	Prueba otra búsqueda o vuelve cuando haya más instalaciones publicadas
+1884	No se pudieron reservar todas las ganancias aprobadas. Actualiza el saldo y vuelve a intentarlo
+1885	Solo el propietario, un operador asignado o un administrador puede configurar cámaras
+1886	La plaza pasa a desconocida hasta que la cámara o un operador confirme que está vacía
+1887	Otro administrador o propietario ya revisó esta solicitud. Actualiza la cola
+1888	Un propietario de instalación o un administrador puede asignar una instalación a tu cuenta
+1889	Un evento de ocupación hace referencia a una plaza no asignada activamente a esta cámara
+1890	Explica qué debe corregir el propietario antes de reenviar (al menos 8 caracteres)
+1891	No se completó el pago. Tu retención puede seguir disponible hasta que caduque
+1892	La reserva ya no puede cancelarse mediante este proceso de reembolso
+1893	El pago no puede procesarse para reembolso ahora. Concílialo primero
+1894	Cuando inicies el pago de una reserva, el intento aparecerá aquí
+1895	{0}, plaza {1}, retenida durante 10 minutos. Completa el pago antes de que caduque
+1896	Un anuncio admite como máximo ocho fotos. Elimina una antes de subir más
+1897	Cambia tu contraseña en Mi perfil. La recuperación usa un código de un solo uso por correo
+1898	Inventario de cargadores añadido. La telemetría del hardware no se configura automáticamente
+1899	No se encontró una cuenta activa de SmartPark con ese correo. Pídele que se registre primero

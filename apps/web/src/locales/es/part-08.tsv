@@ -1,0 +1,150 @@
+1610	No tienes permiso para realizar esta acción
+1611	{0} de 5 según reservas completadas en SmartPark
+1612	Un pago en estado {0} no puede completar esta acción
+1613	Ya existe una reseña para esta reserva completada
+1614	Configura un precio por hora activo antes de enviar
+1615	Describe la instalación, el acceso, las normas y los servicios
+1616	Conductores, propietarios, operadores y administradores, cada uno con su ámbito
+1617	Explica por qué el pago necesita conciliación manual
+1618	Aún no hay dispositivos de barrera registrados en tus instalaciones
+1619	Solo se pueden revisar las solicitudes de abono mensual pendientes
+1620	Selecciona un ticket para ver la conversación y el estado
+1621	La cuenta de empresa no existe o está inactiva
+1622	Elige el aspecto que mejor encaje con tu espacio de trabajo
+1623	Elige qué aparece en las notificaciones de la aplicación
+1624	Este navegador no admite servicios de ubicación
+1625	Solo las instalaciones en borrador pueden enviarse para aprobación
+1626	Registra lo que comprobaste y la decisión de resolución
+1627	El texto de la reseña contiene caracteres de control no admitidos
+1628	Refuerza el contraste del texto y los bordes para leer mejor
+1629	Retención temporal {0} creada. El pago no se ha completado
+1630	La reserva debe empezar al menos dentro de un minuto
+1631	El proveedor de pagos no pudo completar la solicitud
+1632	La plaza seleccionada no pertenece a esta instalación
+1633	Este anuncio aprobado no ofrece abono mensual
+1634	Prueba con otro nombre, correo o teléfono
+1635	Ya existe una zona con este nombre en la instalación
+1636	Todos los conectores de este cargador están en uso
+1637	Crea una cuenta de empresa o gestiona una a la que pertenezcas
+1638	La entrada se abre 30 minutos antes del inicio de la reserva
+1639	No se han configurado regiones de plaza para esta cámara
+1640	Las reseñas solo están disponibles tras una reserva completada
+1641	Selecciona una instalación válida para ver eventos de matrícula
+1642	Indica una fecha de inicio al establecer una fecha de fin
+1643	Mostrar actualizaciones de reservas en tu bandeja de SmartPark
+1644	Mostrar alertas de plazas e instalaciones en tu bandeja
+1645	La referencia externa o la nota tienen un formato no válido
+1646	No se encontró el pago asociado a esta alerta
+1647	No se encontró el pedido de pago de esta reserva
+1648	La fecha de fin del precio debe ser posterior a la de inicio
+1649	El pago del proveedor no coincide con esta reserva
+1650	Esta ruta de pago solo para desarrollo no está disponible
+1651	Se registró como pagado un pago de {0} {1}. Referencia: {2}
+1652	Verificación de propietario enviada para revisión del administrador
+1653	Indica un motivo de entre 10 y 500 caracteres
+1654	Comparte tu enlace con amigos nuevos en SmartPark
+1655	No se encontró la alerta en una instalación a la que tengas acceso
+1656	La cámara no tiene una región asignada a esta plaza
+1657	La reserva seleccionada no pertenece a esa instalación
+1658	Usa una frase de contraseña larga y única de 6 caracteres o más
+1659	Elige una contraseña distinta de la actual
+1660	Confirma tu contraseña actual antes de establecer una nueva
+1661	El correo, los roles y el estado de la cuenta no se pueden editar aquí
+1662	Introduce la energía entregada en kWh (déjalo vacío si no la sabes)
+1663	Aquí solo aparecen anuncios aprobados con tarifa mensual
+1664	Indica un motivo al rechazar una solicitud de abono mensual
+1665	Las matrículas se normalizan y deben ser únicas
+1666	MODO DE PRUEBA: pago simulado. La reserva está confirmada
+1667	No se encontró el dispositivo en una instalación que puedas gestionar
+1668	Verifica tu contraseña actual antes de elegir una nueva
+1669	No puedes solicitar un abono mensual para tu propio anuncio
+1670	Confirmadas y registradas dentro de la franja horaria actual
+1671	Solo un comando enviado puede recibir un resultado del hardware
+1672	Solo cuentan las sesiones completadas con pago verificado
+1673	Registra por qué la transferencia externa falló o no se hizo
+1674	Enlace seguro de restablecimiento detectado. Elige una nueva contraseña abajo
+1675	El encargado debe estar asignado a la instalación seleccionada
+1676	No hay ganancias aprobadas en {0} disponibles para pago
+1677	Este código requiere un cargo de aparcamiento de al menos {0} {1}
+1678	Este QR está firmado y validado por el servidor de SmartPark
+1679	No tienes permiso para actualizar esta plaza
+1680	Se aprobó tu última solicitud de verificación de propietario
+1681	Aprueba esta instalación para publicarla en la búsqueda de aparcamientos
+1682	Introduce el código de seis dígitos del correo y elige una nueva contraseña
+1683	La salida cierra la sesión activa y completa la reserva
+1684	Indica latitud y longitud, o deja ambas en blanco
+1685	Reduce el espaciado de las tablas para ver más filas en pantallas grandes
+1686	Indica una fecha de inicio cuando haya fecha de fin
+1687	No se pudo verificar la firma de confirmación del pago
+1688	Al evento payment.captured le falta la entidad de pago
+1689	Esta referencia de reembolso externo ya se ha registrado
+1690	No tienes permiso para ver o gestionar esta cámara
+1691	Tus reservas aparecerán aquí cuando reserves una plaza
+1692	El estado de la alerta debe ser abierta, confirmada, resuelta o todas
+1693	No se encontró una cuenta activa y verificada con ese correo
+1694	Indica un motivo de rechazo claro de al menos 8 caracteres
+1695	La salida no puede repetirse en una sesión completada
+1696	La plaza seleccionada no pertenece a la instalación de esta cámara
+1697	{0} Actualiza las transacciones antes de intentar otro pago
+1698	La marca de tiempo del fotograma debe ser reciente y no puede ser futura
+1699	Aquí aparecerán las actualizaciones importantes de reservas y operaciones
+1700	Gestiona el inventario, las zonas y la disponibilidad física
+1701	en la pantalla de inicio de sesión para recibir un código de seis dígitos por correo
+1702	Registra por qué el reembolso externo falló o no se envió
+1703	Ticket de soporte creado. Guarda el código para el seguimiento
+1704	La reserva debe tener una sesión de aparcamiento activa registrada
+1705	Este reembolso no puede marcarse como fallido desde su estado actual
+1706	¿Por qué esta ganancia completada puede aprobarse para pago?
+1707	Solo puedes revisar solicitudes de tus propios anuncios
+1708	Tu reserva está confirmada y el ticket QR de entrada está listo
+1709	Se necesita una cuenta activa para activar el modo propietario
+1710	Las plazas de la cámara se asignan a plazas físicas de esta instalación
+1711	Configura VISION_API_TOKEN antes de ver el vídeo de la cámara
+1712	Crea zonas y plazas para configurar el inventario de esta instalación
+1713	Introduce uno o más códigos de plaza separados por comas o espacios
+1714	Introduce el identificador del adaptador/proveedor, no una URL RTSP de cámara
+1715	El precio por hora es obligatorio. Los demás periodos son opcionales
+1716	Gestiona el pago, los tickets de entrada y tu historial de reservas
+1717	Aún no hay precios activos. Añade una tarifa antes de aceptar reservas
+1718	Solo un reembolso ya en proceso puede pasar a revisión manual
+1719	Las demás sesiones activas se revocan tras un cambio correcto
+1720	Revisa las declaraciones de los propietarios y registra las decisiones
+1721	No se encontró el dispositivo de barrera en una instalación accesible
+1722	Este cargador no está disponible o su instalación no está aprobada
+1723	¿Fue fácil acceder al lugar? ¿La plaza era como se describía?
+1724	Un anfitrión solicitó un pago de {0} {1} sobre {2} registros de ganancias
+1725	Primero añade un teléfono en formato internacional en Mi perfil
+1726	Añade coordenadas a las instalaciones para mostrar sus pines en el mapa
+1727	Termina tu sesión de carga actual antes de empezar otra
+1728	Solo un anuncio en borrador o en pausa puede enviarse para aprobación
+1729	Solo el propietario del anuncio o un administrador puede eliminar fotos
+1730	Solo el propietario del anuncio o un administrador puede subir fotos
+1731	Guarda la disponibilidad de los siete días antes de enviar
+1732	No tienes permiso para gestionar el inventario de esta instalación
+1733	Ya hay un vehículo registrado con esta matrícula
+1734	Asigna otro administrador activo antes de quitar este rol
+1735	Encuentra, reserva y gestiona aparcamiento en toda la red SmartPark
+1736	Cargos netos de aparcamiento en el libro, sin entradas revertidas
+1737	Aún no hay reseñas. Quienes completen su visita pueden compartir su experiencia
+1738	Publica una instalación para ver aquí la ocupación en vivo y el estado de las zonas
+1739	Busca una instalación o ciudad y aparecerá aquí
+1740	La referencia o nota de la transferencia externa tiene un formato no válido
+1741	Añade arriba el inventario de cargadores para una de tus instalaciones
+1742	Las cuentas de administrador ya tienen acceso a la gestión de instalaciones
+1743	Asigna el rol {0} a este usuario antes de asignar la instalación
+1744	Los días disponibles necesitan una hora de cierre posterior a la de apertura
+1745	No hay ganancias aprobadas disponibles en esta moneda
+1746	Solo un administrador puede cerrar una alerta de conciliación de pagos
+1747	Los comandos en cola caducan a los 60 segundos si ningún adaptador los toma
+1748	Ve hasta esta plaza y luego continúa a tu destino
+1749	Guarda lugares desde la búsqueda para encontrarlos rápido la próxima vez
+1750	El empleado asignado debe ser miembro activo de esta empresa
+1751	Este ticket ya no es válido. Contacta con soporte para obtener ayuda
+1752	La calidad de la previsión mejora a medida que SmartPark reúne historial
+1753	Los aparcamientos cercanos se ordenan por distancia a tu ubicación actual
+1754	Solo un pago capturado y verificado puede optar a reembolso
+1755	Las solicitudes de reembolso deben enviarse antes del inicio de la reserva
+1756	Revisa este candidato en Reconocimiento de matrículas para resolver la alerta
+1757	El pago de prueba se simuló, pero la reserva requiere revisión
+1758	Usa comas, espacios o saltos de línea. Hasta 100 plazas por operación
+1759	Ya tienes una solicitud de verificación de propietario en revisión

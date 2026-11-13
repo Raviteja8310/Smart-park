@@ -15,6 +15,15 @@ html:not(.sp-dark-theme) .sp-backdrop-page .sp-backdrop-overlay { background: li
 /* Hero scenes (login, registration, loading): cinematic, lightly veiled. */
 .sp-backdrop-hero .sp-backdrop-overlay { background: radial-gradient(90% 70% at 30% 40%, rgba(5, 7, 13, .3), rgba(5, 7, 13, .78)), linear-gradient(180deg, rgba(5, 7, 13, .15), rgba(5, 7, 13, .7)); }
 .auth-story .sp-backdrop { position: absolute; z-index: -1; }
+/* Login video (src/config/loginBackground.js): lighter overlay so the scene keeps its colour; darker at the bottom where the text sits. */
+.sp-backdrop-video .sp-backdrop-overlay { background: linear-gradient(180deg, rgba(5, 7, 13, .55) 0%, rgba(5, 7, 13, .4) 32%, rgba(5, 7, 13, .62) 55%, rgba(5, 7, 13, .9) 100%); }
+.auth-story:has(.sp-backdrop-video) :is(.auth-brand, .auth-story-body, .auth-story-footer) { text-shadow: 0 1px 2px rgba(0, 0, 0, .85), 0 2px 14px rgba(0, 0, 0, .6); }
+/* Wordmark tinted from the video's lighting (adaptiveBrandTint.js). The colours ease in JS; these transitions smooth each step. */
+.auth-story[data-adaptive-brand] .sp-brand-hero-name { background: linear-gradient(90deg, var(--brand-a), var(--brand-b) 45%, var(--brand-c)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none; filter: drop-shadow(0 0 16px var(--brand-glow)) drop-shadow(0 1px 1px rgba(0, 0, 0, .75)); transition: filter .4s ease; }
+.auth-story[data-adaptive-brand] .sp-brand-hero-tagline { color: var(--brand-tag); text-shadow: 0 1px 2px rgba(0, 0, 0, .8), 0 0 12px var(--brand-glow); transition: color .4s ease; }
+.auth-story[data-adaptive-brand='dark-ink'] .sp-brand-hero-name { filter: drop-shadow(0 0 12px var(--brand-glow)) drop-shadow(0 1px 1px rgba(255, 255, 255, .6)); }
+.auth-story[data-adaptive-brand='dark-ink'] .sp-brand-hero-tagline { text-shadow: 0 1px 2px rgba(255, 255, 255, .7); }
+html.sp-reduce-motion .auth-story[data-adaptive-brand] :is(.sp-brand-hero-name, .sp-brand-hero-tagline) { transition: none; }
 /* Content surfaces get extra separation over scenes. */
 html.sp-dark-theme .sp-content :is(.sp-card, .sp-metric, .sp-hero) { -webkit-backdrop-filter: blur(10px) saturate(130%); backdrop-filter: blur(10px) saturate(130%); }
 html.sp-dark-theme .sp-topbar.scrolled { background: rgba(7, 11, 20, .72); }
@@ -148,6 +157,10 @@ html.sp-reduce-motion .ev-fill { animation: none !important; transform: scaleX(.
 
 /* Auth brand lockup */
 .auth-brand { display: block !important; z-index: auto !important; }
+/* No transform/opacity/filter here: those isolate the logo and break its mix-blend-mode, revealing the GIF's black canvas. */
+.auth-brand-link { position: relative; top: 0; display: inline-block; color: inherit; text-decoration: none; border-radius: var(--radius-xl); cursor: pointer; transition: top 0.25s var(--ease-out, ease); }
+.auth-brand-link:hover { top: -2px; }
+.auth-brand-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 6px; }
 .auth-story { background: #05070d !important; }
 .auth-mobile-brand .sp-wordmark-name { letter-spacing: .14em; }
 .sp-page-loading { justify-items: center; padding: 48px 0 24px; }
@@ -156,3 +169,23 @@ html.sp-reduce-motion .ev-fill { animation: none !important; transform: scaleX(.
   html.sp-dark-theme .auth-page { background: linear-gradient(180deg, rgba(5, 7, 13, .55), rgba(7, 11, 20, .94) 42%), url('/assets/backgrounds/login/underground-garage-static.svg') center top / cover no-repeat, #05070d !important; }
   html.sp-dark-theme .auth-form-side { background: transparent !important; }
 }
+
+/* Page entrance (CSS, so it never blocks navigation) */
+.sp-page-frame { animation: sp-page-in .34s var(--ease-emphasized) both; }
+@keyframes sp-page-in { from { opacity: 0; transform: translateY(8px); } }
+
+/* Language picker on sign-in / registration */
+.auth-form-side { position: relative; }
+.auth-lang { position: absolute; top: 22px; right: 24px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0; border: 1px solid var(--color-border); border-radius: var(--radius-full); background: color-mix(in srgb, var(--color-surface) 80%, transparent); color: var(--color-text-secondary); cursor: pointer; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.auth-lang:hover { border-color: var(--color-border-strong); color: var(--color-text-strong); }
+.auth-lang:focus-within { border-color: var(--color-primary); box-shadow: var(--focus-ring); }
+/* The select fills the whole pill, so a click on the globe, the text or the arrow opens it. */
+.auth-lang > svg { position: absolute; top: 50%; translate: 0 -50%; pointer-events: none; }
+.auth-lang > svg:first-child { left: 12px; }
+.auth-lang > svg:last-child { right: 11px; }
+.auth-lang select { appearance: none; -webkit-appearance: none; height: 100%; border: 0 !important; border-radius: inherit; background: transparent !important; box-shadow: none !important; padding: 0 31px 0 34px !important; color: var(--color-text-strong) !important; font: 600 var(--text-sm) var(--font-sans); cursor: pointer; outline: none; color-scheme: light; }
+html.sp-dark-theme .auth-lang select { color-scheme: dark; }
+/* Dropdown list follows the active light/dark theme. */
+.auth-lang select option { color: var(--color-text-strong); background: var(--color-surface-raised); font-weight: 600; }
+.auth-lang select option:checked { color: #fff; background: var(--color-primary); }
+@media (max-width: 700px) { .auth-lang { top: max(14px, env(safe-area-inset-top)); right: 14px; height: 34px; } }

@@ -1,0 +1,91 @@
+2193	À propos
+2194	Connexion
+2195	Arrivez
+2196	Pied de page
+2197	Conducteurs
+2198	Explorer
+2199	Réservez
+2200	Fonctionnalités
+2201	Plateforme
+2202	Ouvrir le menu
+2203	Exploitants
+2204	Fermer le menu
+2205	Vivez mieux
+2206	Garez-vous et partez
+2207	Comment ça marche
+2208	Stationnez malin
+2209	Propriétaires de places
+2210	Sections de la page
+2211	Quatre langues
+2212	Accueil SmartPark
+2213	En attente de mise à jour
+2214	Vision par ordinateur
+2215	Gestion des barrières
+2216	Proposez votre place
+2217	Paiement sécurisé
+2218	Aller au contenu
+2219	Occupation par caméra
+2220	Cartes et itinéraires
+2221	Tickets QR d’entrée
+2222	Chaque place, en direct
+2223	Découvrir SmartPark
+2225	Connectez-vous pour l’assistance
+2226	Paiements et tickets
+2227	Des alertes qui vous trouvent
+2228	Lire la vidéo d’arrière-plan
+2229	Mettre en pause la vidéo d’arrière-plan
+2230	Promotions et parrainages
+2231	Le moteur sous le capot
+2232	© {0} SmartPark Mobility OS
+2233	Transformez vos places inutilisées en revenus
+2234	Un prix unique, affiché avant de payer
+2236	Gains et versements en un coup d’œil
+2237	Validation aux barrières et journal d’audit
+2238	Conçu pour tous les acteurs du parking
+2239	De la recherche à la place en quatre étapes
+2240	Occupation en direct dans chaque établissement
+2241	Se garer ne devrait pas être un pari
+2242	Des annonces vérifiées en qui les conducteurs ont confiance
+2243	Sachez qu’une place est libre avant de partir
+2244	Fixez vos propres tarifs et horaires
+2245	En direct : {0} places libres sur {1} {2}
+2246	La détection par caméra plutôt que le comptage manuel
+2247	Votre stationnement plus intelligent commence ici
+2248	Passez directement la barrière avec votre ticket QR
+2249	Recharge VE et abonnements mensuels dans la même application
+2250	Contrôle financier, promotions et gestion des utilisateurs
+2251	Votre demande et chaque réponse restent dans votre compte
+2252	{0} places libres sur {1} dans {2} établissements en ce moment
+2253	SmartPark — Stationnement intelligent : trouvez, réservez, garez-vous
+2254	Toute l’interface fonctionne en English, हिन्दी, ಕನ್ನಡ et తెలుగు
+2255	Les habitués peuvent prendre un abonnement mensuel au lieu de réserver à chaque fois
+2256	Vos réservations, reçus et avis restent au même endroit pour le prochain trajet
+2257	Créez un compte gratuit en une minute ou connectez-vous pour reprendre là où vous en étiez
+2258	Choisissez une place et un horaire. Voyez le prix total, appliquez une promo et payez en toute sécurité
+2259	Les exploitants valident entrées et sorties et peuvent connecter du matériel de barrière compatible
+2260	Mises à jour de réservation et avis de compte dans l’application, par e-mail et, avec votre accord, par SMS
+2261	Présentez le ticket QR de votre réservation à la barrière. Tracez l’itinéraire vers l’entrée depuis la carte
+2262	Vous avez déjà un compte ? Connectez-vous et ouvrez Aide et assistance pour écrire à l’équipe SmartPark
+2263	Recherche de parking, réservations, occupation en direct et exploitation sur une seule plateforme
+2264	Un service de vision YOLO surveille les zones de caméra définies et tient l’état des places à jour
+2265	Les codes promo sont vérifiés au paiement et les codes de parrainage récompensent ceux qui invitent leurs amis
+2266	Paiement Razorpay vérifié côté serveur et un ticket QR pour chaque réservation confirmée
+2267	Chaque réservation confirmée inclut un ticket QR vérifié à la barrière : l’arrivée prend quelques secondes
+2268	React et Vite côté interface, une API Node.js et Express, une base de données MySQL et Docker pour le déploiement
+2269	Les propriétaires publient établissements et places, fixent tarifs et horaires, se font vérifier et suivent leurs gains
+2270	Les paiements passent par Razorpay ; transactions, reçus et remboursements sont enregistrés pour chaque réservation
+2271	Recherchez par quartier, repère ou position. La carte montre quels établissements ont des places libres maintenant
+2272	Trouvez des établissements avec bornes, voyez types de connecteurs et puissance, et gardez une trace de chaque recharge
+2273	OpenStreetMap avec Leaflet, recherche de lieux et itinéraires routiers, à partir des données d’établissements SmartPark
+2274	Choisissez un établissement, une place et un créneau. Le prix est annoncé avant confirmation, code promo compris
+2275	Un service Python exécute la détection de véhicules YOLO d’Ultralytics sur les flux caméra et l’associe aux zones de parking
+2276	L’état des places combine capteurs, caméras et réservations actives : une place bloquée n’apparaît jamais libre
+2277	Résultat : moins de tours de quartier, moins de surprises à l’entrée et des établissements utilisés comme prévu
+2278	L’avenir du stationnement intelligent. SmartPark vous montre les places libres maintenant, en bloque une pour vous et vous fait passer la barrière avec un ticket QR
+2279	Les conducteurs tournent pour une place qui n’existe peut-être pas. Les propriétaires ont des places vides pendant des heures. Les exploitants comptent les voitures à la main et découvrent qu’ils sont complets par la file à l’entrée
+2280	SmartPark relie les trois. Il lit l’état réel de chaque place via capteurs, caméras et réservations, le publie dès qu’il change et permet au conducteur de réserver avant de partir
+2281	Recherchez par ville, repère ou position : SmartPark classe les établissements par distance, avec prix, recharge VE et places libres en ce moment. Passez à la carte pour les voir en couleurs, obtenir l’itinéraire et réserver depuis le repère
+2282	En direct : {0} places libres dans 1 établissement
+2283	En direct : {0} places libres dans {1} établissements
+2284	Sept langues
+2285	Toute l’interface fonctionne en English, हिन्दी, ಕನ್ನಡ, తెలుగు, Español, Français et 日本語

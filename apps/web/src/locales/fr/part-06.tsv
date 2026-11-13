@@ -1,0 +1,190 @@
+1250	Infrastructure de mobilité intelligente
+1251	Réservation temporaire créée
+1252	Événement de plaque introuvable
+1253	Impossible de charger cette page
+1254	Impossible d’enregistrer l’appareil
+1255	Impossible de définir le véhicule par défaut
+1256	Impossible de soumettre la vérification
+1257	Jusqu’à 20 véhicules par compte
+1258	Offre de bienvenue pour les nouveaux conducteurs
+1259	Vos tickets et la file de l’établissement
+1260	Impossible de charger le flux d’alertes
+1261	Impossible de changer votre mot de passe
+1262	E-mail ou mot de passe incorrect
+1263	Statut de l’établissement passé à {0}
+1264	Séjours à l’heure, à la journée et plus longs
+1265	Inclure la file d’assistance de l’établissement
+1266	Demande d’abonnement mensuel annulée
+1267	Ouverture de l’aperçu de détection en direct
+1268	Alertes de stationnement et opérationnelles
+1269	Demande de versement créée pour {0}
+1270	{0} retiré des parkings enregistrés
+1271	Sélectionnez un ou plusieurs rôles valides
+1272	Changez d’espace de travail dans Mon profil
+1273	Le rôle d’affectation n’est pas valide
+1274	L’opération financière a échoué
+1275	Commande de barrière introuvable
+1276	Abonnement mensuel introuvable
+1277	Les nouveaux mots de passe ne correspondent pas
+1278	Notification introuvable
+1279	Recherche enregistrée introuvable
+1280	Compte utilisateur introuvable
+1281	L’identifiant utilisateur n’est pas valide
+1282	Cet établissement est encore un brouillon
+1283	Impossible de charger les réservations récentes
+1284	Impossible de charger les tickets d’assistance
+1285	Impossible d’enregistrer les détails de l’annonce
+1286	Impossible de mettre à jour les notifications
+1287	Impossible de mettre à jour les parkings enregistrés
+1288	Impossible de mettre à jour le statut du ticket
+1289	Pourquoi ne puis-je pas ouvrir une page d’administration ?
+1290	Vous ne pouvez pas gérer ce chargeur
+1291	{0} fermées ou en maintenance
+1292	{0} à l’état physique inconnu
+1293	En attente d’une mise à jour du capteur ou du personnel
+1294	Mises à jour des réservations
+1295	Choisissez d’abord un établissement géré
+1296	Impossible de traiter cette demande
+1297	Impossible de charger les détails du parrainage
+1298	Adaptateur matériel non configuré
+1299	Comment ajouter un établissement de stationnement ?
+1300	Chargement de votre tableau de parrainage
+1301	Opérations manuelles du fournisseur uniquement
+1302	Aucune session de recharge enregistrée
+1303	Pas encore assez de données pour une tendance
+1304	Les notifications ne sont pas disponibles
+1305	La vue d’ensemble du parking est indisponible
+1306	Le paiement n’est pas vérifié comme payé
+1307	Ticket QR d’entrée pour la réservation {0}
+1308	Locataire autorisé par le propriétaire
+1309	L’identifiant de l’alerte n’est pas valide
+1310	Véhicule de flotte introuvable
+1311	Place de parking introuvable
+1312	Impossible de traiter le scan
+1313	Le compte sélectionné n’est pas valide
+1314	Impossible de changer le statut de l’annonce
+1315	Impossible de charger la vue d’ensemble du parking
+1316	Impossible d’enregistrer la règle tarifaire
+1317	Statut de vérification indisponible
+1318	Revenus vérifiés · 30 derniers jours
+1319	La page de l’espace de travail n’a pas pu s’afficher
+1320	(plage d’horodatages UTC, incluse)
+1321	Toutes les notifications sont marquées comme lues
+1322	Effectuer un paiement test réussi
+1323	ex. : Allée couverte près du métro
+1324	Filtrer par code, établissement ou place
+1325	Filtrer les demandes de vérification
+1326	Comment activer la détection par caméra ?
+1327	Inclut les frais et taxes configurés
+1328	Chargement de vos préférences de stationnement
+1329	Chargement de votre espace SmartPark
+1330	Doit déjà être membre de l’entreprise
+1331	Aucune place de parking configurée
+1332	Aucune demande d’abonnement mensuel en attente
+1333	Points du polygone normalisés (JSON)
+1334	Approuvé par le propriétaire · paiement en attente
+1335	ID de remboursement ou numéro de dossier
+1336	Plaques et catégories enregistrées
+1337	Vérification de routine de l’appareil de barrière
+1338	Sélectionnez une caméra et une place
+1339	L’identifiant de la caméra n’est pas valide
+1340	Enregistrement de gains introuvable
+1341	La demande au matériel de barrière a échoué
+1342	Demande de versement introuvable
+1343	Demande de remboursement introuvable
+1344	L’identifiant de l’avis n’est pas valide
+1345	Ticket d’assistance introuvable
+1346	La signature du webhook n’est pas valide
+1347	Impossible de mettre à jour les préférences SMS
+1348	Mis à jour par {0} via SmartPark
+1349	En attente de l’examen de l’administrateur
+1350	Attribuer à l’e-mail d’un membre (facultatif)
+1351	Indiquez un statut actif/inactif
+1352	La déconnexion a échoué. Veuillez réessayer
+1353	L’identifiant de la réservation n’est pas valide
+1354	La caméra est absente ou désactivée
+1355	L’identifiant du chargeur n’est pas valide
+1356	L’identifiant de la commande n’est pas valide
+1357	L’identifiant de l’entreprise n’est pas valide
+1358	L’identifiant du gain n’est pas valide
+1359	L’identifiant de l’annonce n’est pas valide
+1360	L’identifiant du paiement n’est pas valide
+1361	L’identifiant de session n’est pas valide
+1362	Le ticket n’a pas pu être validé
+1363	L’identifiant du véhicule n’est pas valide
+1364	Impossible de créer un ticket d’assistance
+1365	Impossible de déterminer votre position
+1366	Impossible de charger la vérification des propriétaires
+1367	Vous ne pouvez pas parrainer votre propre compte
+1368	Gains finalisés en attente d’examen
+1369	Identifiant de l’adaptateur de barrière configuré
+1370	Réseau en direct · actualisé toutes les 30 s
+1371	Pas encore assez de réservations passées
+1372	Référence du virement de versement enregistrée
+1373	Retirer cette photo de l’annonce
+1374	Rechercher des pages, actions et réservations
+1375	Certaines préférences ne sont pas encore enregistrées
+1376	La règle tarifaire {0} est maintenant active
+1377	Session de recharge introuvable
+1378	Établissement de stationnement introuvable
+1379	Cette action de versement n’est pas prise en charge
+1380	La demande n’a pas pu aboutir
+1381	Cette réservation a déjà été annulée
+1382	Cette promotion n’a pas encore commencé
+1383	L’origine de cette demande n’est pas autorisée
+1384	Impossible de charger votre garage
+1385	Vous n’avez pas encore publié d’avis
+1386	Votre mot de passe actuel est incorrect
+1387	ADMINISTRATION · FINANCES CONTRÔLÉES
+1388	Vérifiez les filtres de la liste des notifications
+1389	Fournisseur externe ou référence du dossier
+1390	Pièce d’identité officielle
+1391	Aucun paiement vérifié sur cette période
+1392	Remboursement déjà traité en externe
+1393	Retirer {0} de votre garage
+1394	Sélectionnez au moins une image à importer
+1395	Le paiement test n’a pas pu aboutir
+1396	Affectation du personnel introuvable
+1397	Le filtre de statut de versement n’est pas valide
+1398	L’identifiant de la promotion n’est pas valide
+1399	Le filtre de statut de remboursement n’est pas valide
+1400	Établissement sélectionné introuvable
+1401	Essayez une autre recherche ou un autre filtre
+1402	Impossible de créer la demande de versement
+1403	Impossible de charger la configuration de la caméra
+1404	Impossible d’envoyer la demande de remboursement
+1405	Vérifiez votre e-mail avant de vous connecter
+1406	Vérification du paiement auprès du fournisseur
+1407	Pourquoi ce gain doit-il être annulé ?
+1408	Un remboursement au statut {0} ne peut pas être {1}
+1409	Impossible d’activer le mode propriétaire
+1410	Destination après le stationnement (facultatif)
+1411	L’énergie doit être un nombre positif ou nul
+1412	Regroupez les places par étage, niveau ou zone
+1413	Saisissez au moins {0} caractères
+1414	Indiquez au moins un champ à mettre à jour
+1415	{0} ajouté à vos parkings favoris
+1416	Sélectionnez une date et une heure de début
+1417	Zone de place retirée de cette caméra
+1418	Les blocages temporaires expirent automatiquement
+1419	Cette alerte a déjà été résolue
+1420	Ce code promo n’est pas disponible
+1421	Impossible d’enregistrer la décision d’examen
+1422	Vous ne pouvez pas terminer cette session de recharge
+1423	Votre place de marché du stationnement commence ici
+1424	Les informations de votre profil ont été enregistrées
+1425	Une réservation ne peut être enregistrée qu’une fois
+1426	MOBILITÉ D’ENTREPRISE ET VÉHICULES ÉLECTRIQUES
+1427	La date de fin doit être postérieure à la date de début
+1428	Saisissez un code et un montant de réservation valides
+1429	Saisissez des dates/heures de début et de fin valides
+1430	L’établissement « {0} » a été créé en brouillon
+1431	Note interne (visible par le personnel uniquement)
+1432	La demande de position a expiré. Réessayez
+1433	Aucune alerte ouverte dans vos établissements
+1434	Aucun établissement publié trouvé
+1435	Aucune ligne de rapport pour les dates choisies
+1436	Aucune réservation ne correspond à ce ticket QR
+1437	La note doit être un entier de 1 à 5
+1438	Sélectionnez un véhicule de votre garage
+1439	Présentez votre place aux conducteurs

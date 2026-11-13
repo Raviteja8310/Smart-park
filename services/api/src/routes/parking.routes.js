@@ -649,4 +649,7 @@ router.delete('/lots/:lotId/staff/:userId/:role', requireAuth, requireRole('admi
   return res.json({ message: 'Staff assignment removed.' });
 }));
 
+// Shared with the read-only map feed (parking-map.routes.js) so map availability uses identical SQL.
+export { LOT_SUMMARY_SELECT };
+
 export default router;

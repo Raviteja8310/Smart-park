@@ -6,6 +6,9 @@
  * All instances share one URL, so the browser downloads and caches it once.
  */
 export const LOGO_SRC = '/assets/branding/smartpark-logo.gif';
+/** Same animation with the black canvas made transparent (generated from the GIF; the GIF itself is unchanged).
+ *  Used by the app's logo mark so it sits directly on light and dark surfaces without a black tile. */
+export const LOGO_TRANSPARENT_SRC = '/assets/branding/smartpark-logo-transparent.webp';
 export const BRAND_NAME = 'SMARTPARK';
 export const BRAND_TAGLINE = 'YOUR DRIVE. OUR INTELLIGENCE.';
 
@@ -13,7 +16,7 @@ export function LogoMark({ size = 40, className = '', decorative = false }) {
   return (
     <span className={`sp-logo-gif ${className}`} style={{ '--logo-size': `${size}px` }}>
       <img
-        src={LOGO_SRC}
+        src={LOGO_TRANSPARENT_SRC}
         width={size}
         height={Math.round(size * (355 / 357))}
         alt={decorative ? '' : 'SmartPark logo'}

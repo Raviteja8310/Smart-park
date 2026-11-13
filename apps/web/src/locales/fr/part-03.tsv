@@ -1,0 +1,237 @@
+560	Demande de remboursement
+561	Région / État
+562	Région supprimée
+563	La demande a échoué
+564	Demander un remboursement
+565	Résoudre le ticket
+566	RAPPORT DE REVENUS
+567	Avis supprimé
+568	Véhicules enregistrés
+569	Hôte SmartPark
+570	Logo SmartPark
+571	Utilisateur SmartPark
+572	État / région
+573	Statut de {0}
+574	Adresse
+575	CONTRÔLE DU SYSTÈME
+576	Expiration du ticket
+577	Capacité totale
+578	CONFIANCE ET SÉCURITÉ
+579	Statut inconnu
+580	Utilisateur introuvable
+581	Rédiger un avis
+582	Votre nom complet
+583	Tarif {0} enregistré
+584	Sessions actives
+585	Note de l’administrateur : {0}
+586	Adresse de facturation
+587	Historique des réservations
+588	Caméra désactivée
+589	Changer le mot de passe
+590	Fermer le ticket QR
+591	Stationnement couvert
+592	Véhicule par défaut
+593	REGISTRE DES APPAREILS
+594	REGISTRE DES GAINS
+595	Modifier mon compte
+596	M’envoyer un code par e-mail
+597	Entrée prise en charge
+598	Hub de recharge VE
+599	Explorer les parkings
+600	État de l’établissement
+601	Fenêtre de prévision
+602	Mot de passe oublié
+603	Assistance générale
+604	Versement à l’hôte {0}
+605	RÈGLEMENT DE L’HÔTE
+606	CONFIGURATION DE L’INVENTAIRE
+607	Dernier chargement {0}
+608	PROFIL DE L’ANNONCE
+609	Chargement des appareils
+610	Chargement des tickets
+611	Navigation principale
+612	Carte affichant {0}
+613	Membres et flotte
+614	Mes réservations
+615	Pas de contrôle de sortie
+616	Aucun numéro de téléphone
+617	Ouvrir mon profil
+618	Ouvrir la navigation
+619	DÉTAILS DU PARKING
+620	ANNONCE DE PARKING
+621	résultats de parking
+622	Revêtement
+623	Pavés / blocs
+624	Demandes de versement
+625	Paiement en attente
+626	Photos importées
+627	Profil mis à jour
+628	Jeton du ticket QR
+629	Réservations récentes
+630	Commandes récentes
+631	Recherches récentes
+632	Marquer comme remboursé
+633	Actualiser l’aperçu
+634	Actualiser les tickets
+635	Actualisation des données
+636	Demandes de remboursement
+637	Enregistrer l’appareil
+638	RÉSERVEZ UNE PLACE
+639	Note de résolution
+640	Favoris et avis
+641	Rechercher des annonces
+642	Sélectionnez une caméra
+643	Sélectionner l’établissement
+644	PARTAGEZ SMARTPARK
+645	État ou région
+646	Problème technique
+647	Parrainages au total
+648	Zone non attribuée
+649	Mettre à jour le mot de passe
+650	USD — Dollar américain
+651	Utiliser ma position
+652	Gestion des utilisateurs
+653	Utilisations par conducteur
+654	DÉTAILS DU VÉHICULE
+655	Véhicule supprimé
+656	Montant vérifié
+657	En attente de l’utilisateur
+658	HORAIRES DE LA SEMAINE
+659	Rédigez une mise à jour
+660	Votre QR de stationnement
+661	RÉCUPÉRATION DU COMPTE
+662	SÉCURITÉ DU COMPTE
+663	Toutes les demandes
+664	Tous les systèmes opérationnels
+665	Approuver l’établissement
+666	Archiver l’établissement
+667	En attente de paiement
+668	Lumineux et dégagé
+669	Détection par caméra
+670	Modifications requises
+671	Fermer la navigation
+672	Réduire la barre latérale
+673	Confirmer le mot de passe
+674	Coût indisponible
+675	Créer une promotion
+676	Mot de passe actuel
+677	Base de données hors ligne
+678	Gain approuvé
+679	Gain annulé
+680	Caméras de l’établissement
+681	Détails de l’établissement
+682	Filtrer par statut
+683	TARIFS FLEXIBLES
+684	PLACE DE MARCHÉ DES HÔTES
+685	Dernière demande
+686	Chargement des comptes
+687	Chargement des réservations
+688	Chargement des gains
+689	Chargement des annonces
+690	régions cartographiées ·
+691	Remise maximale
+692	Capacité du réseau
+693	NOUVELLE ANNONCE D’HÔTE
+694	Pas de contrôle d’entrée
+695	Aucun membre trouvé
+696	Aucun parrainage pour l’instant
+697	Aucun résultat pour «
+698	Notes (facultatif)
+699	Nombre de places
+700	Accès de nuit
+701	Établissement de stationnement
+702	Activité des paiements
+703	Tentatives de paiement
+704	Paiement effectué
+705	PAIEMENT VÉRIFIÉ
+706	Téléphone (facultatif)
+707	Veuillez réessayer
+708	points du polygone ·
+709	Enregistrements du fournisseur
+710	Navigation rapide
+711	Alertes en temps réel
+712	Enregistrer une plaque
+713	Demande refusée
+714	Rétablir les valeurs par défaut
+715	Restaurer l’établissement
+716	Itinéraire vers le parking
+717	Enregistrer la zone de la place
+718	Rechercher dans SmartPark
+719	Se connecter en toute sécurité
+720	Démarrer le traitement
+721	Cet établissement est
+722	Profils de véhicules
+723	Voir mes réservations
+724	← Retour à la connexion
+726	Connecteurs actifs
+727	Établissements actifs
+728	Ajouter un premier véhicule
+729	Ajouter un véhicule de flotte
+730	Ajouter une place de parking
+731	Approuver et publier
+732	Crédits disponibles
+733	En attente d’approbation
+734	Réservation candidate
+735	Détectée occupée
+736	ex. : Rez-de-chaussée
+737	enregistrement(s) de gains
+738	aperçu des gains
+739	Virement externe
+740	Exploitant de l’établissement
+741	Masquer le nouveau mot de passe
+742	Dans une demande de versement
+743	CONFIGURATION DE L’INTÉGRATION
+744	Disponibilité en direct
+745	Chargement de l’occupation
+746	Mes abonnements mensuels
+747	Occupation du réseau
+748	Ouvrir les versements aux hôtes
+749	Note du propriétaire : {0} ·
+750	Transactions payées
+751	Agent de parking
+752	DÉCOUVERTE DE PARKINGS
+753	Emplacements de parking
+754	Paiement ou remboursement
+755	Référence du paiement
+756	Planifiez votre arrivée
+757	Reconnaissance de plaques
+758	Prix par kWh (₹)
+759	Enregistrer la résolution
+760	Paiement enregistré {0}
+761	Réduire les animations
+762	Activité de parrainage
+764	Modération des avis
+765	Enregistrer la règle tarifaire
+766	Rechercher ou aller à
+767	Sélectionnez un établissement
+768	Afficher le nouveau mot de passe
+769	COMPTE CONNECTÉ
+770	OCCUPATION INTELLIGENTE ·
+771	Parking intelligent
+772	Composition des places
+773	Ticket marqué {0}
+774	Utilisations totales
+775	paiements vérifiés
+776	Barre latérale de l’espace de travail
+777	VOS RÉSERVATIONS
+778	{0} sur 5 étoiles
+779	{0} places créées
+780	Stationnement accessible
+781	COMPTE ET SÉCURITÉ
+782	Ajouter des places en masse
+783	Alerte prise en compte
+784	Alertes indisponibles
+786	Vérifier un autre horaire
+787	Choisir des photos
+788	Heure de fermeture non définie
+789	Caméras configurées
+790	Comptes entreprise
+791	Créer une promotion
+792	Télécharger le ticket QR
+793	INVENTAIRE DE L’ÉTABLISSEMENT
+794	Conseil pour les propriétaires
+795	ESPACE DE L’ÉTABLISSEMENT
+796	Montant du registre de l’hôte
+797	INR — Roupie indienne
+798	Langue de l’interface
+799	Date non valide

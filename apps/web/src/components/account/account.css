@@ -1,0 +1,31 @@
+/* Profile photo and Delete account (My profile). Uses the existing design tokens. */
+.sp-profile-photo { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 0 1 auto; max-width: 340px; }
+/* The photo controls make the header wider: let it wrap instead of squeezing the name and email. */
+.sp-profile-head:has(.sp-profile-photo) { flex-wrap: wrap; row-gap: 12px; }
+.sp-profile-head:has(.sp-profile-photo) .sp-profile-identity { flex: 1 1 220px; }
+.sp-profile-photo .sp-profile-avatar { position: relative; overflow: hidden; flex-shrink: 0; }
+.sp-profile-avatar.has-photo { background: var(--color-surface-sunken); }
+.sp-profile-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sp-profile-photo-busy { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in srgb, var(--color-bg, #070b14) 55%, transparent); color: #fff; }
+.sp-profile-photo-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-width: 0; }
+.sp-profile-photo-actions .sp-button { min-height: 32px; padding: 6px 10px; }
+.sp-profile-photo-actions small { flex-basis: 100%; color: var(--color-text-muted); font-size: var(--text-2xs); }
+.sp-profile-photo-error { flex-basis: 100%; color: var(--color-danger-text); font-size: var(--text-xs); }
+.sp-profile-photo-ok { flex-basis: 100%; color: var(--color-primary-text); font-size: var(--text-xs); }
+
+/* Top-bar avatar with a photo */
+.sp-avatar.has-photo { overflow: hidden; padding: 0; }
+.sp-avatar.has-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.sp-delete-account { display: grid; gap: 14px; border-color: color-mix(in srgb, var(--state-occupied, #dc2626) 28%, var(--color-border)) !important; }
+.sp-delete-account .sp-settings-icon { color: var(--color-danger-text); }
+.sp-delete-account-facts { display: grid; gap: 6px; margin: 0; padding-left: 18px; color: var(--color-text-secondary); font-size: var(--text-sm); line-height: 1.6; }
+.sp-delete-account > .sp-button.danger, .sp-delete-account-actions .sp-button.danger { justify-self: start; }
+.sp-delete-account-blocked { display: grid; gap: 8px; padding: 12px 14px; border-radius: var(--radius-lg); border: 1px solid color-mix(in srgb, var(--state-reserved, #f59e0b) 40%, var(--color-border)); background: color-mix(in srgb, var(--state-reserved, #f59e0b) 8%, var(--color-surface)); color: var(--color-text); font-size: var(--text-sm); }
+.sp-delete-account-blocked strong { display: inline-flex; align-items: center; gap: 6px; }
+.sp-delete-account-blocked ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; color: var(--color-text-secondary); }
+.sp-delete-account-blocked .sp-button { justify-self: start; }
+.sp-delete-account-form { display: grid; gap: 12px; max-width: 460px; }
+.sp-delete-account-form label { display: grid; gap: 6px; font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); }
+.sp-delete-account-form input { height: 40px; padding: 0 12px; border: 1px solid var(--input-border, var(--color-border)); border-radius: var(--input-radius, 10px); background: var(--input-bg, var(--color-surface)); color: var(--color-text-strong); font: 500 var(--text-sm) var(--font-sans); }
+.sp-delete-account-actions { display: flex; flex-wrap: wrap; gap: 8px; }

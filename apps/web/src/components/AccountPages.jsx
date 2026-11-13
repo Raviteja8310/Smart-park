@@ -5,6 +5,8 @@ import {
   Languages, RotateCcw, Download, MonitorCog, Mail, ArrowRight, Sparkles, Building2, CarFront, Store, TicketCheck, Send, MessageSquare, CircleAlert, RefreshCw
 } from 'lucide-react';
 import { supportedLanguages } from '../i18n.js';
+import ProfilePhoto from './account/ProfilePhoto.jsx';
+import DeleteAccount from './account/DeleteAccount.jsx';
 
 const PREFERENCES_KEY = 'smartpark.preferences';
 const preferenceDefaults = {
@@ -47,7 +49,7 @@ async function readResponse(response) {
   return data;
 }
 
-export function ProfilePage({ currentUser, onProfileUpdated, workspaceMode = 'driver', onWorkspaceChange, onNavigate }) {
+export function ProfilePage({ currentUser, onProfileUpdated, workspaceMode = 'driver', onWorkspaceChange, onNavigate, onAccountDeleted }) {
   const [fullName, setFullName] = useState(currentUser?.fullName || '');
   const [phone, setPhone] = useState(currentUser?.phone || '');
   const [profileBusy, setProfileBusy] = useState(false);
@@ -147,7 +149,7 @@ export function ProfilePage({ currentUser, onProfileUpdated, workspaceMode = 'dr
 
     <div className="panel sp-profile-panel">
       <div className="sp-profile-head">
-        <span className="sp-profile-avatar">{initials || 'SP'}</span>
+        <ProfilePhoto initials={initials} avatar={currentUser?.avatar} onChange={(avatar) => onProfileUpdated?.({ avatar })} />
         <div className="sp-profile-identity"><h2>{currentUser?.fullName || 'SmartPark user'}</h2><p>{currentUser?.email}</p><span className="sp-profile-role">{roleLabel}</span></div>
         <span className={`sp-account-verification ${currentUser?.emailVerifiedAt ? 'verified' : 'unknown'}`}><ShieldCheck size={14}/>{currentUser?.emailVerifiedAt ? 'Email verified' : 'Verification status unavailable'}</span>
       </div>
@@ -174,6 +176,8 @@ export function ProfilePage({ currentUser, onProfileUpdated, workspaceMode = 'dr
       </form>
       <p className="sp-security-help"><Mail size={15}/> Forgot your current password? Sign out and use <strong>Forgot password?</strong> on the sign-in screen to receive a six-digit code by email.</p>
     </div>
+
+    <DeleteAccount onDeleted={onAccountDeleted} />
   </section>;
 }
 
@@ -274,9 +278,9 @@ export function SettingsPage({ language = 'en', onLanguageChange, theme = 'light
       </section>
 
       <section className="panel sp-settings-card">
-        <div className="sp-settings-section-heading"><span className="sp-settings-icon"><Languages size={19}/></span><div><h2>Language</h2><p>Set the language for primary navigation and supported workspace labels.</p></div></div>
+        <div className="sp-settings-section-heading"><span className="sp-settings-icon"><Languages size={19}/></span><div><h2>Language</h2><p>Choose the language for the entire SmartPark interface.</p></div></div>
         <label className="sp-settings-language">Interface language<select value={language} onChange={(event) => changePreference('language', event.target.value)}>{supportedLanguages.map((item) => <option value={item.value} key={item.value}>{item.label}</option>)}</select></label>
-        <p className="sp-settings-footnote">English, Hindi, Kannada, and Telugu are available. Some detailed operational pages may remain in English.</p>
+        <p className="sp-settings-footnote">English, Hindi, Kannada, Telugu, Spanish, French and Japanese are available across the entire app.</p>
       </section>
 
       <section className="panel sp-settings-card">

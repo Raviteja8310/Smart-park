@@ -13,7 +13,7 @@ function SystemStatus({ apiStatus }) {
   );
 }
 
-function ProfileMenu({ initials, displayName, email, onNavigate, onLogout, loggingOut }) {
+function ProfileMenu({ initials, avatarUrl, displayName, email, onNavigate, onLogout, loggingOut }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const reduce = useReducedMotion();
@@ -29,7 +29,7 @@ function ProfileMenu({ initials, displayName, email, onNavigate, onLogout, loggi
   return (
     <div className="sp-menu-wrap" ref={ref}>
       <button type="button" className="sp-avatar-btn" aria-haspopup="menu" aria-expanded={open} aria-label="Account menu" onClick={() => setOpen((v) => !v)}>
-        <span className="sp-avatar" aria-hidden="true">{initials}</span>
+        <span className={`sp-avatar ${avatarUrl ? 'has-photo' : ''}`} aria-hidden="true">{avatarUrl ? <img src={avatarUrl} alt="" /> : initials}</span>
       </button>
       <AnimatePresence>
         {open && (
@@ -47,7 +47,7 @@ function ProfileMenu({ initials, displayName, email, onNavigate, onLogout, loggi
   );
 }
 
-export default function Topbar({ crumbs, apiStatus, theme, onToggleTheme, unreadCount, onNavigate, onOpenSearch, onOpenMenu, initials, displayName, email, onLogout, loggingOut }) {
+export default function Topbar({ crumbs, apiStatus, theme, onToggleTheme, unreadCount, onNavigate, onOpenSearch, onOpenMenu, initials, avatarUrl, displayName, email, onLogout, loggingOut }) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -86,7 +86,7 @@ export default function Topbar({ crumbs, apiStatus, theme, onToggleTheme, unread
           <Bell size={18} />
           {unreadCount > 0 && <span className="sp-badge-dot sp-num" aria-hidden="true">{unreadCount > 9 ? '9+' : unreadCount}</span>}
         </button>
-        <ProfileMenu initials={initials} displayName={displayName} email={email} onNavigate={onNavigate} onLogout={onLogout} loggingOut={loggingOut} />
+        <ProfileMenu initials={initials} avatarUrl={avatarUrl} displayName={displayName} email={email} onNavigate={onNavigate} onLogout={onLogout} loggingOut={loggingOut} />
       </div>
     </header>
   );

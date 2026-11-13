@@ -1,0 +1,298 @@
+0	Voiture
+1	Fin
+2	Échap
+3	Frais
+4	Faible
+5	Carte
+6	Ops
+7	SUV
+8	taxe
+9	Fourgon
+10	Ville
+11	Ctrl
+12	Sombre
+13	DATE
+14	Modifier
+15	Se termine
+16	Rechercher
+17	À partir de
+18	Élevée
+19	Bloquer
+20	Accueil
+21	Liste
+22	Marque
+23	Plus
+24	Suivant
+25	Uniquement
+26	Ouvert
+27	Rôle
+28	Enregistrer
+29	Afficher
+30	Place
+31	UTILISATEUR
+32	Zone
+33	Effacer
+34	Fermer
+35	Couleur
+36	Quotidien
+37	Vide
+38	Clair
+39	Modèle
+40	Ouvre
+41	Autre
+42	Propriétaire
+43	Pause
+44	Téléphone
+45	Puissance
+46	Répondre
+47	Réessayer
+48	RÔLES
+49	Portée
+50	Place
+51	Début
+52	Taxe (
+53	Titre
+54	Total
+55	Camion
+56	1 heure
+57	2 jours
+58	7 jours
+59	Actif
+60	Montant
+61	Annuler
+62	Fermé
+63	Ferme
+64	Supprimer
+65	Appareil
+66	Conducteur
+67	Exporter
+68	Vendredi
+69	Ami
+70	Garage
+71	Gravier
+72	À l’heure
+73	Inscrit
+74	Gérer
+75	Lundi
+76	Sans plafond
+77	Normale
+78	En ligne
+79	Ouverte
+80	tarif ·
+81	Note
+82	Motif
+83	Refuser
+84	Retirer
+85	Enregistrement
+86	Rechercher
+87	Sécurisé
+88	Commence
+89	Statut
+90	Dimanche
+91	Urgent
+92	Hebdomadaire
+93	Dans un rayon de
+94	2 heures
+95	3 heures
+96	4 heures
+97	8 heures
+98	Compte
+99	Actions
+100	Approuver
+101	Asphalte
+102	Retour à
+103	Réservation
+104	CCS2 DC
+105	CHAdeMO
+106	Commande
+107	Confirmer
+108	CONTACT
+109	Couvert
+110	Créé
+111	À vélo
+112	Par défaut
+113	Supprimé
+114	En voiture
+115	Expiré
+116	Expire
+117	Chargement
+118	Gestionnaire
+119	Max {0}
+120	Minimum
+121	Mensuel
+122	Aucune zone
+123	Non défini
+124	Hors ligne
+125	Payer maintenant
+126	Paiement
+127	En attente
+128	par kWh
+129	Tarifs
+130	Actualiser
+131	Résoudre
+132	Retiré
+133	Revenus
+134	Annuler
+135	Avis
+136	Envoi
+137	Réglé
+138	Affichage
+139	Se connecter
+140	SOURCES
+141	Objet
+142	Mardi
+143	Inconnu
+144	Mis à jour
+145	Véhicule
+146	À pied
+147	{0} % de réduction
+148	il y a {0} j
+149	il y a {0} h
+150	il y a {0} min
+151	1 — Mauvais
+152	2 — Passable
+153	24 heures
+154	3 — Bon
+155	Activer
+156	Ajouter une zone
+157	Montant (
+158	Approuvé
+159	Réservations
+160	Catégorie
+161	Vérification
+162	Réduire
+163	Béton
+164	Création
+165	Devise
+166	Désactivé
+167	REMISE
+168	Allée
+169	Durée
+170	Gains
+171	Éligible
+172	Employé
+173	Activation
+174	Établissement
+175	À partir de {0}
+176	Inactif
+177	à l’instant
+178	Langue
+179	Latitude
+180	Emplacement
+181	Naviguer
+182	Aucune correspondance
+183	Occupé
+184	Seulement {0}
+185	Ouvrir la carte
+186	Facultatif
+187	Vue d’ensemble
+188	Mot de passe
+189	PAIEMENTS
+190	versement ·
+191	Précédent
+192	Priorité
+193	Fournisseur
+194	Refusé
+195	Réservé
+196	Résolu
+197	Annulé
+198	Examiné
+199	Samedi
+200	Économisez {0}
+201	Paramètres
+202	Se déconnecter
+203	Jeudi
+204	Mise à jour
+205	Véhicules
+206	Vérifié
+207	Tout est en ordre
+208	Équipements
+209	Disponible
+210	Base {0}
+211	Annulée
+212	Terminée
+213	Confirmée
+214	Connecteur
+215	Copier le code
+216	Copier le lien
+217	ex. : Ville
+218	Modifier l’utilisateur
+219	Nom complet
+220	Longitude
+221	Marquer comme lu
+222	membres ·
+223	NOUVELLE OFFRE
+224	Remarque : {0}
+225	Occupation
+226	Promotion
+227	Qualifié
+228	Type de tarif
+229	Enregistrement
+230	Republier
+231	Demandé
+232	Réservation en cours
+233	Enregistrer le tarif
+234	Planifié
+236	PLAN DES PLACES
+237	Envoyé
+238	Suspendu
+239	Type 2 CA
+240	Illimité
+241	Jusqu’au {0}
+242	Mercredi
+244	Espace de travail
+245	Nom de la zone
+246	à {0} m
+247	Accessible
+248	Ajouter une caméra
+249	Ajouter un membre
+250	Toutes les alertes
+251	Toutes les places
+252	Apparence
+253	Fil d’Ariane
+254	Enregistré
+255	Fermer le formulaire
+256	Confiance
+257	Configuré
+258	Tarif journalier
+259	Désactiver
+260	Itinéraire
+261	ex. : Honda
+262	ex. : Blanc
+263	Modifier les rôles
+264	se terminant par {0}
+265	EUR — Euro
+266	Établissements
+267	RÈGLES D’ACCÈS
+268	En route
+269	Dernière image
+270	Raison sociale
+271	Gérer {0}
+272	Hauteur max.
+273	Année du modèle
+274	Modération
+275	mois ·
+276	Moto
+277	Mon profil
+278	Navigation
+279	NOUVELLE CAMÉRA
+280	Aucun résultat
+281	Opérations
+282	Note du propriétaire
+283	Pourcentage
+284	Puissance (kW)
+285	Promotions
+286	File ouverte
+287	Réactiver
+288	Actualisation
+289	Enregistrer les rôles
+290	Envoyer la réponse
+291	Codes des places
+292	Date de début
+293	Heure de début
+294	Envoi en cours
+295	Commande test
+296	inconnu sur
+297	Validation
+298	VOTRE BOÎTE DE RÉCEPTION
+299	à {0} km

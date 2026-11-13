@@ -1,0 +1,170 @@
+1440	L’identifiant de l’appareil de barrière n’est pas valide
+1441	Le webhook de paiement n’est pas configuré
+1442	L’identifiant de l’événement de plaque n’est pas valide
+1443	Le contenu du webhook n’est pas un JSON valide
+1444	Impossible de calculer le prix de la réservation
+1445	Le statut de votre ticket d’assistance est maintenant {0}
+1446	Une réservation ne peut pas dépasser 30 jours
+1447	Choisissez une réservation de votre compte
+1448	Demande d’abonnement mensuel envoyée pour {0}
+1449	Preuve de propriété ou de contrôle du bien
+1450	Lecture des notifications de votre compte
+1451	Remboursement finalisé enregistré et audité
+1452	Scannez le QR ou collez le jeton décodé
+1453	Une erreur s’est produite. Veuillez réessayer
+1454	L’identifiant du service de barrière n’est pas valide
+1455	L’identifiant de l’abonnement mensuel n’est pas valide
+1456	Demande d’abonnement mensuel introuvable
+1457	L’identifiant de la notification n’est pas valide
+1458	Annonce de place partagée introuvable
+1459	Un opérateur autorisé a demandé l’ouverture de la barrière
+1460	Annuler cette demande d’abonnement non payée
+1461	Choisissez une période de {0} jours maximum
+1462	Vous n’avez pas reçu le code ? Envoyez-en un nouveau
+1463	Agrandissez le texte pour une lecture plus facile
+1464	Limitez les animations et transitions décoratives
+1465	Le nom doit contenir au moins 2 caractères
+1466	Aucune caméra configurée pour cet établissement
+1467	Aucune notification ne correspond à vos préférences
+1468	Les remises en pourcentage ne peuvent pas dépasser 100 %
+1469	Référence d’immatriculation / GST (facultatif)
+1470	Caméra introuvable ou désactivée
+1471	Appareil introuvable ou désactivé
+1472	Le corps du webhook doit être du JSON brut
+1473	Cette session de recharge est déjà terminée
+1474	Impossible de charger les préférences de notification
+1475	Vous n’avez pas accès à cet établissement
+1476	Commande de paiement test locale introuvable
+1477	Un opérateur autorisé a demandé la fermeture de la barrière
+1478	L’accès à la caméra est géré par votre navigateur
+1479	Choisissez une zone de cet établissement
+1480	Saisissez une adresse e-mail et un mot de passe valides
+1481	Aperçu de détection d’occupation en direct pour {0}
+1482	Aucun code promo créé pour l’instant
+1483	Indiquez un nom ou un numéro de téléphone à mettre à jour
+1484	Rechercher une destination, un établissement ou un repère
+1485	Rechercher des parkings ou une destination
+1486	L’identifiant de la caméra ou de la place n’est pas valide
+1487	L’identifiant de la demande de versement n’est pas valide
+1488	L’identifiant de la demande de remboursement n’est pas valide
+1489	L’identifiant de l’historique de recherche n’est pas valide
+1490	L’identifiant du ticket d’assistance n’est pas valide
+1491	Véhicule introuvable dans votre garage
+1492	L’identifiant du service de vision n’est pas valide
+1493	Cet événement du fournisseur a déjà été reçu
+1494	Pourquoi cette demande de versement à l’hôte est-elle approuvée ?
+1495	Pourquoi cette demande de versement à l’hôte est-elle refusée ?
+1496	Votre prochaine expérience de stationnement commence ici
+1497	Une promotion avec ce code existe déjà
+1498	La réservation doit être terminée avant l’approbation
+1499	Impossible d’attribuer un code de parrainage unique
+1500	Trouvez des places, gérez véhicules et réservations
+1501	Aucun établissement actif dans votre périmètre
+1502	Aucun revenu rapproché sur les 30 derniers jours
+1503	La réservation en ligne est temporairement indisponible
+1504	Seules les réservations terminées peuvent recevoir un avis
+1505	Le paiement n’est pas finalisé. Le blocage expire à
+1506	Le blocage de la réservation non payée a été annulé
+1507	Cette place est configurée pour les véhicules {0}
+1508	Utilisé comme véhicule préféré pour les réservations
+1509	Un tarif planifié ne peut pas commencer dans le passé
+1510	Gérez établissements, disponibilités et tarifs
+1511	Emplacement retiré des lieux enregistrés
+1512	Demande approuvée. Le paiement est toujours en attente
+1513	Sélectionnez une date et une heure de début valides
+1514	Sélectionnez ou créez d’abord un compte entreprise
+1515	Sessions enregistrées et coûts d’énergie estimés
+1516	Lancez la caméra pour lire le QR d’une réservation
+1517	L’identifiant de l’annonce ou de la photo n’est pas valide
+1518	La durée minimale de réservation est de 30 minutes
+1519	L’identifiant de l’établissement n’est pas valide
+1520	La date de début de l’abonnement doit être aujourd’hui ou plus tard
+1521	Paiement introuvable pour votre compte
+1522	La réservation doit être payée et confirmée
+1523	La demande d’assistance n’a pas pu aboutir
+1524	Impossible de charger le script de paiement
+1525	Utilisez des dates au format AAAA-MM-JJ
+1526	{0} à {1} n’a pas pu exécuter une commande {2}
+1527	Une demande approuvée n’est pas un abonnement payé. {0}
+1528	Impossible de finaliser la demande d’abonnement mensuel
+1529	Seules les images JPEG, PNG ou WebP sont acceptées
+1530	Partagez votre code pour inviter votre premier ami
+1531	Votre e-mail est vérifié. Vous pouvez maintenant vous connecter
+1532	Revenus vérifiés quotidiens sur les 30 derniers jours
+1533	Annonce soumise à l’approbation de l’administrateur
+1534	Seul un remboursement approuvé peut être traité
+1535	Indiquez un motif d’au moins cinq caractères
+1536	Indiquez un identifiant d’appareil enregistré valide
+1537	Indiquez au moins un champ du chargeur à mettre à jour
+1538	Indiquez au moins un champ du véhicule à mettre à jour
+1539	Demandes, conditions approuvées et historique des statuts
+1540	Le titre de l’avis doit faire 120 caractères maximum
+1541	Les paramètres par défaut ont été rétablis
+1542	Connecté avec une session SmartPark protégée
+1543	Les codes de place doivent être uniques dans la demande
+1544	L’identifiant de l’entreprise ou du véhicule n’est pas valide
+1545	Établissement publié introuvable
+1546	L’action de remboursement demandée n’est pas prise en charge
+1547	Aucun solde de versement approuvé positif
+1548	Trop de tentatives. Patientez puis réessayez
+1549	Pourquoi cette demande de remboursement est-elle approuvée ?
+1550	Pourquoi cette demande de remboursement est-elle refusée ?
+1551	Un administrateur examinera votre demande
+1552	Registre audité — pas un versement bancaire automatique
+1553	Choisissez si vous souhaitez recevoir des notifications SMS
+1554	Établissement soumis à l’approbation de l’administrateur
+1555	Les nouvelles places démarrent avec un état physique inconnu
+1556	Cet appareil n’est pas configuré pour contrôler la sortie
+1557	Ce membre du personnel a déjà cette affectation
+1558	Impossible de charger vos parkings enregistrés
+1559	Impossible d’enregistrer cette décision de rapprochement
+1560	Vous ne pouvez pas retirer votre propre rôle d’administrateur
+1561	Votre véhicule a été enregistré à {0}, place {1}
+1562	Active immédiatement pendant la période définie
+1563	Chaque place ne peut apparaître qu’une fois par lot
+1564	Sortie enregistrée. La session de stationnement est terminée
+1565	Mot de passe actuel oublié ? Déconnectez-vous et utilisez
+1566	Demande d’abonnement envoyée au propriétaire du parking
+1567	La date de fin doit être postérieure à la date de début
+1568	L’heure de fin doit être postérieure à l’heure de début
+1569	L’opération financière n’a pas pu aboutir
+1570	Le script de paiement ne s’est pas initialisé
+1571	L’identifiant de la demande de vérification n’est pas valide
+1572	Cet appareil n’est pas configuré pour contrôler l’entrée
+1573	Ce paiement n’a aucun montant remboursable
+1574	Impossible de charger vos établissements gérés
+1575	Utilisez un mot de passe unique d’au moins 6 caractères
+1576	Vous n’êtes pas membre de ce compte entreprise
+1577	Votre session a expiré. Veuillez vous reconnecter
+1578	Choisissez un statut d’assistance valide et une note facultative
+1579	Remplissez le formulaire ci-dessous pour demander la vérification
+1580	Les propriétaires ne peuvent pas évaluer leur propre établissement
+1581	Fournisseur pas encore configuré dans cet environnement
+1582	Devis, blocages, reçus et remboursements dans un seul parcours
+1583	État de chaque place à partir des capteurs et des réservations
+1584	La source de la caméra contient un caractère non valide
+1585	Le lien de vérification n’est pas valide ou a expiré
+1586	Cette promotion a atteint sa limite d’utilisation
+1587	Utilisez au moins 6 caractères pour votre nouveau mot de passe
+1588	Vous ne pouvez ajouter des chargeurs qu’à vos établissements
+1589	Ajoutez au moins une place avant de soumettre
+1590	La réservation {0} a une demande de remboursement en attente
+1591	Choisissez un nouveau mot de passe pour votre compte SmartPark
+1592	ex. : Paiement effectué mais réservation non confirmée
+1593	Saisissez l’adresse e-mail utilisée pour demander le code
+1594	Mot de passe mis à jour. Connectez-vous avec le nouveau
+1595	Réponses rapides avant d’ouvrir ou de mettre à jour un ticket
+1596	Demandé depuis la page des revenus du propriétaire
+1597	La date de début doit être antérieure ou égale à la date de fin
+1598	Ce code n’est pas valable pour la devise de cette réservation
+1599	Les places inconnues ne sont jamais affichées comme disponibles
+1600	Vos préférences ont été enregistrées dans ce navigateur
+1601	Ajustez la lisibilité et réduisez les distractions visuelles
+1602	Choisissez une annonce ci-dessus pour demander votre premier abonnement
+1603	Entrée autorisée. Le véhicule a été enregistré
+1604	Quatre derniers chiffres de la référence du document (facultatif)
+1605	Retirer cette affectation de place de la caméra sélectionnée
+1606	Le texte de l’avis doit contenir entre 3 et 1000 caractères
+1607	Cette référence externe a déjà été enregistrée
+1608	Vous ne pouvez pas désactiver votre propre compte administrateur
+1609	Vous ne pouvez pas suspendre votre propre compte administrateur

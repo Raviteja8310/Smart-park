@@ -1,5 +1,5 @@
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { AnimatePresence, MotionConfig, motion } from 'motion/react';
+import { MotionConfig, motion } from 'motion/react';
 import {
   Activity, BadgeCheck, BadgePercent, Bell, CalendarDays, CarFront, CircleHelp, CreditCard, DoorOpen, Gauge, Heart,
   LayoutDashboard, LogOut, MapPin, Moon, QrCode, ScanEye, Settings, ShieldCheck, Store, Sun, UserRound, Users, Wallet, Zap
@@ -15,6 +15,7 @@ import OverviewDashboard from './components/dashboard/OverviewDashboard.jsx';
 import { BrandHero } from './components/brand/Logo.jsx';
 import { Skeleton, easeOutExpo } from './components/ui/primitives.jsx';
 import { translate } from './i18n.js';
+import { setInterfaceLanguage } from './i18n/runtime.js';
 
 // Feature pages are code-split so the first paint only ships the shell and dashboard.
 const ParkingPage = lazy(() => import('./components/ParkingPage.jsx'));
@@ -37,6 +38,13 @@ const SubscriptionsPage = lazy(() => import('./components/SubscriptionsPage.jsx'
 const CorporateEvPage = lazy(() => import('./components/CorporateEvPage.jsx'));
 const PlateRecognitionPage = lazy(() => import('./components/PlateRecognitionPage.jsx'));
 const GateHardwarePage = lazy(() => import('./components/GateHardwarePage.jsx'));
+// Public landing page for signed-out visitors; its own chunk, so signed-in users never download it.
+const LandingPage = lazy(() => import('./components/landing/LandingPage.jsx'));
+// '#signin' / '#signup' open the existing sign-in screen directly on its login or registration view
+// (bookmarks, Back button, links from the landing page).
+const SIGN_IN_HASH = '#signin';
+const SIGN_UP_HASH = '#signup';
+const wantsSignInScreen = () => [SIGN_IN_HASH, SIGN_UP_HASH].includes(window.location.hash) || ['verify', 'reset'].some((key) => new URLSearchParams(window.location.search).has(key));
 
 class WorkspaceErrorBoundary extends Component {
   constructor(props) {
@@ -91,6 +99,40 @@ export default function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showLanding, setShowLanding] = useState(() => !wantsSignInScreen());
+
+  // Landing page routing (additive): Back from the sign-in screen returns to the landing page.
+  useEffect(() => {
+    const onPopState = () => setShowLanding(!wantsSignInScreen());
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+  // Once signed in, behave exactly as before: signing out returns to the sign-in screen, not the landing page.
+  useEffect(() => {
+    if (!currentUser) return;
+    setShowLanding(false);
+    if ([SIGN_IN_HASH, SIGN_UP_HASH].includes(window.location.hash)) window.history.replaceState(window.history.state, document.title, window.location.pathname + window.location.search);
+  }, [currentUser]);
+  // Optional profile photo (added after sign-in so the existing session check is unchanged).
+  useEffect(() => {
+    if (!currentUser?.id) return undefined;
+    let cancelled = false;
+    fetch('/api/account', { credentials: 'same-origin' })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => { if (!cancelled && data?.user) setCurrentUser((current) => (current ? { ...current, avatar: data.user.avatar ?? null } : current)); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [currentUser?.id]);
+  const openLanding = useCallback(() => {
+    window.history.pushState(null, '', window.location.pathname);
+    setShowLanding(true);
+    window.scrollTo(0, 0);
+  }, []);
+  const openAuth = useCallback((hash) => {
+    if (window.location.hash !== hash) window.history.pushState(null, '', hash);
+    setShowLanding(false);
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (!currentUser?.id) { setWorkspaceMode('driver'); return; }
@@ -99,7 +141,8 @@ export default function App() {
     } catch { setWorkspaceMode('driver'); }
   }, [currentUser?.id, (currentUser?.roles ?? []).join('|')]);
 
-  useEffect(() => { document.documentElement.lang = language; }, [language]);
+  // The runtime translates every rendered string (pages, forms, messages, API errors) into the selected language.
+  useEffect(() => { setInterfaceLanguage(language).catch((error) => console.error('Language pack failed to load:', error)); }, [language]);
   useEffect(() => { document.documentElement.classList.toggle('sp-dark-theme', theme === 'dark'); }, [theme]);
   useEffect(() => {
     const apply = () => {
@@ -241,6 +284,13 @@ export default function App() {
     setActiveNav(label);
   }, []);
 
+  function handleLanguageChange(nextLanguage) {
+    setLanguage(nextLanguage);
+    try {
+      localStorage.setItem('smartpark.preferences', JSON.stringify({ ...readPrefs(), language: nextLanguage }));
+    } catch { /* The language still changes for this session if storage is unavailable. */ }
+  }
+
   function handleThemeChange(nextTheme) {
     const normalized = nextTheme === 'dark' ? 'dark' : 'light';
     setTheme(normalized);
@@ -310,13 +360,14 @@ export default function App() {
   if (authLoading) {
     return <div className="sp-boot"><PageBackdrop scene="login" intensity="hero" reduceMotion={reduceMotionPref} /><motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: easeOutExpo }}><BrandHero size={120} /></motion.div><ParkingLoader size={170} label="Loading your SmartPark workspace…" /></div>;
   }
-  if (!currentUser) return <MotionConfig reducedMotion={reduceMotionPref ? 'always' : 'user'}><AuthPage onAuthenticated={setCurrentUser} /></MotionConfig>;
+  if (!currentUser && showLanding) return <Suspense fallback={<div style={{ minHeight: '100vh', background: '#050505' }} />}><LandingPage onLogin={() => openAuth(SIGN_IN_HASH)} onGetStarted={() => openAuth(SIGN_UP_HASH)} /></Suspense>;
+  if (!currentUser) return <MotionConfig reducedMotion={reduceMotionPref ? 'always' : 'user'}><AuthPage onAuthenticated={setCurrentUser} language={language} onLanguageChange={handleLanguageChange} initialMode={window.location.hash === SIGN_UP_HASH ? 'register' : 'login'} onBrandClick={openLanding} /></MotionConfig>;
 
   const page = activeNav === 'Admin console' && isAdmin ? <AdminDashboard overview={parkingOverview} onNavigate={navigate} />
     : activeNav === 'User management' && isAdmin ? <AdminUsersPage currentUser={currentUser} />
     : activeNav === 'Owner verification' && canHost ? <OwnerVerificationPage currentUser={currentUser} />
     : activeNav === 'Promotions' && isAdmin ? <AdminPromotionsPage />
-    : activeNav === 'My profile' ? <ProfilePage currentUser={currentUser} workspaceMode={workspaceMode} onWorkspaceChange={handleWorkspaceChange} onNavigate={navigate} onProfileUpdated={(user) => setCurrentUser((current) => ({ ...current, ...user }))} />
+    : activeNav === 'My profile' ? <ProfilePage currentUser={currentUser} workspaceMode={workspaceMode} onWorkspaceChange={handleWorkspaceChange} onNavigate={navigate} onProfileUpdated={(user) => setCurrentUser((current) => ({ ...current, ...user }))} onAccountDeleted={() => { setCurrentUser(null); window.location.assign('/'); }} />
     : activeNav === 'Settings' ? <SettingsPage language={language} onLanguageChange={setLanguage} theme={theme} onThemeChange={handleThemeChange} currentUser={currentUser} onNavigate={navigate} />
     : activeNav === 'Help & support' ? <HelpSupportPage currentUser={currentUser} />
     : activeNav === 'Monthly passes' ? <SubscriptionsPage currentUser={currentUser} />
@@ -353,19 +404,16 @@ export default function App() {
           <Topbar
             crumbs={crumbs} apiStatus={apiStatus} theme={theme} onToggleTheme={() => handleThemeChange(theme === 'dark' ? 'light' : 'dark')}
             unreadCount={unreadCount} onNavigate={navigate} onOpenSearch={() => setPaletteOpen(true)} onOpenMenu={() => setMobileNavOpen(true)}
-            initials={userInitials} displayName={displayName} email={currentUser.email} onLogout={handleLogout} loggingOut={loggingOut}
+            initials={userInitials} avatarUrl={currentUser.avatar?.url} displayName={displayName} email={currentUser.email} onLogout={handleLogout} loggingOut={loggingOut}
           />
           <main id="main-content" className="sp-content" tabIndex="-1">
             <WorkspaceErrorBoundary resetKey={activeNav}>
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={activeNav} className="sp-page-frame"
-                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.32, ease: easeOutExpo }}
-                >
-                  <Suspense fallback={<PageFallback />}>{page}</Suspense>
-                </motion.div>
-              </AnimatePresence>
+              {/* Page entrance is a CSS animation (scenes.css) keyed on the page, so a page swap
+                  never waits on an exit animation — navigation stays instant even when the
+                  window is in the background and animation frames are paused. */}
+              <div key={activeNav} className="sp-page-frame" data-motion={sceneForPage(activeNav, { ownerWorkspace: ownerWorkspaceActive, isAdmin })}>
+                <Suspense fallback={<PageFallback />}>{page}</Suspense>
+              </div>
             </WorkspaceErrorBoundary>
             <footer className="sp-footer"><span>© {new Date().getFullYear()} SmartPark Mobility OS</span><span><i className="sp-footer-dot" aria-hidden="true" /> Availability reflects recorded sensor state and active reservations</span></footer>
           </main>

@@ -1,0 +1,125 @@
+/* Page text entrances — the same level of motion as the landing-page headline, tuned per page.
+   Every page renders inside `.sp-page-frame` (remounted on navigation), which carries
+   data-motion="<scene>" from App.jsx using the same mapping as the page backgrounds:
+
+     driver   Overview, bookings, vehicles, account pages … streak wipe (the landing-page reveal)
+     parking  Find parking                                  … car pulls in, overshoots, settles
+     gate     Gate access, Gate hardware                    … barrier lifts: reveal from the bottom up
+     operator Operations, Camera detection, Plate recog.    … camera scanline sweeps top-down
+     admin    Admin console, users, promotions, finance     … system boot: blur-to-focus with a slight zoom
+     ev       Corporate & EV                                … charge-up: wipe with a fading glow
+     owner    Parking spaces, listings, earnings, verify    … stacks up from below
+
+   Only transform / opacity / filter / clip-path animate (no layout work). Fill mode is
+   `backwards`, so once a reveal ends the element returns to its normal styles (nothing
+   stays clipped). Everything is off for reduced motion. */
+
+.sp-page-frame {
+  --pm-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --pm-title: 0.95s;
+  --pm-delay: 0.08s;
+}
+
+/* Elements in the page header */
+.sp-page-frame :is(h1) { animation: pm-streak var(--pm-title) var(--pm-ease) var(--pm-delay) backwards; }
+.sp-page-frame .sp-kicker:has(+ h1), .sp-page-frame :is(.sp-eyebrow, .sp-hero-eyebrow) { animation: pm-kicker 0.7s var(--pm-ease) 0s backwards; }
+.sp-page-frame h1 + p, .sp-page-frame h1 ~ p:not(.sp-kicker) { animation: pm-rise 0.8s var(--pm-ease) calc(var(--pm-delay) + 0.32s) backwards; }
+.sp-page-frame :is(.sp-heading-actions, .sp-hero-actions) { animation: pm-rise 0.8s var(--pm-ease) calc(var(--pm-delay) + 0.45s) backwards; }
+
+/* Section headings: a smaller version of the page's motion as each one scrolls into view
+   (scroll-driven where supported; elsewhere they simply appear). */
+@supports (animation-timeline: view()) {
+  .sp-page-frame .sp-panel-header h2 {
+    animation: pm-section linear backwards;
+    animation-timeline: view();
+    animation-range: entry 0% entry 70%;
+  }
+}
+
+/* ---- Per-page headline motion ---- */
+.sp-page-frame[data-motion='parking'] h1 { animation-name: pm-park; animation-duration: 1.05s; }
+.sp-page-frame[data-motion='gate'] h1 { animation-name: pm-barrier; }
+.sp-page-frame[data-motion='operator'] h1 { animation-name: pm-scan; animation-duration: 1.1s; }
+.sp-page-frame[data-motion='admin'] h1 { animation-name: pm-boot; animation-duration: 1s; }
+.sp-page-frame[data-motion='ev'] h1 { animation-name: pm-charge; animation-duration: 1.2s; }
+.sp-page-frame[data-motion='owner'] h1 { animation-name: pm-stack; }
+
+.sp-page-frame[data-motion='gate'] .sp-panel-header h2 { animation-name: pm-section-up; }
+.sp-page-frame[data-motion='operator'] .sp-panel-header h2 { animation-name: pm-section-scan; }
+.sp-page-frame[data-motion='owner'] .sp-panel-header h2 { animation-name: pm-section-up; }
+
+/* ---- Keyframes ---- */
+/* Landing-page streak: wiped in left to right, travelling forward out of a motion blur. */
+@keyframes pm-streak {
+  from { clip-path: inset(-0.2em 100% -0.3em 0); transform: translateX(-0.4em); filter: blur(6px); opacity: 0.2; }
+  to { clip-path: inset(-0.2em 0 -0.3em 0); transform: none; filter: none; opacity: 1; }
+}
+/* Car pulling into a bay: fast approach with motion blur, a small overshoot, then settles. */
+@keyframes pm-park {
+  0% { clip-path: inset(-0.2em 100% -0.3em 0); transform: translateX(-1.2em) skewX(-8deg); filter: blur(8px); opacity: 0; }
+  60% { clip-path: inset(-0.2em 0 -0.3em 0); transform: translateX(0.12em) skewX(2deg); filter: blur(0.5px); opacity: 1; }
+  100% { clip-path: inset(-0.2em 0 -0.3em 0); transform: none; filter: none; opacity: 1; }
+}
+/* Gate barrier lifting: the line is revealed from the bottom edge upwards. */
+@keyframes pm-barrier {
+  from { clip-path: inset(100% -0.2em -0.3em -0.2em); transform: translateY(0.35em); filter: blur(3px); }
+  to { clip-path: inset(-0.2em -0.2em -0.3em -0.2em); transform: none; filter: none; }
+}
+/* Camera scanline: revealed top-down with a bright flash that settles. */
+@keyframes pm-scan {
+  0% { clip-path: inset(-0.2em -0.2em 100% -0.2em); filter: brightness(2.2) blur(2px); opacity: 0.4; }
+  55% { clip-path: inset(-0.2em -0.2em -0.3em -0.2em); filter: brightness(1.5); opacity: 1; }
+  100% { clip-path: inset(-0.2em -0.2em -0.3em -0.2em); filter: none; opacity: 1; }
+}
+/* System boot: comes into focus from a soft glow with a slight zoom. */
+@keyframes pm-boot {
+  0% { opacity: 0; filter: blur(12px); transform: scale(1.06); }
+  60% { opacity: 1; filter: blur(1px); }
+  100% { opacity: 1; filter: none; transform: none; }
+}
+/* Charge-up: wiped in with an electric glow that drains away as it completes. */
+@keyframes pm-charge {
+  0% { clip-path: inset(-0.4em 100% -0.5em -0.4em); filter: drop-shadow(0 0 0 rgba(74, 222, 128, 0)); opacity: 0.3; }
+  55% { clip-path: inset(-0.4em -0.4em -0.5em -0.4em); filter: drop-shadow(0 0 14px rgba(74, 222, 128, 0.75)); opacity: 1; }
+  100% { clip-path: inset(-0.4em -0.4em -0.5em -0.4em); filter: drop-shadow(0 0 0 rgba(74, 222, 128, 0)); opacity: 1; }
+}
+/* Building up: rises out of its own baseline. */
+@keyframes pm-stack {
+  from { clip-path: inset(0 -0.2em 100% -0.2em); transform: translateY(0.6em); filter: blur(4px); }
+  to { clip-path: inset(-0.2em -0.2em -0.3em -0.2em); transform: none; filter: none; }
+}
+@keyframes pm-kicker {
+  from { clip-path: inset(0 100% 0 0); opacity: 0; transform: translateX(-6px); }
+  to { clip-path: inset(0 -0.2em 0 0); opacity: 1; transform: none; }
+}
+@keyframes pm-rise {
+  from { opacity: 0; transform: translateY(10px); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+@keyframes pm-section {
+  from { clip-path: inset(-0.2em 100% -0.3em 0); transform: translateX(-0.3em); filter: blur(4px); opacity: 0.3; }
+  to { clip-path: inset(-0.2em 0 -0.3em 0); transform: none; filter: none; opacity: 1; }
+}
+@keyframes pm-section-up {
+  from { clip-path: inset(100% -0.2em -0.3em -0.2em); transform: translateY(0.3em); opacity: 0.3; }
+  to { clip-path: inset(-0.2em -0.2em -0.3em -0.2em); transform: none; opacity: 1; }
+}
+@keyframes pm-section-scan {
+  from { clip-path: inset(-0.2em -0.2em 100% -0.2em); filter: brightness(1.8); opacity: 0.4; }
+  to { clip-path: inset(-0.2em -0.2em -0.3em -0.2em); filter: none; opacity: 1; }
+}
+
+/* Booking form opened from "Choose time": the page scrolls smoothly to it (ParkingPage.jsx); it rises in
+   like the other page text and gets a brief accent glow so the eye lands on it. */
+.sp-booking-builder { scroll-margin-top: 92px; animation: pm-rise 0.7s var(--pm-ease) 0.15s backwards, pm-arrive 1.6s ease-out 0.5s; }
+@keyframes pm-arrive {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary, #6366f1) 55%, transparent); }
+  35% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-primary, #6366f1) 28%, transparent); }
+  100% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--color-primary, #6366f1) 0%, transparent); }
+}
+
+/* Reduced motion: system setting or SmartPark's own "Reduce animations" preference. */
+@media (prefers-reduced-motion: reduce) {
+  .sp-page-frame :is(h1, h1 + p, h1 ~ p, .sp-kicker, .sp-eyebrow, .sp-hero-eyebrow, .sp-heading-actions, .sp-hero-actions, .sp-panel-header h2, .sp-booking-builder) { animation: none !important; }
+}
+html.sp-reduce-motion .sp-page-frame :is(h1, h1 + p, h1 ~ p, .sp-kicker, .sp-eyebrow, .sp-hero-eyebrow, .sp-heading-actions, .sp-hero-actions, .sp-panel-header h2, .sp-booking-builder) { animation: none !important; }

@@ -1,0 +1,227 @@
+800	Cargando promociones
+801	Cargando tu bandeja de entrada
+802	instalaciones gestionadas
+803	No hay solicitudes de pago
+804	No hay búsquedas recientes
+805	No hay solicitudes de reembolso
+806	No hay reseñas pendientes
+807	Hora de apertura sin definir
+808	Alertas operativas
+809	Estado operativo
+810	CONTROL DE OPERACIONES
+811	Cola de revisión de propietarios
+812	Verificación de propietarios
+813	instalaciones de aparcamiento
+814	INVENTARIO FÍSICO
+815	INDICADOR DE PLANIFICACIÓN
+816	Perfil y contraseña
+817	Solicitud de reembolso {0}
+818	Registrar un vehículo
+819	Rechazar con motivo
+820	Revisar y publicar
+821	Empieza inmediatamente
+822	Ticket de soporte {0}
+823	Ticket {0} actualizado
+824	Reservas totales
+825	Roles de usuario actualizados
+826	TU CÓDIGO PERSONAL
+827	{0} · {1} reseñas
+828	Disponibilidad por día
+829	Preferencias del navegador
+830	INTELIGENCIA DE CÁMARAS
+831	Cerrar pago de prueba
+832	Aparcamiento comercial
+833	Tablas de datos compactas
+834	Crea tu cuenta
+835	Estado actual de las plazas
+836	Energía no registrada
+837	Introduce una nota de auditoría
+838	Introduce tu contraseña
+839	Instalaciones incluidas
+840	OPERACIONES DE LA INSTALACIÓN
+841	Modo propietario
+842	Instalaciones destacadas
+843	Buscar un abono mensual
+844	Buscar una plaza
+845	Buscar aparcamiento cerca
+846	Vehículo de flota añadido
+847	Último estado del sensor
+848	Nivel no especificado
+849	No hay reservas que mostrar
+850	Aún no hay reservas
+851	Aún no hay transacciones
+852	Ningún vehículo seleccionado
+853	Operaciones y alertas
+854	Reserva de aparcamiento
+855	Uso del aparcamiento
+856	Pagos y recibos
+857	Pago {0} registrado
+858	Fotos de la plaza
+859	Ocupada físicamente
+860	INVENTARIO DE PROMOCIONES
+861	Reservas recientes
+862	Reembolso {0} registrado
+863	Vehículos registrados
+864	Número de matrícula
+865	HISTORIAL DE RESERVAS
+866	Restablece tu contraseña
+867	PROTEGE TU CUENTA
+868	Inicia sesión para continuar
+869	CENTRO DE AYUDA DE SMARTPARK
+870	Enviar para aprobación
+871	Cambiar al tema {0}
+872	HISTORIAL DE TRANSACCIONES
+873	notificación no leída
+874	Ver plazas de aparcamiento
+875	Tu número de contacto
+876	TU ROL EN SMARTPARK
+878	asignaciones de plaza activas
+879	ACCIÓN DE ADMINISTRADOR
+880	Instrucciones de llegada
+881	Entrada automatizada
+882	Reservas no disponibles
+883	CAPACIDAD Y OCUPACIÓN
+884	Confirmar nueva contraseña
+885	Crear borrador de anuncio
+886	Confianza de detección
+887	Distancia no disponible
+888	p. ej., Nivel 1 - Norte
+889	Vacía y sin reservar
+890	Introduce tu nombre completo
+891	Sesiones de carga de VE
+892	Uso de la instalación
+893	GBP — Libra esterlina
+894	CARGO BRUTO DE APARCAMIENTO
+895	Cargando solicitudes
+896	Cargando eventos de matrícula
+897	Cargando transacciones
+898	Mis sesiones de carga
+899	Aún no hay aparcamientos guardados
+900	Aún no hay zonas creadas
+901	Número de conectores
+902	Solicitudes de reembolso abiertas
+903	Región de aparcamiento guardada
+904	Zona de aparcamiento creada
+905	Verificación pendiente
+906	FLUJO DE PUBLICACIÓN
+907	Tickets QR disponibles
+908	Solicitar abono mensual
+909	Revisado — sin reembolso
+910	Ruta al destino
+911	Buscar en tus anuncios
+912	Plaza compartida
+913	Inicia sesión en SmartPark
+914	Código de seis dígitos por correo
+915	Saltar al contenido principal
+916	PASE DE ENTRADA SMARTPARK
+918	Instrucciones especiales
+919	Iniciar escáner de cámara
+920	Iniciar registro de sesión
+921	Resume tu visita
+922	Cambiar al tema oscuro
+923	Plazas de aparcamiento totales
+924	Sube una foto de la plaza
+925	Cuenta de usuario actualizada
+926	Dónde se guardan los datos
+927	con coordenadas en el mapa
+928	Estás al día
+929	Tus solicitudes de pago
+930	Tus tickets de soporte
+931	{0} instalaciones activas
+932	{0} foto(s) seleccionada(s)
+933	{0} foto(s) subida(s)
+934	0,20 · Más sensible
+935	Añade tu primera cámara
+936	Añade tu número de teléfono
+937	Consola de administrador
+938	Todos los cambios se han guardado
+939	Todas las reservas registradas
+940	Cualquier vehículo compatible
+941	Solicitud enviada
+942	Al menos 6 caracteres
+943	Pendiente de revisión del propietario
+944	Antes de permitir la entrada
+945	Antes de registrar la salida
+946	Reserva {0}, plaza {1}
+947	Registro mercantil
+948	Estado de la cámara actualizado
+949	Elige una contraseña nueva
+950	Crear borrador de instalación
+951	Crear plazas de aparcamiento
+952	Importe estimado del abono
+953	Inventario de carga de VE
+954	Obteniendo datos de la cuenta
+955	Ocultar contraseña actual
+956	Texto de interfaz más grande
+957	Datos del anuncio guardados
+958	Vídeo en directo no disponible
+959	Cargando cuentas de usuario
+960	Cargando tus vehículos
+961	Ubicación indicada por el propietario
+962	Barrera de la entrada principal
+963	Sala de control de movilidad
+964	Aún no se ha recibido ningún fotograma
+965	Sin latido registrado
+966	Sin instalaciones gestionadas
+967	Cámara de la entrada norte
+968	Nada coincide con “{0}”
+969	Otro / sin especificar
+970	Plaza actualizada
+971	pendiente o en proceso
+972	Comisión de plataforma registrada
+973	Promoción {0} creada
+974	Relación con el inmueble
+975	Búsqueda reciente eliminada
+976	Registrar un controlador
+977	Volver a enviar para aprobación
+978	Operaciones por roles
+979	Mostrar contraseña actual
+980	Simular pago de prueba
+981	SmartPark Mobility OS
+982	Cambiar al tema claro
+984	Total a pagar
+985	No se pudo guardar la región
+986	No se pudo guardar la reseña
+987	Compatibilidad de vehículos
+988	Verificado por SmartPark
+989	PREFERENCIAS DEL ESPACIO DE TRABAJO
+990	{0} vacías pero reservadas
+991	Franjas de reserva activas
+992	Previsión de demanda de reservas
+993	Confirmadas / registradas
+994	Conectar una fuente de vídeo
+995	Miembro de empresa añadido
+996	No se pudo guardar el perfil
+997	Conductor · propietario activado
+998	Introduce la contraseña actual
+999	Filtrar por ciudad o zona
+1000	Filtrar reservas recientes
+1001	Dispositivo de barrera registrado
+1002	Cargando colas financieras
+1003	SOLO DESARROLLO LOCAL
+1004	INVENTARIO DE PLAZAS MAPEADAS
+1005	Cargo mínimo de aparcamiento
+1006	Planta de aparcamiento vigilada
+1007	No hay alertas en esta vista
+1008	No hay cargadores de VE que mostrar
+1009	Aún no hay solicitudes de pago
+1010	No hay reseñas que moderar
+1011	Aún no hay tickets de soporte
+1012	Número del perfil: {0}
+1013	Operaciones y analítica
+1014	Vista de búsqueda de aparcamientos
+1015	Quitar asignación de {0}
+1016	Ingresos · últimos 30 días
+1017	Secciones de aparcamientos guardados
+1018	Presentación de SmartPark
+1019	No se pudo marcar como leída
+1020	No se pudo abrir el anuncio
+1021	No se pudo eliminar la foto
+1022	No se pudieron guardar los precios
+1023	No se pudo guardar el vehículo
+1024	Accesibilidad y visualización
+1025	Añade tu primera instalación
+1026	API: {0}; base de datos: {1}
+1027	Hazte propietario de una instalación
+1028	Representante de la empresa
+1029	Ajustes de cámara actualizados

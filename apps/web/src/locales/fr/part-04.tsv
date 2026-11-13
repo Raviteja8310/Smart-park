@@ -1,0 +1,227 @@
+800	Chargement des promotions
+801	Chargement de votre boîte de réception
+802	établissements gérés
+803	Aucune demande de versement
+804	Aucune recherche récente
+805	Aucune demande de remboursement
+806	Aucun avis en attente
+807	Heure d’ouverture non définie
+808	Alertes opérationnelles
+809	État opérationnel
+810	CONTRÔLE DES OPÉRATIONS
+811	File d’examen des propriétaires
+812	Vérification des propriétaires
+813	établissements de stationnement
+814	INVENTAIRE PHYSIQUE
+815	INDICATEUR DE PLANIFICATION
+816	Profil et mot de passe
+817	Demande de remboursement {0}
+818	Enregistrer un véhicule
+819	Refuser avec un motif
+820	Vérifier et publier
+821	Commence immédiatement
+822	Ticket d’assistance {0}
+823	Ticket {0} mis à jour
+824	Réservations au total
+825	Rôles utilisateur mis à jour
+826	VOTRE CODE PERSONNEL
+827	{0} · {1} avis
+828	Disponibilité par jour
+829	Préférences du navigateur
+830	INTELLIGENCE DES CAMÉRAS
+831	Fermer le paiement test
+832	Parking commercial
+833	Tableaux compacts
+834	Créez votre compte
+835	État actuel des places
+836	Énergie non enregistrée
+837	Saisissez une note d’audit
+838	Saisissez votre mot de passe
+839	Établissements concernés
+840	OPÉRATIONS DE L’ÉTABLISSEMENT
+841	Mode propriétaire
+842	Établissements à la une
+843	Trouver un abonnement mensuel
+844	Trouver une place
+845	Trouver un parking à proximité
+846	Véhicule de flotte ajouté
+847	Dernier état du capteur
+848	Niveau non précisé
+849	Aucune réservation à afficher
+850	Aucune réservation pour l’instant
+851	Aucune transaction pour l’instant
+852	Aucun véhicule sélectionné
+853	Opérations et alertes
+854	Réservation de stationnement
+855	Utilisation du parking
+856	Paiements et reçus
+857	Versement {0} enregistré
+858	Photos de la place
+859	Physiquement occupée
+860	INVENTAIRE DES PROMOTIONS
+861	Réservations récentes
+862	Remboursement {0} enregistré
+863	Véhicules enregistrés
+864	Numéro d’immatriculation
+865	HISTORIQUE DES RÉSERVATIONS
+866	Réinitialisez votre mot de passe
+867	SÉCURISEZ VOTRE COMPTE
+868	Connectez-vous pour continuer
+869	SERVICE D’ASSISTANCE SMARTPARK
+870	Soumettre pour approbation
+871	Passer au thème {0}
+872	HISTORIQUE DES TRANSACTIONS
+873	notification non lue
+874	Voir les places de parking
+875	Votre numéro de contact
+876	VOTRE RÔLE SMARTPARK
+878	affectations de places actives
+879	ACTION ADMINISTRATEUR
+880	Instructions d’arrivée
+881	Entrée automatisée
+882	Réservations indisponibles
+883	CAPACITÉ ET OCCUPATION
+884	Confirmer le nouveau mot de passe
+885	Créer un brouillon d’annonce
+886	Confiance de détection
+887	Distance indisponible
+888	ex. : Niveau 1 - Nord
+889	Libre et non réservée
+890	Saisissez votre nom complet
+891	Sessions de recharge VE
+892	Utilisation de l’établissement
+893	GBP — Livre sterling
+894	FRAIS DE STATIONNEMENT BRUTS
+895	Chargement des demandes
+896	Chargement des événements de plaque
+897	Chargement des transactions
+898	Mes sessions de recharge
+899	Aucun parking enregistré
+900	Aucune zone créée
+901	Nombre de connecteurs
+902	Demandes de remboursement ouvertes
+903	Zone de stationnement enregistrée
+904	Zone de stationnement créée
+905	Vérification en attente
+906	PROCESSUS DE PUBLICATION
+907	Tickets QR disponibles
+908	Demander un abonnement mensuel
+909	Examiné — sans remboursement
+910	Itinéraire vers la destination
+911	Rechercher dans vos annonces
+912	Place partagée
+913	Connectez-vous à SmartPark
+914	Code à six chiffres par e-mail
+915	Aller au contenu principal
+916	PASS D’ENTRÉE SMARTPARK
+918	Instructions particulières
+919	Lancer le scanner
+920	Démarrer l’enregistrement de session
+921	Résumez votre visite
+922	Passer au thème sombre
+923	Places de parking au total
+924	Importer une photo de la place
+925	Compte utilisateur mis à jour
+926	Où les données sont stockées
+927	avec coordonnées sur la carte
+928	Vous êtes à jour
+929	Vos demandes de versement
+930	Vos tickets d’assistance
+931	{0} établissements actifs
+932	{0} photo(s) sélectionnée(s)
+933	{0} photo(s) importée(s)
+934	0,20 · Plus sensible
+935	Ajoutez votre première caméra
+936	Ajoutez votre numéro de téléphone
+937	Console administrateur
+938	Toutes les modifications sont enregistrées
+939	Toutes les réservations enregistrées
+940	Tout véhicule compatible
+941	Demande envoyée
+942	Au moins 6 caractères
+943	En attente d’examen par le propriétaire
+944	Avant d’autoriser l’entrée
+945	Avant d’enregistrer la sortie
+946	Réservation {0}, place {1}
+947	Immatriculation de l’entreprise
+948	État de la caméra mis à jour
+949	Choisissez un nouveau mot de passe
+950	Créer un brouillon d’établissement
+951	Créer des places de parking
+952	Montant estimé de l’abonnement
+953	Inventaire de recharge VE
+954	Récupération des données du compte
+955	Masquer le mot de passe actuel
+956	Texte de l’interface agrandi
+957	Détails de l’annonce enregistrés
+958	Flux en direct indisponible
+959	Chargement des comptes utilisateur
+960	Chargement de vos véhicules
+961	Emplacement défini par le propriétaire
+962	Barrière de l’entrée principale
+963	Salle de contrôle de la mobilité
+964	Aucune image reçue pour l’instant
+965	Aucun signal reçu
+966	Aucun établissement géré
+967	Caméra de l’entrée nord
+968	Aucun résultat pour « {0} »
+969	Autre / non précisé
+970	Place mise à jour
+971	en attente ou en cours
+972	Frais de plateforme enregistrés
+973	Promotion {0} créée
+974	Lien avec le bien
+975	Recherche récente supprimée
+976	Enregistrer un contrôleur
+977	Soumettre à nouveau pour approbation
+978	Opérations par rôle
+979	Afficher le mot de passe actuel
+980	Simuler un paiement test
+981	SmartPark Mobility OS
+982	Passer au thème clair
+984	Total à payer
+985	Impossible d’enregistrer la zone
+986	Impossible d’enregistrer l’avis
+987	Compatibilité des véhicules
+988	Vérifié par SmartPark
+989	PRÉFÉRENCES DE L’ESPACE DE TRAVAIL
+990	{0} libres mais réservées
+991	Créneaux de réservation actifs
+992	Prévision de la demande
+993	Confirmées / enregistrées
+994	Connecter une source vidéo
+995	Membre entreprise ajouté
+996	Impossible d’enregistrer le profil
+997	Conducteur · propriétaire activé
+998	Saisissez le mot de passe actuel
+999	Filtrer par ville ou quartier
+1000	Filtrer les réservations récentes
+1001	Appareil de barrière enregistré
+1002	Chargement des files financières
+1003	DÉVELOPPEMENT LOCAL UNIQUEMENT
+1004	INVENTAIRE DES PLACES CARTOGRAPHIÉES
+1005	Frais de stationnement minimum
+1006	Niveau de parking surveillé
+1007	Aucune alerte dans cette vue
+1008	Aucune borne de recharge à afficher
+1009	Aucune demande de versement pour l’instant
+1010	Aucun avis à modérer
+1011	Aucun ticket d’assistance pour l’instant
+1012	Numéro du profil : {0}
+1013	Opérations et analyses
+1014	Vue de recherche de parkings
+1015	Supprimer l’affectation de {0}
+1016	Revenus · 30 derniers jours
+1017	Sections de parkings enregistrés
+1018	Présentation de SmartPark
+1019	Impossible de marquer comme lu
+1020	Impossible d’ouvrir l’annonce
+1021	Impossible de supprimer la photo
+1022	Impossible d’enregistrer les tarifs
+1023	Impossible d’enregistrer le véhicule
+1024	Accessibilité et affichage
+1025	Ajoutez votre premier établissement
+1026	API : {0} ; base de données : {1}
+1027	Devenez propriétaire d’établissement
+1028	Représentant de l’entreprise
+1029	Paramètres de la caméra mis à jour

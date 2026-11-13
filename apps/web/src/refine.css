@@ -1,0 +1,305 @@
+/* =============================================================================
+   SmartPark — professional refinement layer (loaded last).
+   Replaces the vivid indigo/violet "glow" identity with a muted, enterprise palette:
+   graphite neutrals, one deep teal-pine accent, earthy status colours, flat surfaces,
+   quieter radii and shadows. Layout, content and behaviour are unchanged.
+   The public landing page (.slp) defines its own tokens and is not affected.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1. Primitive remap — anything that referenced the old vivid scales follows.
+   ------------------------------------------------------------------------ */
+:root {
+  /* Pine (accent) — replaces the "ion" indigo scale. */
+  --ion-50: #eef5f3;
+  --ion-100: #dcebe7;
+  --ion-200: #bcd9d2;
+  --ion-300: #8fc0b5;
+  --ion-400: #5aa093;
+  --ion-500: #2f8274;
+  --ion-600: #1f6b62;
+  --ion-700: #195a52;
+  --ion-800: #144a44;
+  --sky-300: #a9bccb;
+  --sky-400: #8299ad;
+  --brand-blue: #1f6b62;
+  --brand-violet: #56616b;
+
+  /* Earthy status scales */
+  --green-50: #edf6f0; --green-100: #d6ebdd; --green-200: #b3d9bf; --green-300: #82bf98; --green-400: #57a476;
+  --green-500: #3a8d5d; --green-600: #2f7a4e; --green-700: #276541; --green-800: #1f5034; --green-900: #183f29; --green-950: #0f2a1b;
+  --red-50: #fdf1ef; --red-100: #f9dfdb; --red-300: #eba59a; --red-500: #d4553f; --red-600: #c2412d; --red-700: #9b2f20;
+  --amber-50: #fdf6e9; --amber-100: #f9e8c6; --amber-300: #e9c27a; --amber-500: #d39a32; --amber-600: #b97f1c; --amber-700: #8a5c0f;
+  --blue-50: #eef4fa; --blue-100: #dde8f3; --blue-300: #a6c0db; --blue-500: #4f79a6; --blue-600: #3f6893; --blue-700: #335677;
+  /* "Violet" was used for reserved/EV accents — remapped to a calm slate so no purple remains. */
+  --violet-50: #f1f4f8; --violet-100: #e3e9f1; --violet-300: #a9b8cc; --violet-500: #5f7896; --violet-600: #4f6683; --violet-700: #415571;
+
+  /* Graphite neutrals (no navy cast) */
+  --neutral-0: #ffffff; --neutral-25: #fafbfb; --neutral-50: #f4f5f6; --neutral-100: #eef0f1; --neutral-150: #e3e6e9;
+  --neutral-200: #d6dadf; --neutral-300: #bfc5cc; --neutral-400: #969da6; --neutral-500: #6f7680; --neutral-600: #545b64;
+  --neutral-700: #3d434a; --neutral-800: #2a2f35; --neutral-900: #1b1e22; --neutral-950: #131518; --neutral-1000: #0f1113;
+
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+}
+
+/* ---------------------------------------------------------------------------
+   2. Semantic tokens — light ("Daylight")
+   ------------------------------------------------------------------------ */
+:root {
+  --color-bg: #f4f5f6;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #fafbfb;
+  --color-surface-muted: #f1f3f4;
+  --color-surface-sunken: #e8ebed;
+  --color-surface-inverse: #16181b;
+  --color-surface-glass: rgba(255, 255, 255, .94);
+  --color-surface-raised: #ffffff;
+
+  --color-text-strong: #14171a;
+  --color-text: #2b3036;
+  --color-text-secondary: #4b525a;
+  --color-text-muted: #666d76;
+  --color-text-subtle: #767d86;
+
+  --color-border-subtle: #eceef0;
+  --color-border: #e0e3e7;
+  --color-border-strong: #c9ced4;
+  --color-hairline: rgba(20, 23, 26, .07);
+
+  --color-primary: #1f6b62;
+  --color-primary-hover: #195a52;
+  --color-primary-active: #144a44;
+  --color-primary-soft: #eef5f3;
+  --color-primary-muted: #dcebe7;
+  --color-primary-border: #c4ddd7;
+  --color-primary-text: #1a5d55;
+  --color-accent-gradient: var(--color-primary);
+
+  --color-success: #2f7a4e;
+  --color-success-soft: #edf6f0;
+  --color-success-text: #276541;
+  --color-danger: #c2412d;
+  --color-danger-soft: #fdf1ef;
+  --color-danger-text: #9b2f20;
+  --color-warning: #b97f1c;
+  --color-warning-soft: #fdf6e9;
+  --color-warning-text: #8a5c0f;
+  --color-info: #3f6893;
+  --color-info-soft: #eef4fa;
+  --color-info-text: #335677;
+
+  --state-available: #2f8a57;
+  --state-occupied: #c2412d;
+  --state-reserved: #c48a1e;
+  --state-unknown: #8b939c;
+  --state-maintenance: #b97f1c;
+  --state-ev: #2f7f8c;
+  --state-accessible: #3f6893;
+
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-primary) 22%, transparent);
+  --shadow-xs: 0 1px 1px rgba(16, 24, 32, .04);
+  --shadow-sm: 0 1px 2px rgba(16, 24, 32, .05), 0 1px 3px rgba(16, 24, 32, .03);
+  --shadow-md: 0 1px 3px rgba(16, 24, 32, .05), 0 6px 16px rgba(16, 24, 32, .06);
+  --shadow-lg: 0 18px 44px rgba(16, 24, 32, .14);
+  --shadow-primary: 0 1px 2px rgba(16, 24, 32, .12);
+  --glow-primary: 0 1px 2px rgba(16, 24, 32, .14);
+
+  --ambient-a: transparent;
+  --ambient-b: transparent;
+  --ambient-c: transparent;
+  --grid-line: rgba(20, 23, 26, .035);
+
+  --sidebar-bg: var(--color-surface);
+  --nav-link-hover-bg: var(--color-surface-muted);
+  --nav-link-active-bg: var(--color-primary-soft);
+  --input-bg: var(--color-surface);
+}
+
+/* ---------------------------------------------------------------------------
+   3. Semantic tokens — dark ("Midnight", default): charcoal, not navy
+   ------------------------------------------------------------------------ */
+html.sp-dark-theme {
+  --color-bg: #0f1113;
+  --color-surface: #16181b;
+  --color-surface-subtle: #131518;
+  --color-surface-muted: #1c1f23;
+  --color-surface-sunken: #23272b;
+  --color-surface-inverse: #eceef0;
+  --color-surface-glass: rgba(22, 24, 27, .94);
+  --color-surface-raised: #1a1d21;
+
+  --color-text-strong: #eceef0;
+  --color-text: #d3d6d9;
+  --color-text-secondary: #aab0b6;
+  --color-text-muted: #90969d;
+  --color-text-subtle: #7f858c;
+
+  --color-border-subtle: rgba(255, 255, 255, .05);
+  --color-border: rgba(255, 255, 255, .085);
+  --color-border-strong: rgba(255, 255, 255, .16);
+  --color-hairline: rgba(255, 255, 255, .06);
+
+  --color-primary: #2b7f74;
+  --color-primary-hover: #318b80;
+  --color-primary-active: #379689;
+  --color-primary-soft: rgba(91, 176, 160, .10);
+  --color-primary-muted: rgba(91, 176, 160, .16);
+  --color-primary-border: rgba(120, 190, 176, .28);
+  --color-primary-text: #86c6ba;
+
+  --color-success-soft: rgba(91, 176, 122, .12);
+  --color-success-text: #8fcca6;
+  --color-danger-soft: rgba(224, 112, 93, .12);
+  --color-danger-text: #f0a497;
+  --color-warning-soft: rgba(217, 164, 65, .12);
+  --color-warning-text: #e3bd72;
+  --color-info-soft: rgba(122, 163, 214, .12);
+  --color-info-text: #a3c1e2;
+
+  --state-available: #5bb07f;
+  --state-occupied: #e0745f;
+  --state-reserved: #d9a441;
+  --state-unknown: #6f767e;
+  --state-maintenance: #d9a441;
+  --state-ev: #5eaab6;
+  --state-accessible: #7aa3d6;
+
+  --green-50: rgba(91, 176, 127, .09); --green-100: rgba(91, 176, 127, .14); --green-200: rgba(91, 176, 127, .22);
+  --red-50: rgba(224, 116, 95, .09); --red-100: rgba(224, 116, 95, .14);
+  --amber-50: rgba(217, 164, 65, .09); --amber-100: rgba(217, 164, 65, .14);
+  --blue-50: rgba(122, 163, 214, .1); --blue-100: rgba(122, 163, 214, .16);
+  --violet-50: rgba(140, 160, 186, .1); --violet-100: rgba(140, 160, 186, .16);
+  --green-600: #5bb07f; --green-700: #8fcca6;
+  --red-600: #e0745f; --red-700: #f0a497;
+  --amber-600: #d9a441; --amber-700: #e3bd72;
+  --blue-600: #8fb1d8; --blue-700: #a3c1e2;
+  --violet-500: #8ea2bd; --violet-600: #9eb0c8; --violet-700: #b4c2d5;
+
+  --shadow-xs: 0 1px 1px rgba(0, 0, 0, .25);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 20px rgba(0, 0, 0, .28);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, .5);
+  --shadow-primary: 0 1px 2px rgba(0, 0, 0, .35);
+  --glow-primary: 0 1px 2px rgba(0, 0, 0, .4);
+
+  --ambient-a: transparent;
+  --ambient-b: transparent;
+  --ambient-c: transparent;
+  --grid-line: rgba(255, 255, 255, .03);
+}
+html.sp-high-contrast { --color-primary: #144a44; --color-primary-hover: #10403a; --color-primary-text: #10403a; }
+html.sp-dark-theme.sp-high-contrast { --color-primary: #3a9b8d; --color-primary-text: #a7dbd1; }
+
+/* ---------------------------------------------------------------------------
+   4. Surfaces & atmosphere — clean, flat backgrounds
+   ------------------------------------------------------------------------ */
+.sp-shell .sp-ambient { display: none; }
+/* Page scenes stay, but as a faint, desaturated texture rather than a coloured glow. */
+.sp-shell .sp-backdrop-img { opacity: .18; filter: saturate(.2) contrast(.9); }
+html:not(.sp-dark-theme) .sp-shell .sp-backdrop-img { opacity: .09; }
+.sp-shell .sp-backdrop { background: var(--color-bg); }
+html.sp-dark-theme .sp-shell .sp-backdrop-page .sp-backdrop-overlay { background: linear-gradient(180deg, rgba(15, 17, 19, .55), rgba(15, 17, 19, .92) 45%, var(--color-bg)); }
+html:not(.sp-dark-theme) .sp-shell .sp-backdrop-page .sp-backdrop-overlay { background: linear-gradient(180deg, rgba(244, 245, 246, .7), rgba(244, 245, 246, .96) 40%, var(--color-bg)); }
+
+/* ---------------------------------------------------------------------------
+   5. Navigation
+   ------------------------------------------------------------------------ */
+.sp-sidebar { background: var(--color-surface); -webkit-backdrop-filter: none; backdrop-filter: none; border-right-color: var(--color-border); box-shadow: none; }
+.sp-sidebar::after { display: none; }
+.sp-drawer { background: var(--color-surface); }
+.sp-workspace { background: var(--color-surface-subtle); }
+.sp-workspace-dot { background: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+.sp-nav-title { letter-spacing: .08em; font-weight: 650; }
+.sp-nav-link { font-weight: 500; }
+.sp-nav-link.active { font-weight: 600; }
+.sp-nav-active { background: var(--color-surface-muted); }
+.sp-nav-active i { background: var(--color-primary); box-shadow: none; }
+.sp-nav-link.active .sp-nav-icon { color: var(--color-primary-text); }
+.sp-nav-badge { background: var(--color-surface-sunken); color: var(--color-text-strong); }
+.sp-collapse { border-style: solid; }
+
+.sp-topbar.scrolled { background: var(--color-surface-glass); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.sp-search-trigger, .sp-icon-btn, .sp-sys { background: var(--color-surface); }
+.sp-avatar { background: var(--color-surface-sunken); color: var(--color-text-strong); box-shadow: inset 0 0 0 1px var(--color-border); font-weight: 650; }
+.sp-badge-dot { background: var(--color-danger); }
+.sp-menu, .sp-cmdk { box-shadow: var(--shadow-lg); }
+.sp-cmdk { border-radius: 12px; }
+.sp-cmdk-layer, .sp-drawer-scrim { background: rgba(10, 12, 14, .5); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.sp-cmdk-item.active { background: var(--color-surface-muted); box-shadow: none; }
+
+/* ---------------------------------------------------------------------------
+   6. Buttons — one language: solid primary, neutral secondary, quiet ghost
+   ------------------------------------------------------------------------ */
+.sp-btn, .sp-content .sp-button, .sp-modal-card .sp-button { font-weight: 600; letter-spacing: 0; border-radius: var(--radius-lg); }
+.sp-btn.primary, .sp-button.primary, .primary-button {
+  background: var(--color-primary) !important; color: #fff !important; border-color: var(--color-primary) !important;
+  box-shadow: var(--shadow-xs) !important;
+}
+.sp-btn.primary::after { display: none; }
+.sp-btn.primary:hover, .sp-button.primary:hover:not(:disabled), .primary-button:hover:not(:disabled) {
+  background: var(--color-primary-hover) !important; border-color: var(--color-primary-hover) !important; transform: none; box-shadow: var(--shadow-xs) !important;
+}
+.sp-btn.primary:active, .sp-button.primary:active:not(:disabled) { background: var(--color-primary-active) !important; }
+.sp-btn.ghost, .sp-button.secondary { background: var(--color-surface) !important; color: var(--color-text-strong) !important; border-color: var(--color-border-strong) !important; box-shadow: var(--shadow-xs); }
+.sp-btn.ghost:hover, .sp-button.secondary:hover:not(:disabled) { background: var(--color-surface-muted) !important; }
+.sp-button.ghost { color: var(--color-text-secondary) !important; border-color: var(--color-border) !important; }
+.sp-btn.subtle { background: var(--color-primary-soft); border-color: var(--color-primary-border); }
+.sp-btn:active, .sp-button:active:not(:disabled) { transform: none; }
+
+/* ---------------------------------------------------------------------------
+   7. Cards, panels, hero & metrics — flat surfaces, consistent radius
+   ------------------------------------------------------------------------ */
+.sp-card { border-radius: var(--radius-2xl); background: var(--color-surface); box-shadow: var(--shadow-sm); }
+.sp-content :is(.sp-panel, .sp-account-card, .sp-settings-card, .sp-market-panel, .sp-ops-panel, .sp-finance-panel, .sp-gh-panel, .sp-lot-card, .sp-vehicle-card, .sp-notification-card, .sp-booking-card, .panel) {
+  background: var(--color-surface) !important; border-color: var(--color-border) !important; border-radius: var(--radius-2xl) !important; box-shadow: var(--shadow-sm) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+.sp-content :is(.sp-lot-card, .sp-vehicle-card, .sp-booking-card):hover { transform: none; box-shadow: var(--shadow-md) !important; }
+
+.sp-hero { border-radius: var(--radius-2xl); background: var(--color-surface); box-shadow: var(--shadow-sm); }
+.sp-hero::before { display: none; }
+.sp-hero h1 { font-weight: 650; letter-spacing: -.025em; }
+.sp-live-dot { background: var(--color-surface-subtle); }
+
+.sp-metric { background: var(--color-surface); border-radius: var(--radius-2xl); box-shadow: var(--shadow-sm); }
+.sp-metric::before { display: none; }
+.sp-metric:hover { transform: none; border-color: var(--color-border-strong); }
+.sp-metric-icon { box-shadow: none; border-radius: 8px; }
+.sp-metric-value { font-weight: 650; letter-spacing: -.025em; }
+.sp-gauge-center strong { font-weight: 650; letter-spacing: -.03em; }
+.sp-hero-stats dt, .sp-cmdk-section, .sp-workspace-copy small { letter-spacing: .08em; }
+.sp-hero-stats dd { font-weight: 650; }
+.sp-footer-dot { box-shadow: none; }
+
+/* ---------------------------------------------------------------------------
+   8. Typography — calmer weights and tracking
+   ------------------------------------------------------------------------ */
+.sp-content .sp-page-heading h1, .sp-content .sp-account-heading h1, .sp-content .sp-admin-heading h1, .sp-content .sp-eng-header h1,
+.sp-content [class*="-heading"] > div > h1, .sp-content [class*="-heading"] > h1, .sp-content [class*="-header"] h1, .sp-heading-title-row h1 {
+  font-weight: 650 !important; letter-spacing: -.022em !important;
+}
+.sp-content h2, .sp-card-head h2, .sp-panel-header h2 { font-weight: 650; letter-spacing: -.012em; }
+.sp-kicker { letter-spacing: .1em !important; font-weight: 650 !important; }
+.sp-content :is(th) { font-weight: 600; letter-spacing: .04em; }
+
+/* ---------------------------------------------------------------------------
+   9. Forms & small components
+   ------------------------------------------------------------------------ */
+.sp-content :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]), select, textarea) {
+  background: var(--color-surface) !important; border-radius: var(--radius-lg) !important;
+}
+.sp-chip { font-weight: 600; }
+.sp-state-pill, .sp-facility-status { font-weight: 650; }
+.sp-alert-list li { background: var(--color-surface); }
+
+/* Status chips in light theme previously used violet for "reserved" */
+html:not(.sp-dark-theme) .sp-chip.reserved { color: var(--amber-700); }
+
+/* Selection & scrollbars match the palette */
+.sp-shell ::selection, .auth-page ::selection { background: color-mix(in srgb, var(--color-primary) 22%, transparent); }
+.sp-shell { scrollbar-color: var(--color-border-strong) transparent; }
+
+/* Logo mark: the transparent logo sits directly on the surface — no black tile, frame or glow, in either theme. */
+.sp-logo-gif, html:not(.sp-dark-theme) .sp-logo-gif { background: transparent; box-shadow: none; border-radius: 0; overflow: visible; }

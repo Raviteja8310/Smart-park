@@ -1,0 +1,150 @@
+1610	Vous n’avez pas l’autorisation d’effectuer cette action
+1611	{0} sur 5 d’après les réservations SmartPark terminées
+1612	Un versement au statut {0} ne permet pas cette action
+1613	Un avis existe déjà pour cette réservation terminée
+1614	Configurez un tarif horaire actif avant de soumettre
+1615	Décrivez l’établissement, l’accès, les règles et les équipements
+1616	Conducteurs, propriétaires, opérateurs et administrateurs, chacun dans son périmètre
+1617	Expliquez pourquoi le versement nécessite un rapprochement manuel
+1618	Aucun appareil de barrière enregistré pour vos établissements
+1619	Seules les demandes d’abonnement en attente peuvent être examinées
+1620	Sélectionnez un ticket pour voir la conversation et le statut
+1621	Le compte entreprise est introuvable ou inactif
+1622	Choisissez l’apparence qui convient à votre espace de travail
+1623	Choisissez ce qui s’affiche dans les notifications de l’application
+1624	Ce navigateur ne prend pas en charge la localisation
+1625	Seuls les établissements en brouillon peuvent être soumis
+1626	Indiquez ce que vous avez vérifié et la décision prise
+1627	Le texte de l’avis contient des caractères de contrôle non pris en charge
+1628	Renforcez le contraste du texte et des bordures
+1629	Blocage temporaire {0} créé. Le paiement n’est pas finalisé
+1630	La réservation doit commencer au moins une minute après maintenant
+1631	Le prestataire de paiement n’a pas pu traiter la demande
+1632	La place sélectionnée n’appartient pas à cet établissement
+1633	Cette annonce approuvée ne propose pas d’abonnement mensuel
+1634	Essayez un autre nom, e-mail ou numéro de téléphone
+1635	Une zone portant ce nom existe déjà dans l’établissement
+1636	Tous les connecteurs de ce chargeur sont utilisés
+1637	Créez un compte entreprise ou gérez celui dont vous êtes membre
+1638	L’entrée ouvre 30 minutes avant le début de la réservation
+1639	Aucune zone de place n’est configurée pour cette caméra
+1640	Les avis ne sont possibles qu’après une réservation terminée
+1641	Sélectionnez un établissement valide pour voir les événements de plaque
+1642	Indiquez une date de début si vous fixez une date de fin
+1643	Afficher les mises à jour de réservation dans votre boîte SmartPark
+1644	Afficher les alertes de places et d’établissements dans votre boîte
+1645	La référence externe ou la note a un format non valide
+1646	Paiement associé à cette alerte introuvable
+1647	Commande de paiement introuvable pour cette réservation
+1648	La date de fin du tarif doit être postérieure à sa date de début
+1649	Le paiement du fournisseur ne correspond pas à cette réservation
+1650	Ce parcours de paiement réservé au développement n’est pas disponible
+1651	Un versement de {0} {1} a été enregistré comme payé. Référence : {2}
+1652	Vérification du propriétaire soumise à l’examen de l’administrateur
+1653	Indiquez un motif de 10 à 500 caractères
+1654	Partagez votre lien avec des amis qui découvrent SmartPark
+1655	Alerte introuvable pour un établissement auquel vous avez accès
+1656	La caméra n’a aucune zone associée à cette place
+1657	La réservation sélectionnée n’appartient pas à cet établissement
+1658	Utilisez une phrase secrète longue et unique d’au moins 6 caractères
+1659	Choisissez un mot de passe différent de l’actuel
+1660	Confirmez votre mot de passe actuel avant d’en définir un nouveau
+1661	L’e-mail, les rôles et le statut du compte ne sont pas modifiables ici
+1662	Saisissez l’énergie fournie en kWh (laissez vide si inconnue)
+1663	Seules les annonces approuvées avec un tarif mensuel apparaissent ici
+1664	Indiquez un motif pour refuser une demande d’abonnement
+1665	Les immatriculations sont normalisées et doivent être uniques
+1666	MODE TEST : paiement simulé. La réservation est confirmée
+1667	Appareil introuvable pour un établissement que vous gérez
+1668	Vérifiez votre mot de passe actuel avant d’en choisir un nouveau
+1669	Vous ne pouvez pas demander d’abonnement pour votre propre annonce
+1670	Confirmées et enregistrées dans le créneau actuel
+1671	Seule une commande envoyée peut recevoir un résultat matériel
+1672	Seules les sessions terminées avec paiement vérifié sont éligibles
+1673	Indiquez pourquoi le virement externe a échoué ou n’a pas été fait
+1674	Lien de réinitialisation sécurisé détecté. Choisissez un nouveau mot de passe ci-dessous
+1675	L’agent doit être affecté à l’établissement sélectionné
+1676	Aucun gain approuvé en {0} n’est disponible pour un versement
+1677	Ce code exige des frais de stationnement d’au moins {0} {1}
+1678	Ce QR est signé et validé par le serveur SmartPark
+1679	Vous n’avez pas l’autorisation de modifier cette place
+1680	Votre dernière demande de vérification de propriétaire a été approuvée
+1681	Approuvez cet établissement pour le publier dans la recherche
+1682	Saisissez le code à six chiffres reçu par e-mail et choisissez un nouveau mot de passe
+1683	La sortie clôture la session active et termine la réservation
+1684	Indiquez la latitude et la longitude, ou laissez les deux vides
+1685	Réduisez l’espacement des tableaux pour afficher plus de lignes
+1686	Indiquez une date de début lorsqu’une date de fin est fournie
+1687	La signature de confirmation du paiement n’a pas pu être vérifiée
+1688	L’événement payment.captured ne contient pas l’entité de paiement
+1689	Cette référence de remboursement externe a déjà été enregistrée
+1690	Vous n’avez pas l’autorisation de voir ou de gérer cette caméra
+1691	Vos réservations apparaîtront ici une fois une place réservée
+1692	Le statut d’alerte doit être ouverte, prise en compte, résolue ou toutes
+1693	Aucun compte actif et vérifié n’existe avec cet e-mail
+1694	Indiquez un motif de refus clair d’au moins 8 caractères
+1695	La sortie ne peut pas être répétée sur une session terminée
+1696	La place sélectionnée n’appartient pas à l’établissement de cette caméra
+1697	{0} Actualisez les transactions avant de tenter un autre paiement
+1698	L’horodatage de l’image doit être récent et ne peut pas être futur
+1699	Les mises à jour importantes des réservations et opérations apparaîtront ici
+1700	Gérez l’inventaire, les zones et la disponibilité physique
+1701	sur l’écran de connexion pour recevoir un code à six chiffres par e-mail
+1702	Indiquez pourquoi le remboursement externe a échoué ou n’a pas été envoyé
+1703	Ticket d’assistance créé. Conservez le code pour le suivi
+1704	La réservation doit avoir une session de stationnement active
+1705	Ce remboursement ne peut pas être marqué en échec depuis son statut actuel
+1706	Pourquoi ce gain finalisé est-il éligible à un versement ?
+1707	Vous ne pouvez examiner que les demandes de vos propres annonces
+1708	Votre réservation est confirmée et le ticket QR d’entrée est prêt
+1709	Un compte actif est requis pour activer le mode propriétaire
+1710	Les places de la caméra sont associées aux places physiques de cet établissement
+1711	Configurez VISION_API_TOKEN avant d’afficher le flux de la caméra
+1712	Créez des zones et des places pour configurer l’inventaire de cet établissement
+1713	Saisissez un ou plusieurs codes de place séparés par des virgules ou des espaces
+1714	Saisissez l’identifiant de l’adaptateur/fournisseur, pas une URL RTSP de caméra
+1715	Le tarif horaire est obligatoire. Les autres périodes sont facultatives
+1716	Gérez le paiement, les tickets d’entrée et l’historique de vos réservations
+1717	Aucun tarif actif. Ajoutez un tarif avant d’accepter des réservations
+1718	Seul un remboursement déjà en cours peut passer en examen manuel
+1719	Les autres sessions actives sont révoquées après la modification
+1720	Examinez les déclarations des propriétaires et enregistrez les décisions
+1721	Appareil de barrière introuvable pour un établissement accessible
+1722	Ce chargeur est indisponible ou son établissement n’est pas approuvé
+1723	L’accès était-il facile ? La place correspondait-elle à la description ?
+1724	Un hôte a demandé un versement de {0} {1} sur {2} enregistrements de gains
+1725	Ajoutez d’abord un numéro au format international dans Mon profil
+1726	Ajoutez des coordonnées aux établissements pour afficher leurs repères
+1727	Terminez votre session de recharge actuelle avant d’en commencer une autre
+1728	Seule une annonce en brouillon ou suspendue peut être soumise
+1729	Seul le propriétaire de l’annonce ou un administrateur peut supprimer des photos
+1730	Seul le propriétaire de l’annonce ou un administrateur peut importer des photos
+1731	Enregistrez la disponibilité des sept jours avant de soumettre
+1732	Vous n’avez pas l’autorisation de gérer l’inventaire de cet établissement
+1733	Un véhicule avec cette immatriculation est déjà enregistré
+1734	Désignez un autre administrateur actif avant de retirer ce rôle
+1735	Trouvez, réservez et gérez votre stationnement sur tout le réseau SmartPark
+1736	Frais de stationnement nets du registre, hors écritures annulées
+1737	Aucun avis pour l’instant. Les visiteurs ayant terminé leur séjour peuvent partager leur expérience
+1738	Publiez un établissement pour voir ici l’occupation en direct et l’état des zones
+1739	Recherchez un établissement ou une ville et il apparaîtra ici
+1740	La référence ou la note du virement externe a un format non valide
+1741	Ajoutez ci-dessus l’inventaire des chargeurs d’un de vos établissements
+1742	Les comptes administrateur ont déjà accès à la gestion des établissements
+1743	Attribuez le rôle {0} à cet utilisateur avant de lui affecter l’établissement
+1744	Les jours disponibles exigent une heure de fermeture après l’ouverture
+1745	Aucun gain approuvé n’est disponible dans cette devise
+1746	Seul un administrateur peut clôturer une alerte de rapprochement
+1747	Les commandes en attente expirent après 60 secondes sans adaptateur
+1748	Rendez-vous à cette place, puis continuez vers votre destination
+1749	Enregistrez des lieux depuis la recherche pour les retrouver rapidement
+1750	L’employé désigné doit être un membre actif de cette entreprise
+1751	Ce ticket n’est plus valide. Contactez l’assistance
+1752	La qualité des prévisions s’améliore à mesure que SmartPark collecte l’historique
+1753	Les parkings proches sont triés par distance depuis votre position
+1754	Seul un paiement encaissé et vérifié peut faire l’objet d’un remboursement
+1755	Les demandes de remboursement doivent être envoyées avant le début de la réservation
+1756	Examinez ce candidat dans Reconnaissance de plaques pour résoudre l’alerte
+1757	Le paiement test a été simulé, mais la réservation doit être vérifiée
+1758	Utilisez des virgules, espaces ou retours à la ligne. Jusqu’à 100 places par opération
+1759	Vous avez déjà une demande de vérification de propriétaire en cours d’examen

@@ -1,0 +1,2358 @@
+0	Car
+1	End
+2	Esc
+3	Fee
+4	Low
+5	Map
+6	Ops
+7	SUV
+8	tax
+9	Van
+10	City
+11	Ctrl
+12	Dark
+13	DATE
+14	Edit
+15	Ends
+16	Find
+17	From
+18	High
+19	Hold
+20	Home
+21	List
+22	Make
+23	More
+24	Next
+25	Only
+26	Open
+27	Role
+28	Save
+29	Show
+30	Slot
+31	USER
+32	Zone
+33	Clear
+34	Close
+35	Color
+36	Daily
+37	Empty
+38	Light
+39	Model
+40	Opens
+41	Other
+42	Owner
+43	Pause
+44	Phone
+45	Power
+46	Reply
+47	Retry
+48	ROLES
+49	Scope
+50	Space
+51	Start
+52	Tax (
+53	Title
+54	Total
+55	Truck
+56	1 hour
+57	2 days
+58	7 days
+59	Active
+60	Amount
+61	Cancel
+62	Closed
+63	Closes
+64	Delete
+65	Device
+66	Driver
+67	Export
+68	Friday
+69	Friend
+70	Garage
+71	Gravel
+72	Hourly
+73	Joined
+74	Manage
+75	Monday
+76	No cap
+77	Normal
+78	Online
+79	Opened
+80	rate ·
+81	Rating
+82	Reason
+83	Reject
+84	Remove
+85	Saving
+86	Search
+87	Secure
+88	Starts
+89	Status
+90	Sunday
+91	Urgent
+92	Weekly
+93	Within
+94	2 hours
+95	3 hours
+96	4 hours
+97	8 hours
+98	Account
+99	Actions
+100	Approve
+101	Asphalt
+102	Back to
+103	Booking
+104	CCS2 DC
+105	CHAdeMO
+106	Command
+107	Confirm
+108	CONTACT
+109	Covered
+110	Created
+111	Cycling
+112	Default
+113	Deleted
+114	Driving
+115	Expired
+116	Expires
+117	Loading
+118	Manager
+119	Max {0}
+120	Minimum
+121	Monthly
+122	No zone
+123	Not set
+124	Offline
+125	Pay now
+126	Payment
+127	Pending
+128	per kWh
+129	Pricing
+130	Refresh
+131	Resolve
+132	Retired
+133	Revenue
+134	Reverse
+135	Reviews
+136	Sending
+137	Settled
+138	Showing
+139	Sign in
+140	SOURCES
+141	Subject
+142	Tuesday
+143	Unknown
+144	Updated
+145	Vehicle
+146	Walking
+147	{0}% off
+148	{0}d ago
+149	{0}h ago
+150	{0}m ago
+151	1 — Poor
+152	2 — Fair
+153	24 hours
+154	3 — Good
+155	Activate
+156	Add zone
+157	Amount (
+158	Approved
+159	Bookings
+160	Category
+161	Checking
+162	Collapse
+163	Concrete
+164	Creating
+165	Currency
+166	Disabled
+167	DISCOUNT
+168	Driveway
+169	Duration
+170	Earnings
+171	Eligible
+172	Employee
+173	Enabling
+174	Facility
+175	From {0}
+176	Inactive
+177	just now
+178	Language
+179	Latitude
+180	Location
+181	Navigate
+182	No match
+183	Occupied
+184	Only {0}
+185	Open map
+186	Optional
+187	Overview
+188	Password
+189	PAYMENTS
+190	payout ·
+191	Previous
+192	Priority
+193	Provider
+194	Rejected
+195	Reserved
+196	Resolved
+197	Reversed
+198	Reviewed
+199	Saturday
+200	Save {0}
+201	Settings
+202	Sign out
+203	Thursday
+204	Updating
+205	Vehicles
+206	Verified
+207	All clear
+208	Amenities
+209	Available
+210	Basic {0}
+211	Cancelled
+212	Completed
+213	Confirmed
+214	Connector
+215	Copy code
+216	Copy link
+217	e.g. City
+218	Edit user
+219	Full name
+220	Longitude
+221	Mark read
+222	members ·
+223	NEW OFFER
+224	Note: {0}
+225	Occupancy
+226	Promotion
+227	Qualified
+228	Rate type
+229	Recording
+230	Republish
+231	Requested
+232	Reserving
+233	Save rate
+234	Scheduled
+235	SMARTPARK
+236	SPACE MAP
+237	Submitted
+238	Suspended
+239	Type 2 AC
+240	Unlimited
+241	Until {0}
+242	Wednesday
+243	WELCOME10
+244	Workspace
+245	Zone name
+246	{0} m away
+247	Accessible
+248	Add camera
+249	Add member
+250	All alerts
+251	All spaces
+252	Appearance
+253	Breadcrumb
+254	Checked in
+255	Close form
+256	Confidence
+257	Configured
+258	Daily rate
+259	Deactivate
+260	Directions
+261	e.g. Honda
+262	e.g. White
+263	Edit roles
+264	ending {0}
+265	EUR — Euro
+266	Facilities
+267	GATE RULES
+268	Get moving
+269	Last frame
+270	Legal name
+271	Manage {0}
+272	Max height
+273	Model year
+274	Moderation
+275	month(s) ·
+276	Motorcycle
+277	My profile
+278	Navigation
+279	NEW CAMERA
+280	No matches
+281	Operations
+282	Owner note
+283	Percentage
+284	Power (kW)
+285	Promotions
+286	Queue open
+287	Reactivate
+288	Refreshing
+289	Save roles
+290	Send reply
+291	Slot codes
+292	Start date
+293	Start time
+294	Submitting
+295	Test order
+296	unknown of
+297	Validating
+298	YOUR INBOX
+299	{0} km away
+300	{0} results
+301	Acknowledge
+302	Add charger
+303	Add vehicle
+304	Any vehicle
+305	API offline
+306	Apply range
+307	Booking {0}
+308	Calculating
+309	CALIBRATION
+310	Camera name
+311	Cancel hold
+312	Check price
+313	Choose time
+314	Color theme
+315	Contact {0}
+316	Covered lot
+317	Description
+318	Device name
+319	Disposition
+320	Driver mode
+321	End session
+322	EV charging
+323	Explore map
+324	Gate access
+325	Gate action
+326	GET STARTED
+327	Hide review
+328	HOST LEDGER
+329	Hourly rate
+330	In progress
+331	Level label
+332	Listing {0}
+333	logout exit
+334	Maintenance
+335	My bookings
+336	My listings
+337	My vehicles
+338	Nearby only
+339	Open alerts
+340	Open module
+341	Open spaces
+342	Outdoor lot
+343	Payment {0}
+344	Please wait
+345	Postal code
+346	PREFERENCES
+347	Private bay
+348	Queue close
+349	Record paid
+350	Registering
+351	Reload page
+352	Reply added
+353	Review note
+354	Service fee
+355	Set default
+356	Signing out
+357	SmartPark —
+358	Stop camera
+359	Trend chart
+360	Unread only
+361	Vehicle {0}
+362	Weekly rate
+363	YOUR GARAGE
+364	Your review
+365	AC Charger 1
+366	Account menu
+367	Acknowledged
+368	Add facility
+369	Admin access
+370	All bookings
+371	All listings
+372	All statuses
+373	Bookable now
+374	Booking code
+375	City or area
+376	Close ticket
+377	Closing time
+378	Company name
+379	Country code
+380	Delete photo
+381	Edit vehicle
+382	Entry / exit
+383	Find parking
+384	Fixed amount
+385	From parking
+386	Gated access
+387	Good evening
+388	Good morning
+389	Hold expires
+390	HOST FINANCE
+391	LIVE MONITOR
+392	Monthly rate
+393	NEW FACILITY
+394	New password
+395	Not bookable
+396	Not verified
+397	Occupied now
+398	Opening page
+399	Opening time
+400	ORGANIZATION
+401	Parking deck
+402	Parking host
+403	Parking slot
+404	Parking type
+405	Phone number
+406	Quick access
+407	Rate not set
+408	Refer & earn
+409	Refresh data
+410	Remove saved
+411	Reply on {0}
+412	Requested by
+413	Review saved
+414	Safety issue
+415	Save changes
+416	Save details
+417	Save profile
+418	Saved spaces
+419	Search again
+420	Search users
+421	Setup needed
+422	Status check
+423	Tax rate (%)
+424	Total spaces
+425	Transactions
+426	User updated
+427	Vehicle exit
+428	Vehicle type
+429	Video source
+430	View receipt
+431	WELCOME BACK
+432	Your reviews
+433	Zone created
+434	4 — Very good
+435	5 — Excellent
+436	ACTION CENTER
+437	Add a vehicle
+438	Admin console
+439	Administrator
+440	Available now
+441	Bharat AC-001
+442	Bharat DC-001
+443	Billing email
+444	Billing phone
+445	CCTV security
+446	Charger label
+447	Clear history
+448	COMMAND AUDIT
+449	Contact phone
+450	Create camera
+451	CUSTOMER CARE
+452	Discount type
+453	Dismiss error
+454	Document type
+455	Effective now
+456	Email address
+457	Enable camera
+458	Evidence type
+459	Facility name
+460	Gate hardware
+461	Good lighting
+462	Heartbeat {0}
+463	Hide password
+464	Internal note
+465	Last observed
+466	Listing title
+467	Manage spaces
+468	Manual review
+469	Mark all read
+470	Notifications
+471	On-site staff
+472	Owner details
+473	parking space
+474	Parking zones
+475	Pause listing
+476	Photo removed
+477	Platform-wide
+478	QR VALIDATION
+479	Ready to scan
+480	Record failed
+481	Reference {0}
+482	Referral link
+483	Refund review
+484	Remove search
+485	Report window
+486	Review status
+487	Roles updated
+488	Save schedule
+489	Save settings
+490	Select a slot
+491	Show password
+492	Space details
+493	Staff actions
+494	Submit ticket
+495	Unknown state
+496	Upload photos
+497	Vehicle entry
+498	Vehicle match
+499	Vehicle saved
+500	Verified: {0}
+501	View entry QR
+502	Your activity
+503	{0} · slot {1}
+504	Account access
+505	Account status
+506	Active regions
+507	Add a facility
+508	ADMINISTRATION
+509	Alert resolved
+510	All facilities
+511	Booking status
+512	Camera created
+513	Camera enabled
+514	Command queued
+515	Corporate & EV
+516	Create account
+517	Detected empty
+518	Dirt / unpaved
+519	Disable camera
+520	Discount value
+521	Dismiss notice
+522	DRIVER PROFILE
+523	e.g. WELCOME10
+524	Email verified
+525	Existing codes
+526	Exit supported
+527	Expand sidebar
+528	facility owner
+529	False positive
+530	Finance review
+531	fleet vehicles
+532	Good afternoon
+533	Help & support
+534	LISTING PHOTOS
+535	Listing status
+536	Manage listing
+537	Monthly passes
+538	No description
+539	No replies yet
+540	No reviews yet
+541	No users found
+542	Online cameras
+543	Owner earnings
+544	Owner verified
+545	Park a vehicle
+546	Parking charge
+547	Parking spaces
+548	Payment failed
+549	PAYOUT HISTORY
+550	Pending review
+551	Physical state
+552	Price estimate
+553	Promotion code
+554	Property owner
+555	Public transit
+556	Publish review
+557	Rates and fees
+558	Reference: {0}
+559	Refresh failed
+560	Refund request
+561	Region / state
+562	Region removed
+563	Request failed
+564	Request refund
+565	Resolve ticket
+566	REVENUE REPORT
+567	Review deleted
+568	Saved vehicles
+569	SmartPark host
+570	SmartPark logo
+571	SmartPark user
+572	State / region
+573	Status for {0}
+574	Street address
+575	SYSTEM CONTROL
+576	Ticket expires
+577	Total capacity
+578	TRUST & SAFETY
+579	Unknown status
+580	User not found
+581	Write a review
+582	Your full name
+583	{0} price saved
+584	Active sessions
+585	Admin note: {0}
+586	Billing address
+587	Booking history
+588	Camera disabled
+589	Change password
+590	Close QR ticket
+591	Covered parking
+592	Default vehicle
+593	DEVICE REGISTRY
+594	EARNINGS LEDGER
+595	Edit my account
+596	Email me a code
+597	Entry supported
+598	EV charging hub
+599	Explore parking
+600	Facility health
+601	Forecast window
+602	Forgot password
+603	General support
+604	Host payout {0}
+605	HOST SETTLEMENT
+606	INVENTORY SETUP
+607	Last loaded {0}
+608	LISTING PROFILE
+609	Loading devices
+610	Loading tickets
+611	Main navigation
+612	Map showing {0}
+613	Members & fleet
+614	My reservations
+615	No exit control
+616	No phone number
+617	Open my profile
+618	Open navigation
+619	PARKING DETAILS
+620	PARKING LISTING
+621	parking results
+622	Parking surface
+623	Pavers / blocks
+624	Payout requests
+625	Pending payment
+626	Photos uploaded
+627	Profile updated
+628	QR ticket token
+629	Recent bookings
+630	Recent commands
+631	Recent searches
+632	Record refunded
+633	Refresh preview
+634	Refresh tickets
+635	Refreshing data
+636	Refund requests
+637	Register device
+638	RESERVE A SPACE
+639	Resolution note
+640	Saved & reviews
+641	Search listings
+642	Select a camera
+643	Select facility
+644	SHARE SMARTPARK
+645	State or region
+646	Technical issue
+647	Total referrals
+648	Unassigned zone
+649	Update password
+650	USD — US Dollar
+651	Use my location
+652	User management
+653	Uses per driver
+654	VEHICLE DETAILS
+655	Vehicle removed
+656	Verified amount
+657	Waiting on user
+658	WEEKLY SCHEDULE
+659	Write an update
+660	Your parking QR
+661	ACCOUNT RECOVERY
+662	ACCOUNT SECURITY
+663	All applications
+664	All systems live
+665	Approve facility
+666	Archive facility
+667	Awaiting payment
+668	Bright and clear
+669	Camera detection
+670	Changes required
+671	Close navigation
+672	Collapse sidebar
+673	Confirm password
+674	Cost unavailable
+675	Create promotion
+676	Current password
+677	Database offline
+678	Earning approved
+679	Earning reversed
+680	Facility cameras
+681	Facility details
+682	Filter by status
+683	FLEXIBLE PRICING
+684	HOST MARKETPLACE
+685	Last application
+686	Loading accounts
+687	Loading bookings
+688	Loading earnings
+689	Loading listings
+690	mapped regions ·
+691	Maximum discount
+692	Network capacity
+693	NEW HOST LISTING
+694	No entry control
+695	No members found
+696	No referrals yet
+697	No results for “
+698	Notes (optional)
+699	Number of spaces
+700	Overnight access
+701	Parking facility
+702	Payment activity
+703	Payment attempts
+704	Payment complete
+705	PAYMENT VERIFIED
+706	Phone (optional)
+707	Please try again
+708	polygon points ·
+709	Provider records
+710	Quick navigation
+711	Real-time alerts
+712	Register a plate
+713	Request rejected
+714	Restore defaults
+715	Restore facility
+716	Route to parking
+717	Save slot region
+718	Search SmartPark
+719	Sign in securely
+720	Start processing
+721	This facility is
+722	Vehicle profiles
+723	View my bookings
+724	← Back to sign in
+725	account workspace
+726	Active connectors
+727	Active facilities
+728	Add first vehicle
+729	Add fleet vehicle
+730	Add parking space
+731	Approve & publish
+732	Available credits
+733	Awaiting approval
+734	Booking candidate
+735	Detected occupied
+736	e.g. Ground floor
+737	earning record(s)
+738	earnings snapshot
+739	External transfer
+740	Facility operator
+741	Hide new password
+742	In payout request
+743	INTEGRATION SETUP
+744	Live availability
+745	Loading occupancy
+746	My monthly passes
+747	Network occupancy
+748	Open host payouts
+749	Owner note: {0} ·
+750	Paid transactions
+751	Parking attendant
+752	PARKING DISCOVERY
+753	Parking locations
+754	Payment or refund
+755	Payment reference
+756	Plan your arrival
+757	Plate recognition
+758	Price per kWh (₹)
+759	Record resolution
+760	Recorded paid {0}
+761	Reduce animations
+762	Referral activity
+763	reserve book park
+764	Review moderation
+765	Save pricing rule
+766	Search or jump to
+767	Select a facility
+768	Show new password
+769	SIGNED-IN ACCOUNT
+770	SMART OCCUPANCY ·
+771	Smart parking lot
+772	Space composition
+773	Ticket marked {0}
+774	Total redemptions
+775	verified payments
+776	Workspace sidebar
+777	YOUR RESERVATIONS
+778	{0} out of 5 stars
+779	{0} spaces created
+780	Accessible parking
+781	ACCOUNT & SECURITY
+782	Add spaces in bulk
+783	Alert acknowledged
+784	Alerts unavailable
+785	car plate register
+786	Check another time
+787	Choose photo files
+788	Closing time unset
+789	Configured cameras
+790	Corporate accounts
+791	Create a promotion
+792	Download QR ticket
+793	FACILITY INVENTORY
+794	Facility owner tip
+795	FACILITY WORKSPACE
+796	Host ledger amount
+797	INR — Indian Rupee
+798	Interface language
+799	Invalid date value
+800	Loading promotions
+801	Loading your inbox
+802	managed facilities
+803	No payout requests
+804	No recent searches
+805	No refund requests
+806	No reviews waiting
+807	Opening time unset
+808	Operational alerts
+809	Operational status
+810	OPERATIONS CONTROL
+811	Owner review queue
+812	Owner verification
+813	parking facilities
+814	PHYSICAL INVENTORY
+815	PLANNING INDICATOR
+816	Profile & password
+817	Refund request {0}
+818	Register a vehicle
+819	Reject with reason
+820	Review and publish
+821	Starts immediately
+822	Support ticket {0}
+823	Ticket {0} updated
+824	Total reservations
+825	User roles updated
+826	YOUR PERSONAL CODE
+827	{0} · {1} review{2}
+828	Availability by day
+829	Browser preferences
+830	CAMERA INTELLIGENCE
+831	Close test checkout
+832	Commercial car park
+833	Compact data tables
+834	Create your account
+835	Current slot states
+836	Energy not recorded
+837	Enter an audit note
+838	Enter your password
+839	Facilities in scope
+840	FACILITY OPERATIONS
+841	Facility owner mode
+842	Featured facilities
+843	Find a monthly pass
+844	Find a parking spot
+845	Find parking nearby
+846	Fleet vehicle added
+847	Latest sensor state
+848	Level not specified
+849	No bookings to show
+850	No reservations yet
+851	No transactions yet
+852	No vehicle selected
+853	Operations & alerts
+854	Parking reservation
+855	Parking utilisation
+856	Payments & receipts
+857	Payout {0} recorded
+858	Photos of the space
+859	Physically occupied
+860	PROMOTION INVENTORY
+861	Recent reservations
+862	Refund {0} recorded
+863	Registered vehicles
+864	Registration number
+865	RESERVATION HISTORY
+866	Reset your password
+867	SECURE YOUR ACCOUNT
+868	Sign in to continue
+869	SMARTPARK HELP DESK
+870	Submit for approval
+871	Switch to {0} theme
+872	TRANSACTION HISTORY
+873	unread notification
+874	View parking spaces
+875	Your contact number
+876	YOUR SMARTPARK ROLE
+877	0 or parking-lot.mp4
+878	active slot mappings
+879	ADMINISTRATOR ACTION
+880	Arrival instructions
+881	Automated entry flow
+882	Bookings unavailable
+883	CAPACITY & OCCUPANCY
+884	Confirm new password
+885	Create draft listing
+886	Detection confidence
+887	Distance unavailable
+888	e.g. Level 1 - North
+889	Empty and unreserved
+890	Enter your full name
+891	EV charging sessions
+892	Facility utilization
+893	GBP — Pound Sterling
+894	GROSS PARKING CHARGE
+895	Loading applications
+896	Loading plate events
+897	Loading transactions
+898	My charging sessions
+899	No saved parking yet
+900	No zones created yet
+901	Number of connectors
+902	Open refund requests
+903	Parking region saved
+904	Parking zone created
+905	Pending verification
+906	PUBLICATION WORKFLOW
+907	QR tickets available
+908	Request monthly pass
+909	Reviewed — no refund
+910	Route to destination
+911	Search your listings
+912	Shared parking space
+913	Sign in to SmartPark
+914	Six-digit email code
+915	Skip to main content
+916	SMARTPARK ENTRY PASS
+917	SmartPark-{0}-QR.png
+918	Special instructions
+919	Start camera scanner
+920	Start session record
+921	Summarize your visit
+922	Switch to dark theme
+923	Total parking spaces
+924	Upload a space photo
+925	User account updated
+926	Where is data stored
+927	with map coordinates
+928	You’re all caught up
+929	Your payout requests
+930	Your support tickets
+931	{0} active facilities
+932	{0} photo(s) selected
+933	{0} photo{1} uploaded
+934	0.20 · More sensitive
+935	Add your first camera
+936	Add your phone number
+937	Administrator console
+938	All changes are saved
+939	All recorded bookings
+940	Any supported vehicle
+941	Application submitted
+942	At least 6 characters
+943	Awaiting owner review
+944	Before allowing entry
+945	Before recording exit
+946	Booking {0}, slot {1}
+947	Business registration
+948	Camera health updated
+949	Choose a new password
+950	Create draft facility
+951	Create parking spaces
+952	Estimated pass amount
+953	EV charging inventory
+954	Fetching account data
+955	Hide current password
+956	Larger interface text
+957	Listing details saved
+958	Live feed unavailable
+959	Loading user accounts
+960	Loading your vehicles
+961	Location set by owner
+962	Main entrance barrier
+963	Mobility control room
+964	No frame received yet
+965	No heartbeat reported
+966	No managed facilities
+967	North entrance camera
+968	Nothing matches “{0}”
+969	Other / not specified
+970	Parking space updated
+971	pending or processing
+972	Platform fee recorded
+973	Promotion {0} created
+974	Property relationship
+975	Recent search removed
+976	Register a controller
+977	Resubmit for approval
+978	Role-based operations
+979	Show current password
+980	Simulate test payment
+981	SmartPark Mobility OS
+982	Switch to light theme
+983	theme appearance mode
+984	Total due at checkout
+985	Unable to save region
+986	Unable to save review
+987	Vehicle compatibility
+988	Verified by SmartPark
+989	WORKSPACE PREFERENCES
+990	{0} empty but reserved
+991	Active booking windows
+992	Booking demand outlook
+993	Confirmed / checked in
+994	Connect a video source
+995	Corporate member added
+996	Could not save profile
+997	Driver · owner enabled
+998	Enter current password
+999	Filter by city or area
+1000	Filter recent bookings
+1001	Gate device registered
+1002	Loading finance queues
+1003	LOCAL DEVELOPMENT ONLY
+1004	MAPPED SPACE INVENTORY
+1005	Minimum parking charge
+1006	Monitored parking deck
+1007	No alerts in this view
+1008	No EV chargers to show
+1009	No payout requests yet
+1010	No reviews to moderate
+1011	No support tickets yet
+1012	Number on profile: {0}
+1013	Operations & analytics
+1014	Parking discovery view
+1015	Remove mapping for {0}
+1016	Revenue · last 30 days
+1017	Saved parking sections
+1018	SmartPark introduction
+1019	Unable to mark as read
+1020	Unable to open listing
+1021	Unable to remove photo
+1022	Unable to save pricing
+1023	Unable to save vehicle
+1024	Accessibility & display
+1025	Add your first facility
+1026	API: {0}; database: {1}
+1027	Become a facility owner
+1028	Business representative
+1029	Camera settings updated
+1030	Charger details updated
+1031	Choose active workspace
+1032	Choose parking location
+1033	Create a support ticket
+1034	Default vehicle updated
+1035	Facility status updated
+1036	Held — awaiting payment
+1037	High-contrast interface
+1038	Hold this parking space
+1039	Loading listing details
+1040	Low confidence — review
+1041	Optional contact number
+1042	Parking reservation {0}
+1043	Payment requires review
+1044	Registered gate devices
+1045	Request approved payout
+1046	Reservations & payments
+1047	Review {0} successfully
+1048	Scan reservation ticket
+1049	SMS provider configured
+1050	Submit for verification
+1051	The photo was not found
+1052	Transfer reference: {0}
+1053	Transparent pass status
+1054	Unable to create camera
+1055	Unable to remove region
+1056	Unable to update camera
+1057	Unable to update device
+1058	Unable to upload photos
+1059	Vehicle details updated
+1060	{0} assigned to facility
+1061	{0} at {1} reported: {2}
+1062	0.25 · Recommended start
+1063	0.50 · More conservative
+1064	Active sessions/bookings
+1065	Application under review
+1066	Check the search filters
+1067	Comfortable in low light
+1068	Create corporate account
+1069	Enable SMS notifications
+1070	Facility details updated
+1071	Filter by account status
+1072	Managed parking facility
+1073	Mark as a false positive
+1074	No monthly pass requests
+1075	No pending host earnings
+1076	No plate events recorded
+1077	No published reviews yet
+1078	Number-plate recognition
+1079	PARK LONGER, PLAN EASIER
+1080	Parking facility created
+1081	Pending earnings reviews
+1082	Phone number is too long
+1083	Plate event review saved
+1084	Preparing demand outlook
+1085	Relationship to property
+1086	Requesting your location
+1087	Search live availability
+1088	Settings export prepared
+1089	Staff assignment removed
+1090	Thanks for reviewing {0}
+1091	The camera was not found
+1092	The review was not found
+1093	Transactions and refunds
+1094	Typical space width (cm)
+1095	Unable to add your reply
+1096	Unable to remove vehicle
+1097	Unable to submit listing
+1098	Validate and record exit
+1099	VERIFIED DRIVER FEEDBACK
+1100	Within your access scope
+1101	You have been signed out
+1102	YOUR PARKING PREFERENCES
+1103	Choose a managed facility
+1104	Corporate account created
+1105	Could not load promotions
+1106	Create a parking facility
+1107	Create your first listing
+1108	Destination after parking
+1109	Driver and facility owner
+1110	Effective from (optional)
+1111	Enter your password again
+1112	Loading parking inventory
+1113	Loading verified payments
+1114	No administrator note yet
+1115	No managed facilities yet
+1116	Notifications & workspace
+1117	Notifications, {0} unread
+1118	Owner verification review
+1119	Provide a field to update
+1120	Resend verification email
+1121	Search name, email, phone
+1122	The booking was not found
+1123	The charger was not found
+1124	The listing was not found
+1125	The payment was not found
+1126	Transfer reference: {0} ·
+1127	Typical space length (cm)
+1128	Unable to open the ticket
+1129	Upcoming, active and past
+1130	Use at least 6 characters
+1131	Verified booking earnings
+1132	Verified payments by date
+1133	Verify your owner account
+1134	Weekly availability saved
+1135	Address or nearby landmark
+1136	Automated parking entrance
+1137	Camera preview unavailable
+1138	Could not create promotion
+1139	Could not update promotion
+1140	e.g. Riverside Parking Hub
+1141	Effective until (optional)
+1142	Enable facility owner mode
+1143	Enter code from your email
+1144	Frequently asked questions
+1145	Manage facilities & prices
+1146	Map a parking-space region
+1147	No active rates configured
+1148	No vehicles registered yet
+1149	Overall physical occupancy
+1150	Owner authorization letter
+1151	Privacy & account security
+1152	Reservation hold cancelled
+1153	Retrieving account records
+1154	Reviews you have submitted
+1155	SMS notifications (opt-in)
+1156	SMS notifications disabled
+1157	Support ticket {0} created
+1158	The passwords do not match
+1159	This promotion has expired
+1160	Underground parking garage
+1161	Verification not submitted
+1162	Your account was not found
+1163	All spaces in this facility
+1164	Authorized property manager
+1165	Awaiting finance resolution
+1166	Cancel reservation hold {0}
+1167	Checking operational health
+1168	Controller ID from provider
+1169	Corporate parking workspace
+1170	Distinct vehicle categories
+1171	Enter a valid email address
+1172	Full-payment refund request
+1173	Hardware provider / adapter
+1174	How do I change my password
+1175	in approximately 10 minutes
+1176	Map coordinates unavailable
+1177	Maximum vehicle height (cm)
+1178	No fleet vehicles added yet
+1179	No monthly passes available
+1180	No published facilities yet
+1181	No vehicle currently parked
+1182	Notification marked as read
+1183	Online · adapter controlled
+1184	PHYSICAL ACCESS INTEGRATION
+1185	Promotions & discount codes
+1186	Search name, email or phone
+1187	slots ready for booking now
+1188	Switch to manage facilities
+1189	The promotion was not found
+1190	Transfer reference recorded
+1191	Unable to load gate devices
+1192	Unable to load transactions
+1193	Unable to queue the command
+1194	Unable to save availability
+1195	Unable to save user changes
+1196	Unable to update this alert
+1197	Checkout could not be opened
+1198	Confirm this plate candidate
+1199	Device configuration updated
+1200	Enter a reason for rejection
+1201	Example: Northstar Logistics
+1202	Fleet vehicle status updated
+1203	Gate device settings updated
+1204	Hardware provider (optional)
+1205	Loading camera configuration
+1206	Loading monthly pass options
+1207	Location details unavailable
+1208	Make this my default vehicle
+1209	Need a new verification link
+1210	Password and active sessions
+1211	Payment needs reconciliation
+1212	Street, building or landmark
+1213	Supports entry/open commands
+1214	Supports exit/close commands
+1215	This gate device is disabled
+1216	This promotion is not active
+1217	Try a different name or city
+1218	Unable to check your session
+1219	Unable to create the listing
+1220	Unable to load host earnings
+1221	Unable to load the QR ticket
+1222	Unable to load user accounts
+1223	Unable to load your bookings
+1224	Unable to load your listings
+1225	Unable to reserve this space
+1226	Validate and authorize entry
+1227	Vehicle added to your garage
+1228	You cannot manage this fleet
+1229	YOUR DRIVE. OUR INTELLIGENCE
+1230	Choose a valid support status
+1231	Could not cancel this booking
+1232	Could not change the password
+1233	Create a shared-space listing
+1234	earning record(s) · Requested
+1235	Enter your new password again
+1236	Existing SmartPark user email
+1237	External device ID (optional)
+1238	How do I change the app theme
+1239	Live availability and pricing
+1240	Live preview is not available
+1241	No applications in this queue
+1242	No gate commands recorded yet
+1243	No host earnings recorded yet
+1244	No listings match your search
+1245	Password changed successfully
+1246	Recent search history cleared
+1247	Record payment reconciliation
+1248	Remove {0} from saved parking
+1249	Six-digit password reset code
+1250	Smart mobility infrastructure
+1251	Temporary reservation created
+1252	The plate event was not found
+1253	This page could not be loaded
+1254	Unable to register the device
+1255	Unable to set default vehicle
+1256	Unable to submit verification
+1257	Up to 20 vehicles per account
+1258	Welcome offer for new drivers
+1259	Your tickets & facility queue
+1260	Alert feed could not be loaded
+1261	Could not change your password
+1262	Email or password is incorrect
+1263	Facility status changed to {0}
+1264	Hourly, daily and longer stays
+1265	Include facility support queue
+1266	Monthly pass request cancelled
+1267	Opening live detection preview
+1268	Parking and operational alerts
+1269	Payout request created for {0}
+1270	Removed {0} from saved parking
+1271	Select one or more valid roles
+1272	Switch workspace in My profile
+1273	The assignment role is invalid
+1274	The financial operation failed
+1275	The gate command was not found
+1276	The monthly pass was not found
+1277	The new passwords do not match
+1278	The notification was not found
+1279	The saved search was not found
+1280	The user account was not found
+1281	The user identifier is invalid
+1282	This facility is still a draft
+1283	Unable to load recent bookings
+1284	Unable to load support tickets
+1285	Unable to save listing details
+1286	Unable to update notifications
+1287	Unable to update saved parking
+1288	Unable to update ticket status
+1289	Why can’t I open an admin page
+1290	You cannot manage this charger
+1291	{0} closed or under maintenance
+1292	{0} with unknown physical state
+1293	Awaiting sensor or staff update
+1294	Booking and reservation updates
+1295	Choose a managed facility first
+1296	Could not complete this request
+1297	Could not load referral details
+1298	Hardware adapter not configured
+1299	How do I add a parking facility
+1300	Loading your referral dashboard
+1301	Manual provider operations only
+1302	No charging session records yet
+1303	Not enough data for a trend yet
+1304	Notifications are not available
+1305	Parking overview is unavailable
+1306	Payment is not verified as paid
+1307	QR entry ticket for booking {0}
+1308	Tenant with owner authorization
+1309	The alert identifier is invalid
+1310	The fleet vehicle was not found
+1311	The parking space was not found
+1312	The scan could not be processed
+1313	The selected account is invalid
+1314	Unable to change listing status
+1315	Unable to load parking overview
+1316	Unable to save the pricing rule
+1317	Verification status unavailable
+1318	Verified revenue · last 30 days
+1319	Workspace page failed to render
+1320	(inclusive, UTC timestamp range)
+1321	All notifications marked as read
+1322	Complete successful test payment
+1323	e.g. Covered driveway near metro
+1324	Filter by code, facility or slot
+1325	Filter verification applications
+1326	How do I enable camera detection
+1327	Includes configured fees and tax
+1328	Loading your parking preferences
+1329	Loading your SmartPark workspace
+1330	Must already be a company member
+1331	No parking spaces configured yet
+1332	No pending monthly pass requests
+1333	Normalized polygon points (JSON)
+1334	Owner approved · payment pending
+1335	Refund ID or support case number
+1336	Registered plates and categories
+1337	Routine gate device status check
+1338	Select a camera and parking slot
+1339	The camera identifier is invalid
+1340	The earning record was not found
+1341	The gate hardware request failed
+1342	The payout request was not found
+1343	The refund request was not found
+1344	The review identifier is invalid
+1345	The support ticket was not found
+1346	The webhook signature is invalid
+1347	Unable to update SMS preferences
+1348	Updated by {0} through SmartPark
+1349	Waiting for administrator review
+1350	Assign to member email (optional)
+1351	Provide an active/inactive status
+1352	Sign out failed. Please try again
+1353	The booking identifier is invalid
+1354	The camera is missing or disabled
+1355	The charger identifier is invalid
+1356	The command identifier is invalid
+1357	The company identifier is invalid
+1358	The earning identifier is invalid
+1359	The listing identifier is invalid
+1360	The payment identifier is invalid
+1361	The session identifier is invalid
+1362	The ticket could not be validated
+1363	The vehicle identifier is invalid
+1364	Unable to create a support ticket
+1365	Unable to determine your location
+1366	Unable to load owner verification
+1367	You cannot refer your own account
+1368	Completed earnings awaiting review
+1369	Gate adapter credential configured
+1370	Live network · refreshes every 30s
+1371	Not enough historical bookings yet
+1372	Payout transfer reference recorded
+1373	Remove this photo from the listing
+1374	Search pages, actions and bookings
+1375	Some preferences are not saved yet
+1376	The {0} pricing rule is now active
+1377	The charging session was not found
+1378	The parking facility was not found
+1379	The payout action is not supported
+1380	The request could not be completed
+1381	This booking was already cancelled
+1382	This promotion has not started yet
+1383	This request origin is not allowed
+1384	Unable to load your vehicle garage
+1385	You haven't submitted a review yet
+1386	Your current password is incorrect
+1387	ADMINISTRATION · CONTROLLED FINANCE
+1388	Check the notification list filters
+1389	External provider or case reference
+1390	Government-issued identity document
+1391	No verified payments in this period
+1392	Refund already processed externally
+1393	Remove {0} from your vehicle garage
+1394	Select at least one image to upload
+1395	Test payment could not be completed
+1396	That staff assignment was not found
+1397	The payout status filter is invalid
+1398	The promotion identifier is invalid
+1399	The refund status filter is invalid
+1400	The selected facility was not found
+1401	Try another search or status filter
+1402	Unable to create the payout request
+1403	Unable to load camera configuration
+1404	Unable to submit the refund request
+1405	Verify your email before signing in
+1406	Verifying payment with the provider
+1407	Why should this earning be reversed
+1408	A refund in {0} status cannot be {1}
+1409	Could not enable facility-owner mode
+1410	Destination after parking (optional)
+1411	Energy must be a non-negative number
+1412	Group spaces by floor, level or area
+1413	Please enter at least {0} characters
+1414	Provide at least one field to update
+1415	Saved {0} to your parking favourites
+1416	Select a booking date and start time
+1417	Slot region removed from this camera
+1418	Temporary holds expire automatically
+1419	This alert has already been resolved
+1420	This promotion code is not available
+1421	Unable to record the review decision
+1422	You cannot end this charging session
+1423	Your parking marketplace starts here
+1424	Your profile details have been saved
+1425	A booking can be checked in only once
+1426	BUSINESS MOBILITY & ELECTRIC VEHICLES
+1427	End date must be after the start date
+1428	Enter a valid code and booking amount
+1429	Enter a valid start and end date/time
+1430	Facility “{0}” was created as a draft
+1431	Internal note (visible to staff only)
+1432	Location request timed out. Try again
+1433	No open alerts across your facilities
+1434	No published parking facilities found
+1435	No report rows for the selected dates
+1436	No reservation matches this QR ticket
+1437	Rating must be an integer from 1 to 5
+1438	Select a vehicle from your own garage
+1439	Tell drivers about your parking space
+1440	The gate device identifier is invalid
+1441	The payment webhook is not configured
+1442	The plate event identifier is invalid
+1443	The webhook payload is not valid JSON
+1444	Unable to calculate the booking price
+1445	Your support ticket status is now {0}
+1446	A single booking cannot exceed 30 days
+1447	Choose a booking from your own account
+1448	Monthly pass request submitted for {0}
+1449	Proof of property ownership or control
+1450	Reading notifications for your account
+1451	Refund completion recorded and audited
+1452	Scan the QR or paste the decoded token
+1453	Something went wrong. Please try again
+1454	The gate service credential is invalid
+1455	The monthly pass identifier is invalid
+1456	The monthly pass request was not found
+1457	The notification identifier is invalid
+1458	The shared-space listing was not found
+1459	Authorized operator requested gate open
+1460	Cancel this unpaid monthly pass request
+1461	Choose a date range of {0} days or less
+1462	Didn’t receive the code? Send a new one
+1463	Increase text sizing for easier reading
+1464	Limit decorative motion and transitions
+1465	Name must contain at least 2 characters
+1466	No cameras configured for this facility
+1467	No notifications match your preferences
+1468	Percentage discounts cannot exceed 100%
+1469	Registration / GST reference (optional)
+1470	The camera was not found or is disabled
+1471	The device was not found or is disabled
+1472	The webhook body must be raw JSON bytes
+1473	This charging session has already ended
+1474	Unable to load notification preferences
+1475	You do not have access to this facility
+1476	A local test payment order was not found
+1477	Authorized operator requested gate close
+1478	Camera access is handled by your browser
+1479	Choose a zone belonging to this facility
+1480	Enter a valid email address and password
+1481	Live occupancy detection preview for {0}
+1482	No promotion codes have been created yet
+1483	Provide a name or phone number to update
+1484	Search destination, facility or landmark
+1485	Search parking facilities or destination
+1486	The camera or slot identifier is invalid
+1487	The payout request identifier is invalid
+1488	The refund request identifier is invalid
+1489	The search history identifier is invalid
+1490	The support ticket identifier is invalid
+1491	The vehicle was not found in your garage
+1492	The vision service credential is invalid
+1493	This provider event was already received
+1494	Why is this host payout request approved
+1495	Why is this host payout request rejected
+1496	Your next parking experience starts here
+1497	A promotion with this code already exists
+1498	Booking must be completed before approval
+1499	Could not allocate a unique referral code
+1500	Find spaces, manage vehicles and bookings
+1501	No active facilities in your access scope
+1502	No reconciled revenue in the last 30 days
+1503	Online booking is temporarily unavailable
+1504	Only completed bookings can post a review
+1505	Payment is not completed. Hold expires at
+1506	The unpaid reservation hold was cancelled
+1507	This space is configured for {0} vehicles
+1508	Used as the preferred reservation vehicle
+1509	A scheduled price cannot start in the past
+1510	Manage facilities, availability and prices
+1511	Parking location removed from saved places
+1512	Request approved. Payment is still pending
+1513	Select a valid booking date and start time
+1514	Select or create a corporate account first
+1515	Session records and estimated energy costs
+1516	Start the camera to read a booking QR code
+1517	The listing or photo identifier is invalid
+1518	The minimum booking duration is 30 minutes
+1519	The parking facility identifier is invalid
+1520	The pass start date must be today or later
+1521	The payment was not found for your account
+1522	The reservation must be paid and confirmed
+1523	The support request could not be completed
+1524	Unable to load the payment checkout script
+1525	Use from and to dates in YYYY-MM-DD format
+1526	{0} at {1} could not complete a {2} command
+1527	An approved request is not a paid pass. {0}
+1528	Could not complete the monthly pass request
+1529	Only JPEG, PNG, or WebP images are accepted
+1530	Share your code to invite your first friend
+1531	Your email is verified. You can now sign in
+1532	Daily verified revenue over the last 30 days
+1533	Listing submitted for administrator approval
+1534	Only an approved refund can enter processing
+1535	Provide a reason of at least five characters
+1536	Provide a valid registered device identifier
+1537	Provide at least one charger field to update
+1538	Provide at least one vehicle field to update
+1539	Requests, approved terms, and status history
+1540	Review title must be 120 characters or fewer
+1541	Settings were restored to the default values
+1542	Signed in with a protected SmartPark session
+1543	Slot codes must be unique within the request
+1544	The company or vehicle identifier is invalid
+1545	The published parking facility was not found
+1546	The requested refund action is not supported
+1547	There is no positive approved payout balance
+1548	Too many attempts. Please wait and try again
+1549	Why is this customer refund request approved
+1550	Why is this customer refund request rejected
+1551	An administrator will review your application
+1552	Audited ledger — not an automatic bank payout
+1553	Choose whether to opt in to SMS notifications
+1554	Facility submitted for administrator approval
+1555	New spaces start with unknown physical status
+1556	This device is not configured to control exit
+1557	This staff member already has this assignment
+1558	Unable to load your saved parking information
+1559	Unable to record this reconciliation decision
+1560	You cannot remove your own administrator role
+1561	Your vehicle was checked in at {0}, space {1}
+1562	Active immediately when within the date window
+1563	Each slot can appear only once per event batch
+1564	Exit recorded. The parking session is complete
+1565	Forgot your current password? Sign out and use
+1566	Monthly pass request sent to the parking owner
+1567	The end date must be later than the start date
+1568	The end time must be later than the start time
+1569	The financial operation could not be completed
+1570	The payment checkout script did not initialize
+1571	The verification request identifier is invalid
+1572	This device is not configured to control entry
+1573	This payment has no positive refundable amount
+1574	Unable to load your managed parking facilities
+1575	Use a unique password of at least 6 characters
+1576	You are not a member of this corporate account
+1577	Your session has expired. Please sign in again
+1578	Choose a valid support status and optional note
+1579	Complete the form below to request verification
+1580	Parking owners cannot review their own facility
+1581	Provider not configured in this environment yet
+1582	Quotes, holds, receipts and refunds in one flow
+1583	Space-level state from sensors and reservations
+1584	The camera source contains an invalid character
+1585	The verification link is invalid or has expired
+1586	This promotion has reached its redemption limit
+1587	Use at least 6 characters for your new password
+1588	You can add chargers only to a facility you own
+1589	Add at least one parking space before submitting
+1590	Booking {0} has a refund request awaiting review
+1591	Choose a new password for your SmartPark account
+1592	e.g. Payment completed but booking not confirmed
+1593	Enter the email address used to request the code
+1594	Password updated. Sign in with your new password
+1595	Quick answers before you open or update a ticket
+1596	Requested from the SmartPark owner earnings page
+1597	The start date must be on or before the end date
+1598	This code is not valid for this booking currency
+1599	Unknown spaces are never advertised as available
+1600	Your preferences have been saved in this browser
+1601	Adjust readability and reduce visual distractions
+1602	Choose a listing above to request your first pass
+1603	Entry authorized. The vehicle has been checked in
+1604	Last four digits of document reference (optional)
+1605	Remove this slot mapping from the selected camera
+1606	Review text must be between 3 and 1000 characters
+1607	This external reference has already been recorded
+1608	You cannot disable your own administrator account
+1609	You cannot suspend your own administrator account
+1610	You do not have permission to perform this action
+1611	{0} out of 5 based on completed SmartPark bookings
+1612	A payout in {0} status cannot complete this action
+1613	A review already exists for this completed booking
+1614	Configure an active hourly price before submitting
+1615	Describe the facility, access, rules and amenities
+1616	Drivers, owners, operators and admins, each scoped
+1617	Explain why the payout needs manual reconciliation
+1618	No gate devices registered for your facilities yet
+1619	Only pending monthly pass requests can be reviewed
+1620	Select a ticket to see the conversation and status
+1621	The corporate account was not found or is inactive
+1622	Choose the look that feels right for your workspace
+1623	Choose what appears in the in-app notification view
+1624	Location services are not supported by this browser
+1625	Only draft facilities can be submitted for approval
+1626	Record what you checked and the resolution decision
+1627	Review text contains unsupported control characters
+1628	Strengthen text and border contrast for readability
+1629	Temporary hold {0} created. Payment is not complete
+1630	The booking must start at least one minute from now
+1631	The payment provider could not complete the request
+1632	The selected space does not belong to this facility
+1633	This approved listing does not offer a monthly pass
+1634	Try a different name, email address or phone number
+1635	A zone with this name already exists in the facility
+1636	All connectors for this charger are currently in use
+1637	Create a company account or manage one you belong to
+1638	Entry opens 30 minutes before the booking start time
+1639	No slot regions have been configured for this camera
+1640	Reviews are available only after a completed booking
+1641	Select a valid parking facility to view plate events
+1642	Set an effective start date when setting an end date
+1643	Show booking-related updates in your SmartPark inbox
+1644	Show parking-space and facility alerts in your inbox
+1645	The external reference or note has an invalid format
+1646	The payment associated with this alert was not found
+1647	The payment order was not found for this reservation
+1648	The price end date must be later than its start date
+1649	The provider payment does not match this reservation
+1650	This development-only payment route is not available
+1651	A {0} {1} payout was recorded as paid. Reference: {2}
+1652	Owner verification submitted for administrator review
+1653	Please provide a reason between 10 and 500 characters
+1654	Share your link with friends who are new to SmartPark
+1655	The alert was not found for a facility you can access
+1656	The camera does not have a region mapped to this slot
+1657	The selected booking does not belong to that facility
+1658	Use a long, unique passphrase of 6 characters or more
+1659	Choose a password different from your current password
+1660	Confirm your current password before setting a new one
+1661	Email, roles, and account status cannot be edited here
+1662	Enter energy delivered in kWh (leave blank if unknown)
+1663	Only approved listings with a monthly rate appear here
+1664	Provide a reason when rejecting a monthly pass request
+1665	Registration numbers are normalized and must be unique
+1666	TEST MODE: payment simulated. The booking is confirmed
+1667	The device was not found for a facility you can manage
+1668	Verify your current password before choosing a new one
+1669	You cannot request a monthly pass for your own listing
+1670	Confirmed and checked-in within the current time window
+1671	Only a dispatched command can receive a hardware result
+1672	Only completed sessions with a verified payment qualify
+1673	Record why the external transfer failed or was not made
+1674	Secure reset link detected. Choose a new password below
+1675	The attendant must be assigned to the selected facility
+1676	There are no approved {0} earnings available for payout
+1677	This code requires a parking charge of at least {0} {1}
+1678	This QR is signed and validated by the SmartPark server
+1679	You do not have permission to update this parking space
+1680	Your latest owner verification application was approved
+1681	Approve this facility to publish it in parking discovery
+1682	Enter the six-digit email code and choose a new password
+1683	Exit closes the active session and completes the booking
+1684	Provide both latitude and longitude, or leave both blank
+1685	Reduce table spacing to show more rows on larger screens
+1686	Set an effective start date when an end date is provided
+1687	The payment confirmation signature could not be verified
+1688	The payment.captured event is missing its payment entity
+1689	This external refund reference has already been recorded
+1690	You do not have permission to view or manage this camera
+1691	Your reservations will appear here once you book a space
+1692	Alert status must be open, acknowledged, resolved, or all
+1693	An active, verified account with that email was not found
+1694	Provide a clear rejection reason of at least 8 characters
+1695	The exit action cannot be repeated on a completed session
+1696	The selected slot does not belong to this camera facility
+1697	{0} Refresh transactions before attempting another payment
+1698	Frame timestamp must be recent and cannot be in the future
+1699	Important booking and operational updates will appear here
+1700	Manage facility inventory, zones and physical availability
+1701	on the sign-in screen to receive a six-digit code by email
+1702	Record why the external refund failed or was not submitted
+1703	Support ticket created. Keep the ticket code for follow-up
+1704	The booking must have an active checked-in parking session
+1705	This refund cannot be marked failed from its current state
+1706	Why is this completed earning eligible for payout approval
+1707	You can review only requests for your own parking listings
+1708	Your booking is confirmed and the QR entry ticket is ready
+1709	An active account is required to enable facility-owner mode
+1710	Camera slots are mapped to physical spaces in this facility
+1711	Configure VISION_API_TOKEN before viewing the camera stream
+1712	Create zones and spaces to set up this facility's inventory
+1713	Enter one or more slot codes, separated by commas or spaces
+1714	Enter the adapter/provider identifier—not a camera RTSP URL
+1715	Hourly pricing is required. Other rate periods are optional
+1716	Manage checkout, entry tickets and your reservation history
+1717	No active pricing yet. Add a rate before accepting bookings
+1718	Only a refund already in processing can enter manual review
+1719	Other active sessions are revoked after a successful change
+1720	Review owner declarations and record verification decisions
+1721	The gate device was not found for a facility you can access
+1722	This charger is unavailable or its facility is not approved
+1723	Was the location easy to access? Was the space as described
+1724	A host requested a {0} {1} payout across {2} earning records
+1725	Add an international-format phone number on My profile first
+1726	Add coordinates to parking facilities to show their map pins
+1727	Finish your current charging session before starting another
+1728	Only a draft or paused listing can be submitted for approval
+1729	Only the listing owner or an administrator can delete photos
+1730	Only the listing owner or an administrator can upload photos
+1731	Save all seven days of weekly availability before submitting
+1732	You do not have permission to manage this facility inventory
+1733	A vehicle with this registration number is already registered
+1734	Assign another active administrator before removing this role
+1735	Find, reserve and manage parking across the SmartPark network
+1736	Net parking charges in the ledger, excluding reversed entries
+1737	No reviews yet. Completed visitors can share their experience
+1738	Publish a facility to see live occupancy and zone health here
+1739	Search for a parking facility or city and it will appear here
+1740	The external transfer reference or note has an invalid format
+1741	Add charger inventory above for one of your parking facilities
+1742	Administrator accounts already have facility-management access
+1743	Assign the {0} role to this user before assigning the facility
+1744	Available days need a closing time later than the opening time
+1745	No approved earnings are currently available for this currency
+1746	Only an administrator can close a payment reconciliation alert
+1747	Queued commands expire in 60 seconds if no adapter claims them
+1748	Route to this parking space, then continue to your destination
+1749	Save places from parking search to find them quickly next time
+1750	The assigned employee must be an active member of this company
+1751	This ticket is no longer valid. Contact support for assistance
+1752	Forecast quality improves as SmartPark collects booking history
+1753	Nearby parking is sorted by distance from your current location
+1754	Only a verified captured payment can be considered for a refund
+1755	Refund requests must be submitted before the booking start time
+1756	Review this candidate in Plate recognition to resolve the alert
+1757	The test payment was simulated, but the booking requires review
+1758	Use commas, spaces or new lines. Up to 100 spaces per operation
+1759	You already have an owner verification application under review
+1760	Your theme is applied immediately and remembered on this device
+1761	Camera created. Configure slot regions before starting detection
+1762	Dates must use the YYYY-MM-DD format and be valid calendar dates
+1763	Email delivery is not configured. Contact the site administrator
+1764	Explore published facilities and check live parking availability
+1765	One of the uploaded files is not a valid JPEG, PNG or WebP image
+1766	Only a platform administrator can configure RTSP network sources
+1767	Only company owners, managers, or administrators can add members
+1768	Only the listing owner or an administrator can edit availability
+1769	Only the listing owner or an administrator can edit this listing
+1770	Plate event timestamp must be recent and cannot be in the future
+1771	Please provide a clear rejection reason of at least 8 characters
+1772	The normalized vehicle plate must contain 2–24 letters or digits
+1773	You have already used this promotion the maximum number of times
+1774	Your parking session at {0}, space {1}, has been marked complete
+1775	All seven days are required. Closed days are saved as unavailable
+1776	If an active account matches that email, a new code has been sent
+1777	Notifications in this inbox are private to your signed-in account
+1778	Only a completed booking at this parking facility can be reviewed
+1779	Only you can view or change vehicles associated with your account
+1780	Payment was received, but the booking needs manual reconciliation
+1781	Revenue appears here as payments are verified for your facilities
+1782	{0} at {1} is reporting offline. Slot detection may be unavailable
+1783	Clipboard access is unavailable. Select and copy the link manually
+1784	Create or select a camera to configure its detected parking spaces
+1785	Create your first facility, add zones and configure parking spaces
+1786	Customer refund requests will appear here for administrator review
+1787	Each polygon identifies where one slot appears in the camera frame
+1788	Keep the location, amenities and instructions accurate for drivers
+1789	Only authorized support or facility staff can change ticket status
+1790	Only the listing owner or an administrator can submit this listing
+1791	The code expires in 10 minutes. Check your spam or junk folder too
+1792	The verification link is invalid or has expired. Request a new one
+1793	This reservation hold has expired. Create a new hold before paying
+1794	Availability reflects recorded sensor state and active reservations
+1795	Only listings currently awaiting review can be approved or rejected
+1796	Optional approval note or rejection reason (required for rejection)
+1797	Physical occupancy is distinct from a future or current reservation
+1798	Razorpay verification is only available when Razorpay is configured
+1799	Redemption counts include verified uses and unexpired booking holds
+1800	Resolves automatically after the camera feed is healthy or disabled
+1801	That provider and external device identifier are already registered
+1802	That registration number is already registered in a SmartPark fleet
+1803	You already have a pending or approved pass overlapping these dates
+1804	Your location is currently unavailable. Try again or search by city
+1805	An active or completed refund record already exists for this payment
+1806	Avoid sharing passwords, OTPs, or payment secrets in the description
+1807	Explain why the external provider result needs manual reconciliation
+1808	Save your vehicle details once and use them for parking reservations
+1809	The signed webhook could not be processed. The provider may retry it
+1810	Approved host earnings will be reserved when a host requests a payout
+1811	Create a driver account. Other roles are assigned by an administrator
+1812	Discounts apply to the parking charge; tax is recalculated by the API
+1813	No corporate accounts yet. Create one above to start managing a fleet
+1814	No managed facilities found. Create or get access to a facility first
+1815	Owners need to publish an approved listing with a monthly price first
+1816	Payment verified and booking confirmed. Your QR entry ticket is ready
+1817	Provide a note describing why the provider result needs manual review
+1818	Required driver role is missing. Apply the initial database migration
+1819	The password reset link is invalid or has expired. Request a new code
+1820	This payment must be reconciled before a refund request can be opened
+1821	A temporary reservation hold was created. Payment is not yet completed
+1822	Create server-validated offers for drivers and track redemption limits
+1823	Grouped by currency; failed, pending and flagged payments are excluded
+1824	Review account protection and manage this browser's stored preferences
+1825	Review requests for your listings. Administrators can see all requests
+1826	Choose the language for the entire SmartPark interface
+1827	We will email a six-digit code if an active account matches your email
+1828	Your {0} {1} payout request is {2}. Review the note or contact support
+1829	Automatically refreshed every 10 seconds from SmartPark's inventory API
+1830	If an active account matches that email, a six-digit code has been sent
+1831	Location permission was denied. You can still search by city or address
+1832	Manage your personal details and account password from one secure place
+1833	Only pending or approved earnings can be reversed by this review action
+1834	Only the facility owner or an administrator can change facility details
+1835	Provide exactly one schedule for each weekday (Sunday through Saturday)
+1836	Unable to load the payment checkout script. Check the network and retry
+1837	When customers submit verified reviews, recent reviews will appear here
+1838	Availability is based on recorded physical state and active reservations
+1839	Booking, payment, gate and operational updates recorded for your account
+1840	Only a refund in processing or manual review can be recorded as refunded
+1841	Owners can register charger details at their existing parking facilities
+1842	Provide a note of at least five characters for the financial audit trail
+1843	Scan a SmartPark QR ticket to authorize entry or record a completed exit
+1844	The code is invalid, expired, or no longer available. Request a new code
+1845	This facility has no parking spaces yet. Add spaces under Parking spaces
+1846	This request changed while you were cancelling it. Refresh and try again
+1847	Upload at least one genuine photo of the parking space before submitting
+1848	Upload genuine JPEG, PNG or WebP images. Maximum eight photos, 5 MB each
+1849	Devices remain configured until the connected adapter reports a heartbeat
+1850	Earnings for a completed booking were approved for payout review: {0} {1}
+1851	Host listings are created as drafts and require review before publication
+1852	No approved parking facility currently has available EV charger inventory
+1853	Publish private spaces, set availability and manage your parking listings
+1854	Reports are scoped to the facilities your account is authorized to access
+1855	The refund for booking {0} has been recorded as completed. Reference: {1}
+1856	Account created. Check your email to verify your account before signing in
+1857	Entry gate, access code process, height restrictions or other instructions
+1858	Only company owners, managers, or administrators can manage fleet vehicles
+1859	Parking-space region saved. Coordinates are normalized to the camera frame
+1860	Refund request created for booking {0}. It will appear below after refresh
+1861	Review earnings from verified customer payments for parking spaces you own
+1862	The captured provider order has not yet been linked to a SmartPark payment
+1863	Update your administrator name and phone number without changing your role
+1864	Your saved settings hide these categories. You can change them in Settings
+1865	{0} at {1} has not reported a frame yet. Complete setup and verify the feed
+1866	Email is protected. Changing it requires a separate verified-email workflow
+1867	Only captured, verified payments without a reconciliation flag are included
+1868	Use the correct registration number so parking staff can match your booking
+1869	You can save up to 20 vehicles. Remove an old vehicle before adding another
+1870	A production payment provider must be configured before checkout can be used
+1871	Based on the current listed monthly rate. Final terms require owner approval
+1872	Describe the entrance, vehicle size, nearby landmarks and useful information
+1873	One or more slot codes already exist in this facility. No slots were created
+1874	Only a confirmed booking that has not entered or completed can be considered
+1875	Password changed successfully. Other signed-in sessions have been signed out
+1876	Saved search text and city filters. Location coordinates are not stored here
+1877	Start the vision service and verify that the configured source is accessible
+1878	The payment provider returned an order with an unexpected amount or currency
+1879	This account is unavailable. Contact support if you believe this is an error
+1880	Configure GATE_DEVICE_SERVICE_TOKEN before connecting a physical gate adapter
+1881	Do not enter a full ID number or upload confidential documents into this form
+1882	This ticket is resolved or closed. Create a new ticket if the issue continues
+1883	Try another search, or check back after more parking facilities are published
+1884	Not all approved earnings could be reserved. Refresh the balance and try again
+1885	Only the owner, an assigned operator or an administrator can configure cameras
+1886	The space becomes unknown until the camera or an operator confirms it is empty
+1887	This request was reviewed by another administrator or owner. Refresh the queue
+1888	A facility owner or administrator can assign a parking facility to your account
+1889	An occupancy event references a slot that is not actively mapped to this camera
+1890	Explain what the owner must correct before resubmitting (at least 8 characters)
+1891	Payment was not completed. Your hold may remain available until its expiry time
+1892	The booking is no longer eligible for cancellation through this refund workflow
+1893	The payment is not currently eligible for refund processing. Reconcile it first
+1894	When you start checkout for a reservation, the payment attempt will appear here
+1895	{0}, space {1} is held for 10 minutes. Complete checkout before the hold expires
+1896	A listing can contain at most eight photos. Remove a photo before uploading more
+1897	Change your password on My profile. Password recovery uses a one-time email code
+1898	Charger inventory added. Live hardware telemetry is not configured automatically
+1899	No active SmartPark account was found for that email. Ask them to register first
+1900	Not all payout earnings could be released. Reconcile this payout before retrying
+1901	Only the owner, assigned operator or administrator can change operational status
+1902	Provide a note confirming the refund failed or was not submitted to the provider
+1903	Register cameras, map bays, enable or disable detection, and monitor feed health
+1904	Shared parking listing created as a draft. Add photos and submit it for approval
+1905	Unable to load the financial review queue. Ensure migration 010 has been applied
+1906	After a parking session is marked completed, you can leave a verified review here
+1907	Choose your arrival time and duration to get a server-calculated price. Times use
+1908	Manage company parking, fleet vehicles, and EV charger inventory in one workspace
+1909	The payment status changed concurrently. Reconcile it before recording the refund
+1910	This referral code is not valid. Check it and try again, or leave the field blank
+1911	An account with this email already exists. Sign in or request a verification email
+1912	Entry/exit commands require a current adapter heartbeat. Send a status check first
+1913	Another administrator has already resolved this listing review. Refresh the listing
+1914	Enter valid JSON coordinates, for example [[0.1,0.1],[0.4,0.1],[0.4,0.5],[0.1,0.5]]
+1915	Keep favourite parking spots, review completed visits and return to recent searches
+1916	One review per completed booking. Your public display name is shortened for privacy
+1917	That local time is not valid in the parking location time zone. Choose another time
+1918	The new facility will not be publicly searchable until it is approved and activated
+1919	This payment was updated by another operation. Refresh and review its current state
+1920	A refund request for this payment already exists. Refresh the page to see its status
+1921	Describe what happened, the approximate time, and any non-sensitive reference number
+1922	Driver workspace selected. Your facilities, pricing, and owner history remain intact
+1923	Only the facility owner, assigned operator, or administrator can review plate events
+1924	Review refunds, payouts and payment reconciliation requiring administrator attention
+1925	The last active administrator cannot be disabled. Assign another administrator first
+1926	Camera scanning requires browser permission and HTTPS when deployed outside localhost
+1927	Register compatible gate controllers and queue auditable commands for an edge adapter
+1928	The booking state changed while the refund was being processed. Reconcile it manually
+1929	This verification request was already reviewed or no longer exists. Refresh the queue
+1930	You can configure gate devices only for a facility you own or are assigned to operate
+1931	{0} parking space(s) created. Set physical status before advertising them as available
+1932	A payment receipt is available only after the provider payment is verified as captured
+1933	Account registration is temporarily unavailable until email verification is configured
+1934	Configure VISION_API_TOKEN in the API environment before connecting the vision service
+1935	Create a parking facility first, or ask an administrator to assign you as its operator
+1936	Live facility health, verified payment revenue, occupancy and actionable system alerts
+1937	Online parking booking is temporarily unavailable. You can still browse parking spaces
+1938	Publish a private driveway, garage or reserved bay so drivers can discover and book it
+1939	Switch workspaces any time. Your owner capability is retained when you use Driver mode
+1940	This booking ticket has expired. Contact the parking facility if you are still on site
+1941	An active parking session exists; contact finance support before completing this refund
+1942	Rates apply to the whole listing. Slot-specific prices can be managed in Parking spaces
+1943	Submit it for administrator approval before it becomes visible in public parking search
+1944	The externally processed refund has been recorded. SmartPark did not execute the refund
+1945	Theme, language, accessibility and display preferences are saved locally on this device
+1946	Your booking {0} is confirmed. Open My bookings to view your parking ticket and QR code
+1947	Your hold {0} has been cancelled. No payment was captured by this cancellation workflow
+1948	{0} at {1} has not reported a recent frame. Check the camera connection and vision worker
+1949	By continuing, you agree to use SmartPark in accordance with its terms and privacy policy
+1950	Create facilities, zones and spaces; edit pricing and publish, pause or archive locations
+1951	Holds expire after 10 minutes. Once held, open My bookings to continue to secure checkout
+1952	SMS notifications enabled. Messages will be sent only when the SMS provider is configured
+1953	This vehicle is linked to a booking and cannot be deleted. You can still edit its details
+1954	Check the review status and external transfer reference recorded by finance administrators
+1955	Gate device settings require a facility owner, assigned operator, or administrator account
+1956	Only unpaid pending or approved requests can be cancelled. Contact support for paid passes
+1957	Search users, inspect roles and verification, edit basic details and manage account status
+1958	The administrator’s no-refund review has been recorded. The booking status was not changed
+1959	Your {0} {1} payout request was approved. The actual transfer must be performed externally
+1960	Add the vehicle you use for parking. You can save registration, type, make, model and color
+1961	Commands can be picked up by the authenticated adapter, subject to device health and expiry
+1962	Provide a note confirming that the refund has been checked and will be processed externally
+1963	Review availability, camera health, payment reconciliation alerts and operational incidents
+1964	Choose when drivers can arrive. Overnight windows are not supported by this schedule version
+1965	Gate device registered. It is not physically active until a compatible edge adapter connects
+1966	Occupancy data was unknown; visually confirm the assigned space before admitting the vehicle
+1967	Unable to access the camera. Check browser camera permissions or paste the QR token manually
+1968	Confirm that the bank/provider transfer has actually completed. Enter the reconciliation note
+1969	Create a draft first. Photos and a complete schedule are required before administrator review
+1970	Gate access is available only to authorized attendants, assigned operators and administrators
+1971	Map at least one slot region. Install the optional YOLO detector and start the vision service
+1972	Provide the provider refund reference and a note confirming the external refund was completed
+1973	Fix or disable the camera first. The alert will resolve automatically when the feed is healthy
+1974	No photos uploaded yet. Add a real photo to support review and help drivers identify the space
+1975	Operations data could not be loaded. Apply migration 008 and check the API/database connection
+1976	When a paid booking is confirmed for one of your listings, its earnings entry will appear here
+1977	You can still browse parking spaces, view availability and prices, and use maps and directions
+1978	Payment references are provider-generated. SmartPark does not store raw card or UPI credentials
+1979	Photos are public listing assets. Do not upload IDs, payment cards or other sensitive documents
+1980	Enter a valid external reference (3–180 letters, numbers, dot, dash, slash, colon or underscore)
+1981	External payout references are recorded for audit; bank transfers are not initiated by SmartPark
+1982	Review payment attempts, receipts and refund requests. Pending orders are not completed payments
+1983	This only records a provider/case decision. It does not initiate a refund or confirm the booking
+1984	A QR entry ticket is available only for a paid, confirmed reservation that has not been completed
+1985	Confirm that the refund was actually completed in the payment provider. Enter the check performed
+1986	I confirm that these details are accurate and that I am authorized to offer this parking property
+1987	Once an administrator approves eligible completed-booking earnings, you can request a payout here
+1988	Your reservation history will appear here after you create a hold from an available parking space
+1989	Provide accurate information. SmartPark does not ask you to enter a full government ID number here
+1990	Your approved earnings have been reserved for this request. This does not initiate a bank transfer
+1991	Hide reviews that violate the platform rules. Hidden reviews are excluded from public rating totals
+1992	No geolocated parking facilities were found within this radius. Expand the radius or search by city
+1993	This payment has a separate reconciliation flag. Resolve it before recording the refund as complete
+1994	You can add vehicles under My vehicles. Adding a vehicle helps parking staff match your reservation
+1995	QR signatures, expiry, booking ownership and assigned-facility permissions are checked on the server
+1996	Submit your owner details for a manual review so drivers can see that your account has been verified
+1997	The underlying payment is not currently recorded as captured. Reconcile it before recording a refund
+1998	Changes are saved to the listing profile; pricing and weekly availability are edited separately below
+1999	Cost estimates use the unit price saved when the session started. No payment is charged in this phase
+2000	List a private driveway, garage, apartment bay, or commercial parking facility and set your own rates
+2001	Request a monthly parking pass at eligible owner-listed spaces and track owner decisions in one place
+2002	Closing time must be later than opening time. Overnight schedules can be configured in a later version
+2003	Command queued for the configured gate adapter. SmartPark has not directly activated physical hardware
+2004	Search accounts, inspect roles and verification, and update permitted profile fields or account status
+2005	The booking status changed concurrently. Reconcile the provider refund before changing the reservation
+2006	Connect a parking camera, map each visible bay to a SmartPark slot, and monitor stable occupancy events
+2007	Create a ticket, follow replies, and track the status of booking, payment, facility, and account issues
+2008	Facility-owner capabilities are enabled. Your new listings still require approval before public booking
+2009	Listing created as a draft. Add genuine photos, review the weekly schedule, then submit it for approval
+2010	This local test payment is no longer payable. Create a new reservation hold if the previous one expired
+2011	English, Hindi, Kannada and Telugu are available across the entire app
+2012	Manage SmartPark operations, facilities, people, camera detection and financial workflows from one place
+2013	Refund processing for booking {0} has started. Entry is temporarily blocked while this is being resolved
+2014	This is an unpaid temporary hold. It becomes confirmed only after the payment provider verifies checkout
+2015	This reservation needs payment reconciliation. Check Transactions or contact support before trying again
+2016	This vehicle has an active parking session. Refund processing cannot begin until the session is resolved
+2017	Use a webcam index (0), a video filename inside the vision sample-videos folder, or an approved RTSP URL
+2018	Configure GATE_DEVICE_SERVICE_TOKEN and connect a compatible adapter before queuing physical gate commands
+2019	The host earning is being settled or reviewed; support must resolve it before this refund can be requested
+2020	Creates the spaces, price rules and default 7-day schedule. It remains a draft until submitted and approved
+2021	Provide a disposition, a resolution note of at least 10 characters, and an external provider/case reference
+2022	Your parking network at a glance — capacity, occupancy, revenue and alerts across the facilities you manage
+2023	Session record started. This does not remotely switch on a charger; follow the station operator instructions
+2024	Facility owner workspace selected. You can manage listings and prices while keeping driver features available
+2025	No published facilities have coordinates yet. Owners can add latitude and longitude in their facility details
+2026	An active price already starts at this exact time. Edit the existing schedule or choose a different start time
+2027	Enter the external bank or payment-provider transfer/refund reference. SmartPark does not perform the transfer
+2028	Your refund request for booking {0} was rejected. Review the note or contact support if you need clarification
+2029	New host earnings appear here after verified payment. Approve only after the corresponding booking is completed
+2030	The payment is no longer in the captured/paid state. Refresh operations and review the latest transaction state
+2031	The payment order could not be created. Your card or bank account has not been charged by SmartPark. Please retry
+2032	The provider has not captured this payment yet. SmartPark will confirm the booking only after capture is verified
+2033	Add a valid phone number in international E.164 format on My profile (for example, +919876543210) before opting in
+2034	Expected reservation starts for the next 24 hours, based on the same UTC weekday/hour over the previous eight weeks
+2035	{0} was observed by {1} at {2}. Match status: {3}; confidence {4}%. Verify the event before making an access decision
+2036	SmartPark records are stored in MySQL. In local development, Docker runs MySQL and its named volume persists the data
+2037	If the account needs verification, a new verification link has been sent. In local development, check the API terminal
+2038	Review completed host earnings, customer refunds and external payout records. Every action is written to the audit log
+2039	Your Driver access is preserved. New listings start as drafts and must be approved before they appear in public search
+2040	Facility-owner mode is enabled. Your listings must pass the normal administrator approval process before public booking
+2041	Archive {0}? It will no longer be offered as an active facility. Existing booking and financial history will be retained
+2042	Find accounts, review access status, and edit basic account details. Passwords and role assignments are not exposed here
+2043	Open Settings and select Light or Dark under Appearance. The theme is applied immediately and remembered in this browser
+2044	Show this code to an authorized attendant at the parking facility. Keep it private; it grants access to this reservation
+2045	This estimates booking starts, not live physical occupancy. It is a planning signal, not an AI or sensor-based guarantee
+2046	. Camera calibration can run now, but customers cannot discover or book this facility until an administrator activates it
+2047	Confirm the booking is still eligible. Refund will be handled externally, and gate entry will be blocked while processing
+2048	Invite a friend to SmartPark. When they complete their first paid parking session, both accounts receive referral credits
+2049	Verified reviews are based on completed SmartPark reservations. Reviews and saved places can be removed from your account
+2050	The payment review for booking {0} was recorded as refunded externally. This action does not change or confirm the booking
+2051	You can reference a facility only when you own it or are assigned to manage it, unless you select one of your own bookings
+2052	Configure active hourly, daily, weekly or monthly rates. New rules replace the active rule for the same rate type and scope
+2053	Admin tools require the admin role on the server-side account. Sign out and back in after an administrator changes your role
+2054	Not all payout earnings were settled in the database. Verify the external transfer and reconcile this payout before retrying
+2055	Detected issues will appear here for camera feeds, plate review, overstays, gate command failures, and payment reconciliation
+2056	Only verified, non-reconciled payments from completed bookings can be approved for payout. Other pending records stay blocked
+2057	Payment was received but requires reconciliation. Do not retry payment for this booking; contact the operator or support team
+2058	Your refund for booking {0} needs an additional check. Parking entry remains blocked while finance resolves the payment result
+2059	Your refund request for booking {0} was approved. The facility team will process the refund externally and record its reference
+2060	The payment provider could not be reached to verify this payment. You can refresh the booking after the provider webhook arrives
+2061	Tell us why you are requesting a full refund. Refund requests are reviewed by SmartPark support and are not automatically approved
+2062	In development, test payment is simulated locally and does not charge real money. Production checkout requires provider verification
+2063	Requests cover the full payment amount. A refund is complete only after the external refund reference has been verified and recorded
+2064	Administrator access is enforced by the API. Passwords, tokens, email addresses, and role assignments cannot be edited from this table
+2065	Owners request all approved, unreserved earnings for one currency. Bank transfer is performed outside SmartPark and then recorded here
+2066	Connect a compatible ANPR provider to the secured `/api/vision/service/plate-events` endpoint. SmartPark does not perform OCR by itself
+2067	Eligible approved earnings can be requested for payout. Actual bank transfers are performed externally and recorded by an administrator
+2068	entry/entries awaiting settlement review. Pending means not approved for payout; paid means an external transfer reference was recorded
+2069	Only administrators, facility owners and assigned operators may configure sources. The vision service must have access to the camera source
+2070	Listings require at least one photo, one parking space, an active hourly rate and all seven weekly schedule rows before administrator review
+2071	Payout requests reserve eligible earnings. The actual bank/provider transfer is performed externally and must be recorded with its reference
+2072	Review plate candidates from a configured ANPR provider. Matches are suggestions only and never unlock gates or change bookings automatically
+2073	Open Parking spaces. Administrators can create a facility, add zones and generate spaces, configure pricing, and publish or pause the facility
+2074	Start, monitor and stop charger sessions for your vehicles. Energy and status shown below come from the charger records, not this illustration
+2075	Ticket or plate is verified, the barrier opens, and the visit is recorded against the booking. Scan results below reflect the server’s decision
+2076	Camera detections update the physical state only. Reservation holds, payments, and facility status still determine whether a space can be booked
+2077	Camera health, unmatched plate candidates, overstays, gate failures, and payment reconciliation alerts are generated from current system records
+2078	The payment review for booking {0} was recorded by support. The booking status remains unchanged; contact support if you need further assistance
+2079	Actions are protected by server-side role checks. Facility removal should use archive/disable workflows to preserve booking and financial history
+2080	Payment for booking {0} at {1} was captured but the booking could not be confirmed automatically. Review the provider record before taking action
+2081	The refund for booking {0} was not completed. Your reservation remains active if its scheduled time has not passed. Contact support for assistance
+2082	An owner-approved request is not yet a paid or active pass. Payment collection, recurring billing, and automatic renewal are not connected in this phase
+2083	This is not a real payment and will not charge your account. Use it only to test the confirmation and QR-ticket flow before configuring a payment provider
+2084	Personalize how SmartPark looks and behaves. Theme, language, and accessibility choices apply immediately; save to retain other preferences in this browser
+2085	Set GATE_DEVICE_SERVICE_TOKEN in the API environment and run a compatible edge service. Queue requests do not physically open or close a gate by themselves
+2086	Company membership and fleet records support operational planning. Corporate invoices, employee billing, and automated booking allocation are not connected yet
+2087	Request payout of all currently approved {0} earnings? These amounts will be reserved until the request is resolved. SmartPark does not perform the bank transfer
+2088	You can book parking as a driver too—including an available space at an approved facility you own. Choose a vehicle and use the normal price and reservation flow
+2089	If an active account matches that email, a six-digit password reset code has been sent. The code expires in 10 minutes. In local development, check the API terminal
+2090	Use points in clockwise or counter-clockwise order, from 0 to 1. (0,0) is the top-left of the frame and (1,1) is bottom-right. Example: [[0.1,0.1],[0.4,0.1],[0.4,0.5],[0.1,0.5]]
+2091	INSERT IGNORE INTO referral_rewards (id, referral_id, beneficiary_user_id, reward_amount, currency, status) VALUES (?, ?, ?, ?, 'INR', 'available'), (?, ?, ?, ?, 'INR', 'available')
+2092	Open Camera detection, choose a facility, add a camera source, map visible parking spaces, and enable the camera. A running vision service and valid source are required for live detection
+2093	Owners can also book an available space as a driver, including an eligible space at a facility they own. Standard availability, vehicle compatibility, booking and payment rules still apply
+2094	Open My profile and use the Change password section. If you have forgotten your current password, sign out and select Forgot password on the sign-in screen to receive a one-time code by email
+2095	In-app inbox filters are saved in this browser. SMS delivery requires explicit opt-in, an international-format phone number, and a configured Twilio sender. Security recovery codes remain email-only
+2096	Suspending an account blocks its existing session on the next authenticated request. Changes are recorded in the audit log. Role changes and password resets should use their dedicated, audited workflows
+2097	SmartPark does not transfer money from this screen. Before marking a refund or payout completed, perform it in the configured provider/bank system and enter its real reference. Never use a made-up reference
+2098	Leave both dates blank to change the current price now. Set a future start date to schedule a price change; the previous price remains available until then. Set an end date to make the scheduled rate temporary
+2099	Privacy and safety: SmartPark stores normalized plate text and confidence, not raw images. Keep camera notices and retention rules aligned with local law. Always verify low-confidence or unmatched events manually
+2100	Availability and charging sessions are SmartPark records, not live hardware control. Actual charger activation, metering, payment collection, and provider telemetry require a compatible charging-network integration
+2101	Every command requires an authenticated user, facility access, a reason, and server-side expiry. The edge adapter must use the separate service token and must validate safety conditions locally before controlling the physical barrier
+2102	Referral credits are an internal SmartPark ledger balance. They are not cash, are not currently withdrawable, and cannot currently be withdrawn or redeemed against bookings. Automated credit reversals are not implemented in this phase
+2103	This phase records a manual verification decision; it does not collect identity document images or automatically verify government records. Administrators must follow the organization's approved verification procedure and access policy
+2104	YOLO classifies vehicles in mapped polygons; consecutive frame stabilization avoids brief status flicker. An “empty” detection is only physical evidence. SmartPark's booking conflict, operational status and facility rules remain authoritative
+2105	Earnings start as pending. Administrators can approve eligible earnings after the booking is completed and payment has been verified. Requesting a payout reserves all currently approved earnings for one currency. The actual transfer happens externally and an administrator records its reference
+2106	Language pack failed to load
+2107	{0} unavailable
+2108	{0} {1} percent
+2109	You
+2110	Parking
+2111	Fee: {0}
+2112	Searching
+2113	Map legend
+2114	Clear route
+2115	Loading map
+2116	My location
+2117	Parking map
+2118	Showing {0}
+2119	{0} per hour
+2120	OpenStreetMap
+2121	Your location
+2122	Fully occupied
+2123	Nearby parking
+2124	No EV charging
+2125	Searched place
+2126	View & reserve
+2127	Finding parking
+2128	Calculating route
+2129	SmartPark facility
+2130	the selected place
+2131	Mapped parking area
+2132	Availability unknown
+2133	Close nearby results
+2134	Mapped capacity: {0}
+2135	overpass:{0},{1}:{2}
+2136	Within {0} km of {1}
+2137	{0} · {1} of {2} free
+2138	Your current location
+2139	Filter by availability
+2140	All SmartPark facilities
+2141	availability updated {0}
+2142	Nearby SmartPark facilities
+2143	Radius cannot exceed 100 km
+2144	Loading SmartPark facilities
+2145	Include OpenStreetMap parking
+2146	Radius must be at least 0.1 km
+2147	Interactive map failed to render
+2148	Search area, landmark or address
+2149	Live SmartPark data is unavailable
+2150	Latitude must be between -90 and 90
+2151	{0} km · about {1} min by car to {2}
+2152	Provide both lat and lng, or neither
+2153	OpenStreetMap parking (not SmartPark)
+2154	Parking map service returned HTTP {0}
+2155	{0} SmartPark facilities on the map{1}
+2156	Longitude must be between -180 and 180
+2157	Location services are not available here
+2158	OpenStreetMap · not managed by SmartPark
+2159	No SmartPark facilities within {0} km.{1}
+2160	Place search returned an invalid location
+2161	{0} spaces awaiting a sensor or staff update
+2162	Place search returned an unexpected response
+2163	EV charging · {0} of {1} connectors available
+2164	The routing service returned an invalid route
+2165	application/x-www-form-urlencoded;charset=UTF-8
+2166	No driving route was found between these points
+2167	Enter at least 3 characters to search for a place
+2168	Directions need a valid start point and destination
+2169	Some map tiles could not load. Check your connection
+2170	The parking map service returned an invalid response
+2171	{0} SmartPark facilities within {1} km, nearest first
+2172	This parking facility does not have map coordinates yet
+2173	{0} The map is still available without live SmartPark data
+2174	A valid location is required to find nearby mapped parking
+2175	The map service took too long to respond. Please try again
+2176	No matching place was found. Try a different name or address
+2177	OpenStreetMap parking search is busy. Please try again later
+2178	OpenStreetMap parking search returned an unexpected response
+2179	The parking map response did not contain a list of locations
+2180	{0} OpenStreetMap parking places shown (availability unknown)
+2181	Place search is temporarily unavailable. Please try again later
+2182	Share your location or search for a starting place to get directions
+2183	Estimate from the public OSRM demo service, not live traffic navigation
+2184	Use your location or search for a place first, then find nearby parking
+2185	The map service could not be reached. Check your connection and try again
+2186	OpenStreetMap parking appears after you choose a location and select Nearby
+2187	The routing service is unavailable right now. You can still open directions in your maps app
+2188	No SmartPark facilities in this radius. Increase the radius above, or include OpenStreetMap parking (availability unknown)
+2189	[out:json][timeout:20];(node["amenity"="parking"](around:{0},{1},{2});way["amenity"="parking"](around:{3},{4},{5}););out center tags 60;
+2190	Map data © OpenStreetMap contributors. Search (Nominatim), mapped parking (Overpass) and routing (OSRM demo) use shared public services with usage limits; use hosted or self-hosted services for production traffic. SmartPark availability comes from SmartPark records; OpenStreetMap places have no live availability
+2191	No SmartPark facilities within {0} km.{1}{2}
+2192	{0} SmartPark facilities within {1} km, nearest first.{2}
+2193	About
+2194	Login
+2195	Arrive
+2196	Footer
+2197	Drivers
+2198	Explore
+2199	Reserve
+2200	Features
+2201	Platform
+2202	Open menu
+2203	Operators
+2204	Close menu
+2205	Live better
+2206	Park and go
+2207	How it works
+2208	Park smarter
+2209	Space owners
+2210	Page sections
+2211	Four languages
+2212	SmartPark home
+2213	Awaiting update
+2214	Computer vision
+2215	Gate operations
+2216	List your space
+2217	Secure checkout
+2218	Skip to content
+2219	Camera occupancy
+2220	Maps and routing
+2221	QR entry tickets
+2222	Every space, live
+2223	Explore SmartPark
+2224	(min-width: 960px)
+2225	Sign in for support
+2226	Payments and tickets
+2227	Alerts that reach you
+2228	Play background video
+2229	Pause background video
+2230	Promotions and referrals
+2231	The engine under the hood
+2232	© {0} SmartPark Mobility OS
+2233	Turn unused spaces into income
+2234	One price, shown before you pay
+2235	(prefers-reduced-motion: reduce)
+2236	Earnings and payouts in one view
+2237	Gate validation and audit trails
+2238	Built for everyone in the car park
+2239	From search to space in four moves
+2240	Live occupancy across every facility
+2241	Parking shouldn’t be a guessing game
+2242	Verified listings that drivers trust
+2243	Know a space is free before you leave
+2244	Set your own pricing and opening hours
+2245	Live now: {0} free spaces across {1} {2}
+2246	Camera detection instead of manual counts
+2247	Your smarter parking experience starts here
+2248	Straight through the gate with your QR ticket
+2249	EV charging and monthly passes in the same app
+2250	Finance review, promotions and user management
+2251	Your request and every reply stay in your account
+2252	{0} of {1} spaces free across {2} facilities right now
+2253	SmartPark — Intelligent parking: find, reserve and park
+2254	The whole interface works in English, हिन्दी, ಕನ್ನಡ and తెలుగు
+2255	Regular parkers can hold a monthly pass instead of booking every visit
+2256	Your bookings, receipts and reviews stay in one place for the next trip
+2257	Create a free account in a minute, or sign in to pick up where you left off
+2258	Pick a space and a time. See the full price, apply a promo and pay securely
+2259	Operators validate entries and exits and can connect compatible gate hardware
+2260	Booking updates and account notices in the app, by email and, with consent, by SMS
+2261	Show the QR ticket from your booking at the gate. Route to the entrance from the map
+2262	Already have an account? Sign in and open Help & support to message the SmartPark team
+2263	Parking discovery, reservations, live occupancy and facility operations in one platform
+2264	A YOLO vision service watches operator-mapped camera zones and keeps space status current
+2265	Promo codes are checked at checkout, and referral codes reward drivers who invite friends
+2266	Razorpay checkout with server-side verification, and a QR ticket for every confirmed booking
+2267	Every confirmed booking carries a QR ticket that is checked at the gate, so arrival takes seconds
+2268	React and Vite on the front, a Node.js and Express API, a MySQL database, and Docker for deployment
+2269	Owners publish facilities and spaces, set pricing and opening hours, get verified and track earnings
+2270	Payments run through Razorpay, with transactions, receipts and refunds recorded against each booking
+2271	Search by area, landmark or your location. The map shows which facilities have free spaces right now
+2272	Find facilities with chargers, see connector types and power, and keep a record of each charging session
+2273	OpenStreetMap with Leaflet, place search and driving routes, drawn from SmartPark’s own facility records
+2274	Choose a facility, a space and a time window. The price is quoted before you confirm, including any promo code
+2275	A Python service runs Ultralytics YOLO vehicle detection on camera feeds and maps detections onto parking zones
+2276	Space status combines sensor and camera readings with active reservations, so a held space is never shown as free
+2277	The result is less time circling, fewer surprises at the entrance, and facilities that are used the way they were meant to be
+2278	The future of intelligent parking. SmartPark shows you which spaces are free right now, holds one for you, and gets you through the gate with a QR ticket
+2279	Drivers circle blocks looking for a space that may not exist. Owners sit on spaces that stay empty for hours. Operators count cars by hand and learn about a full facility from the queue at the gate
+2280	SmartPark connects all three. It reads each space’s real state from sensors, cameras and reservations, publishes it the moment it changes, and lets a driver turn that into a confirmed space before setting off
+2281	Search by city, landmark or your own location and SmartPark ranks facilities by distance, with price, EV charging and how many spaces are open at this moment. Switch to the map to see them colour-coded, get directions, and reserve straight from the pin
+2282	Live now: {0} free spaces at 1 facility
+2283	Live now: {0} free spaces across {1} facilities
+2284	Seven languages
+2285	The whole interface works in English, हिन्दी, ಕನ್ನಡ, తెలుగు, Español, Français and 日本語
+2286	English, Hindi, Kannada, Telugu, Spanish, French and Japanese are available across the entire app
+2287	center 58%
+2288	{0} of {1} spaces free at 1 facility right now
+2289	Deleting
+2290	Removing
+2291	Add photo
+2292	Change photo
+2293	Delete account
+2294	Delete my account
+2295	Your profile photo
+2296	Checking your account
+2297	Profile photo removed
+2298	Profile photo updated
+2299	Type DELETE to confirm
+2300	Choose a photo to upload
+2301	Could not remove the photo
+2302	Could not upload the photo
+2303	No profile photo to remove
+2304	Enter your current password
+2305	Permanently delete my account
+2306	Choose a JPEG, PNG or WebP image
+2307	The photo must be 2 MB or smaller
+2308	Your account can't be deleted yet
+2309	You have not added a profile photo
+2310	The profile photo file was not found
+2311	Only JPEG, PNG or WebP images are accepted
+2312	The file is not a valid JPEG, PNG or WebP image
+2313	Type DELETE to confirm that you want to delete your account
+2314	Optional · JPEG, PNG or WebP, up to 2 MB. Only you can see it
+2315	Your SmartPark account has been deleted. Taking you to the home page
+2316	Permanently close your SmartPark account and remove your personal details
+2317	Your vehicles' registration numbers are erased and you are signed out everywhere
+2318	You are the only administrator. Give another account the administrator role first
+2319	This cannot be undone. To use SmartPark again you would need to create a new account
+2320	Your name, email, phone number, profile photo, saved places and search history are removed
+2321	Past bookings and payments are kept only in anonymized form, because financial records must be retained
+2322	Your SmartPark account has been deleted. Your past bookings and payments are kept only in anonymized form for financial records
+2323	You have a current or upcoming booking. Cancel it or wait until it has ended
+2324	A vehicle is still checked in on one of your bookings. Exit the facility first
+2325	You have a charging session in progress. End it first
+2326	A refund request is still being processed. Wait until it is resolved
+2327	A payout request is still open. Wait until it has been paid or closed
+2328	You still own parking facilities that are not archived. Archive them under Parking spaces first
+2329	{0} rate · {1}
+2330	Daily rate · 1 day
+2331	Hourly rate · 1 hour
+2332	Weekly rate · 1 week
+2333	Daily rate · {0} days
+2334	Your earning: {0} {1}
+2335	Monthly rate · 1 month
+2336	Hourly rate · {0} hours
+2337	Weekly rate · {0} weeks
+2338	Monthly rate · {0} months
+2339	New booking at {0}: {1}, space {2}, starting {3}.{4}
+2340	New booking received
+2341	In use
+2342	On hold
+2343	Use this time
+2344	Free right now
+2345	Availability for
+2346	Occupied right now
+2347	Reserved right now
+2348	Checking when this space is free
+2349	Next available for {0}: {1} – {2}
+2350	Unable to load when this space is free
+2351	The parking space identifier is invalid
+2352	+{0} more reservations in the next 14 days
+2353	No reservations for this space in the next 14 days
+2354	Start time set to the next available time for this space
+2355	No free {0} window in the next 14 days. Try a shorter duration or another space
+2356	Your selected time overlaps a reservation ({0}). Choose another time or use the next available time
+2357	This space is occupied right now, so it can only be booked from 30 minutes from now. Choose a later time or use the next available time

@@ -1,0 +1,120 @@
+1900	Tous les gains du versement n’ont pas pu être libérés. Rapprochez ce versement avant de réessayer
+1901	Seul le propriétaire, l’opérateur désigné ou un administrateur peut modifier l’état opérationnel
+1902	Ajoutez une note confirmant que le remboursement a échoué ou n’a pas été transmis au fournisseur
+1903	Enregistrez des caméras, associez les places, activez la détection et surveillez les flux
+1904	Annonce de place partagée créée en brouillon. Ajoutez des photos et soumettez-la
+1905	Impossible de charger la file d’examen financier. Vérifiez que la migration 010 est appliquée
+1906	Une fois la session de stationnement terminée, vous pourrez laisser ici un avis vérifié
+1907	Choisissez l’heure d’arrivée et la durée pour obtenir un prix calculé par le serveur. Les heures utilisent
+1908	Gérez le stationnement de l’entreprise, la flotte et les bornes de recharge dans un seul espace
+1909	Le statut du paiement a changé simultanément. Rapprochez-le avant d’enregistrer le remboursement
+1910	Ce code de parrainage n’est pas valide. Vérifiez-le et réessayez, ou laissez le champ vide
+1911	Un compte existe déjà avec cet e-mail. Connectez-vous ou demandez un e-mail de vérification
+1912	Les commandes d’entrée/sortie exigent un signal récent de l’adaptateur. Lancez d’abord une vérification d’état
+1913	Un autre administrateur a déjà traité l’examen de cette annonce. Actualisez l’annonce
+1914	Saisissez des coordonnées JSON valides, par exemple [[0.1,0.1],[0.4,0.1],[0.4,0.5],[0.1,0.5]]
+1915	Gardez vos places favorites, évaluez vos visites et retrouvez vos recherches récentes
+1916	Un avis par réservation terminée. Votre nom public est abrégé par souci de confidentialité
+1917	Cette heure locale n’est pas valide dans le fuseau horaire du parking. Choisissez-en une autre
+1918	Le nouvel établissement ne sera pas visible dans la recherche avant approbation et activation
+1919	Ce paiement a été modifié par une autre opération. Actualisez et vérifiez son état
+1920	Une demande de remboursement existe déjà pour ce paiement. Actualisez la page pour voir son statut
+1921	Décrivez ce qui s’est passé, l’heure approximative et toute référence non sensible
+1922	Espace conducteur sélectionné. Vos établissements, tarifs et historique restent intacts
+1923	Seul le propriétaire, l’opérateur désigné ou un administrateur peut examiner les événements de plaque
+1924	Examinez les remboursements, versements et rapprochements nécessitant l’administrateur
+1925	Le dernier administrateur actif ne peut pas être désactivé. Désignez-en un autre d’abord
+1926	Le scan par caméra nécessite l’autorisation du navigateur et HTTPS hors localhost
+1927	Enregistrez des contrôleurs de barrière compatibles et mettez en file des commandes auditables
+1928	Le statut de la réservation a changé pendant le remboursement. Rapprochez-le manuellement
+1929	Cette demande de vérification a déjà été examinée ou n’existe plus. Actualisez la file
+1930	Vous ne pouvez configurer des barrières que pour vos établissements ou ceux que vous exploitez
+1931	{0} place(s) créée(s). Définissez l’état physique avant de les afficher comme disponibles
+1932	Le reçu n’est disponible qu’une fois le paiement du fournisseur vérifié comme encaissé
+1933	L’inscription est temporairement indisponible tant que la vérification par e-mail n’est pas configurée
+1934	Configurez VISION_API_TOKEN dans l’environnement de l’API avant de connecter le service de vision
+1935	Créez d’abord un établissement ou demandez à un administrateur de vous désigner comme exploitant
+1936	État des établissements en direct, revenus vérifiés, occupation et alertes système
+1937	La réservation en ligne est temporairement indisponible. Vous pouvez toujours parcourir les places
+1938	Publiez une allée privée, un garage ou une place réservée pour que les conducteurs la trouvent et la réservent
+1939	Changez d’espace à tout moment. Vos droits de propriétaire sont conservés en mode conducteur
+1940	Ce ticket de réservation a expiré. Contactez l’établissement si vous êtes toujours sur place
+1941	Une session de stationnement est active ; contactez l’assistance financière avant de finaliser ce remboursement
+1942	Les tarifs s’appliquent à toute l’annonce. Les prix par place se gèrent dans Places de parking
+1943	Soumettez-la à l’approbation de l’administrateur avant qu’elle apparaisse dans la recherche publique
+1944	Le remboursement traité en externe a été enregistré. SmartPark n’a pas effectué le remboursement
+1945	Les préférences de thème, langue, accessibilité et affichage sont enregistrées localement sur cet appareil
+1946	Votre réservation {0} est confirmée. Ouvrez Mes réservations pour voir votre ticket et votre QR
+1947	Votre blocage {0} a été annulé. Aucun paiement n’a été encaissé lors de cette annulation
+1948	{0} à {1} n’a pas envoyé d’image récente. Vérifiez la connexion de la caméra et le service de vision
+1949	En continuant, vous acceptez d’utiliser SmartPark conformément à ses conditions et à sa politique de confidentialité
+1950	Créez établissements, zones et places ; modifiez les tarifs et publiez, suspendez ou archivez
+1951	Les blocages expirent après 10 minutes. Ouvrez ensuite Mes réservations pour payer en toute sécurité
+1952	Notifications SMS activées. Les messages ne sont envoyés que si le fournisseur SMS est configuré
+1953	Ce véhicule est lié à une réservation et ne peut pas être supprimé. Vous pouvez toujours le modifier
+1954	Consultez le statut de l’examen et la référence du virement enregistrée par la finance
+1955	Les paramètres de barrière nécessitent un compte propriétaire, opérateur désigné ou administrateur
+1956	Seules les demandes non payées en attente ou approuvées peuvent être annulées. Contactez l’assistance pour les abonnements payés
+1957	Recherchez des utilisateurs, consultez rôles et vérification, modifiez les infos et gérez le statut
+1958	L’examen sans remboursement de l’administrateur a été enregistré. Le statut de la réservation est inchangé
+1959	Votre demande de versement de {0} {1} a été approuvée. Le virement doit être effectué en externe
+1960	Ajoutez le véhicule que vous garez. Vous pouvez enregistrer immatriculation, type, marque, modèle et couleur
+1961	Les commandes peuvent être récupérées par l’adaptateur authentifié, selon l’état et l’expiration
+1962	Ajoutez une note confirmant que le remboursement a été vérifié et sera traité en externe
+1963	Consultez la disponibilité, l’état des caméras, les alertes de rapprochement et les incidents
+1964	Choisissez quand les conducteurs peuvent arriver. Les créneaux de nuit ne sont pas pris en charge
+1965	Appareil de barrière enregistré. Il ne sera actif qu’une fois un adaptateur compatible connecté
+1966	L’occupation était inconnue ; vérifiez visuellement la place attribuée avant d’admettre le véhicule
+1967	Impossible d’accéder à la caméra. Vérifiez les autorisations ou collez le jeton QR manuellement
+1968	Confirmez que le virement bancaire/fournisseur est bien effectué. Saisissez la note de rapprochement
+1969	Créez d’abord un brouillon. Des photos et un horaire complet sont requis avant l’examen
+1970	L’accès à la barrière est réservé aux agents autorisés, opérateurs désignés et administrateurs
+1971	Associez au moins une zone de place. Installez le détecteur YOLO facultatif et lancez le service de vision
+1972	Indiquez la référence du remboursement chez le fournisseur et une note confirmant qu’il a été effectué
+1973	Réparez ou désactivez d’abord la caméra. L’alerte se résoudra automatiquement quand le flux sera rétabli
+1974	Aucune photo pour l’instant. Ajoutez une vraie photo pour l’examen et pour aider les conducteurs à repérer la place
+1975	Impossible de charger les données d’exploitation. Appliquez la migration 008 et vérifiez la connexion API/base
+1976	Quand une réservation payée est confirmée pour une de vos annonces, son gain apparaîtra ici
+1977	Vous pouvez toujours parcourir les places, voir disponibilités et tarifs, et utiliser cartes et itinéraires
+1978	Les références de paiement sont générées par le fournisseur. SmartPark ne stocke aucune donnée de carte ou UPI
+1979	Les photos sont publiques. N’importez pas de pièces d’identité, cartes de paiement ou documents sensibles
+1980	Saisissez une référence externe valide (3–180 lettres, chiffres, point, tiret, barre oblique, deux-points ou tiret bas)
+1981	Les références de versement externes sont enregistrées pour l’audit ; SmartPark n’initie aucun virement
+1982	Consultez tentatives de paiement, reçus et demandes de remboursement. Les commandes en attente ne sont pas des paiements finalisés
+1983	Cela enregistre seulement une décision fournisseur/dossier. Aucun remboursement n’est lancé ni réservation confirmée
+1984	Le ticket QR d’entrée n’est disponible que pour une réservation payée, confirmée et non terminée
+1985	Confirmez que le remboursement a bien été effectué chez le prestataire. Indiquez la vérification faite
+1986	Je confirme que ces informations sont exactes et que je suis autorisé à proposer ce stationnement
+1987	Une fois les gains des réservations terminées approuvés par un administrateur, vous pourrez demander un versement ici
+1988	Votre historique de réservations apparaîtra ici après le blocage d’une place disponible
+1989	Fournissez des informations exactes. SmartPark ne vous demande pas ici de numéro d’identité complet
+1990	Vos gains approuvés ont été réservés pour cette demande. Aucun virement bancaire n’est lancé
+1991	Masquez les avis qui enfreignent les règles. Les avis masqués sont exclus des notes publiques
+1992	Aucun parking géolocalisé dans ce rayon. Élargissez le rayon ou recherchez par ville
+1993	Ce paiement a un signalement de rapprochement distinct. Résolvez-le avant d’enregistrer le remboursement
+1994	Vous pouvez ajouter des véhicules dans Mes véhicules. Cela aide le personnel à retrouver votre réservation
+1995	Le serveur vérifie la signature du QR, l’expiration, le titulaire de la réservation et les droits sur l’établissement
+1996	Soumettez vos informations de propriétaire pour un examen manuel afin que les conducteurs voient votre compte vérifié
+1997	Le paiement associé n’est pas enregistré comme encaissé. Rapprochez-le avant d’enregistrer un remboursement
+1998	Les modifications sont enregistrées dans l’annonce ; les tarifs et disponibilités se modifient ci-dessous
+1999	Les coûts estimés utilisent le prix unitaire enregistré au démarrage. Aucun paiement n’est prélevé à ce stade
+2000	Proposez une allée privée, un garage, une place d’immeuble ou un parking commercial et fixez vos tarifs
+2001	Demandez un abonnement mensuel sur des places de propriétaires éligibles et suivez leurs décisions
+2002	L’heure de fermeture doit suivre l’heure d’ouverture. Les horaires de nuit arriveront dans une version ultérieure
+2003	Commande mise en file pour l’adaptateur de barrière configuré. SmartPark n’a pas actionné directement le matériel
+2004	Recherchez des comptes, consultez rôles et vérification, et modifiez les champs autorisés ou le statut
+2005	Le statut de la réservation a changé simultanément. Rapprochez le remboursement avant de modifier la réservation
+2006	Connectez une caméra de parking, associez chaque place visible à une place SmartPark et suivez l’occupation
+2007	Créez un ticket, suivez les réponses et l’état des problèmes de réservation, paiement, établissement et compte
+2008	Fonctions propriétaire activées. Vos nouvelles annonces doivent encore être approuvées avant réservation
+2009	Annonce créée en brouillon. Ajoutez de vraies photos, vérifiez l’horaire puis soumettez-la
+2010	Ce paiement test local n’est plus payable. Créez un nouveau blocage si le précédent a expiré
+2011	L’anglais, le hindi, le kannada et le télougou sont disponibles dans toute l’application
+2012	Gérez opérations, établissements, personnes, détection par caméra et finances SmartPark depuis un seul endroit
+2013	Le remboursement de la réservation {0} a commencé. L’entrée est temporairement bloquée pendant le traitement
+2014	Ceci est un blocage temporaire non payé. Il n’est confirmé qu’après vérification du paiement par le prestataire
+2015	Cette réservation nécessite un rapprochement du paiement. Consultez Transactions ou contactez l’assistance
+2016	Ce véhicule a une session de stationnement active. Le remboursement ne peut pas commencer avant sa résolution
+2017	Utilisez un index de webcam (0), un fichier vidéo du dossier sample-videos ou une URL RTSP approuvée
+2018	Configurez GATE_DEVICE_SERVICE_TOKEN et connectez un adaptateur compatible avant d’envoyer des commandes
+2019	Le gain de l’hôte est en cours de règlement ou d’examen ; l’assistance doit le traiter avant ce remboursement

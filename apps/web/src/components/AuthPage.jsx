@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import Logo, { BrandHero } from './brand/Logo.jsx';
 import PageBackdrop from './shell/PageBackdrop.jsx';
+import LoginVideoBackdrop from './shell/LoginVideoBackdrop.jsx';
+import { LOGIN_BACKGROUND } from '../config/loginBackground.js';
 import { stagger } from './ui/primitives.jsx';
-import { ArrowRight, CheckCircle2, Eye, EyeOff, LockKeyhole, MapPinned, ShieldCheck, Sparkles } from 'lucide-react';
+import { supportedLanguages } from '../i18n.js';
+import { ArrowRight, CheckCircle2, ChevronDown, Globe, Eye, EyeOff, LockKeyhole, MapPinned, ShieldCheck, Sparkles } from 'lucide-react';
 
 const verificationRequestCache = new Map();
 
@@ -29,8 +32,8 @@ function verifyTokenOnce(token) {
   return verificationRequestCache.get(token);
 }
 
-export default function AuthPage({ onAuthenticated }) {
-  const [mode, setMode] = useState('login');
+export default function AuthPage({ onAuthenticated, language = 'en', onLanguageChange, initialMode = 'login', onBrandClick }) {
+  const [mode, setMode] = useState(initialMode === 'register' ? 'register' : 'login');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -198,8 +201,9 @@ export default function AuthPage({ onAuthenticated }) {
   return (
     <div className="auth-page">
       <section className="auth-story" aria-label="SmartPark introduction">
-        <PageBackdrop scene="login" intensity="hero" />
-        <div className="auth-brand"><BrandHero size={150} /></div>
+        {/* Background is chosen in src/config/loginBackground.js ('video' or the original 'animation'). */}
+        {LOGIN_BACKGROUND === 'video' ? <LoginVideoBackdrop /> : <PageBackdrop scene="login" intensity="hero" />}
+        <div className="auth-brand">{onBrandClick ? <a className="auth-brand-link" href="/" aria-label="SmartPark home" onClick={(event) => { event.preventDefault(); onBrandClick(); }}><BrandHero size={150} /></a> : <BrandHero size={150} />}</div>
         <motion.div className="auth-story-body" initial="hidden" animate="show" variants={stagger.container}>
           <motion.div className="auth-eyebrow" variants={stagger.item}><Sparkles size={14} /> Smart mobility infrastructure</motion.div>
           <motion.div className="auth-feature-list" variants={stagger.container}>
@@ -212,6 +216,16 @@ export default function AuthPage({ onAuthenticated }) {
       </section>
 
       <section className="auth-form-side">
+        {onLanguageChange && (
+          <label className="auth-lang" title="Language">
+            <Globe size={15} aria-hidden="true" />
+            <span className="sp-visually-hidden">Language</span>
+            <select value={language} onChange={(event) => onLanguageChange(event.target.value)} translate="no" aria-label="Language">
+              {supportedLanguages.map((item) => <option key={item.value} value={item.value} lang={item.value}>{item.label}</option>)}
+            </select>
+            <ChevronDown size={14} aria-hidden="true" />
+          </label>
+        )}
         <div className="auth-form-wrap">
           <div className="auth-mobile-brand"><Logo size={52} /></div>
           <div className="auth-form-heading">

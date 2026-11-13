@@ -134,7 +134,8 @@ const BASELINE_REQUIREMENTS = [
     { table: 'notifications', column: 'delivery_attempt_count' },
     { table: 'notifications', column: 'next_attempt_at' },
     { table: 'notifications', column: 'delivery_locked_until' }
-  ], enumValues: [{ table: 'notifications', column: 'delivery_status', values: ['sending'] }] }
+  ], enumValues: [{ table: 'notifications', column: 'delivery_status', values: ['sending'] }] },
+  { version: 22, columns: [{ table: 'users', column: 'avatar_storage_name' }, { table: 'users', column: 'avatar_updated_at' }] }
 ];
 
 function migrationVersion(name) {

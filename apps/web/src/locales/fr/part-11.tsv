@@ -1,0 +1,168 @@
+2020	Crée les places, les règles tarifaires et un horaire par défaut sur 7 jours. Reste en brouillon jusqu’à soumission et approbation
+2021	Indiquez une décision, une note d’au moins 10 caractères et une référence fournisseur/dossier
+2022	Votre réseau de parkings en un coup d’œil : capacité, occupation, revenus et alertes de vos établissements
+2023	Session enregistrée. Cela n’active pas le chargeur à distance ; suivez les instructions de l’exploitant
+2024	Espace propriétaire sélectionné. Gérez annonces et tarifs tout en gardant les fonctions conducteur
+2025	Aucun établissement publié n’a encore de coordonnées. Les propriétaires peuvent ajouter latitude et longitude
+2026	Un tarif actif commence déjà à cette heure précise. Modifiez l’horaire existant ou choisissez une autre heure
+2027	Saisissez la référence du virement/remboursement de la banque ou du prestataire. SmartPark n’effectue pas le virement
+2028	Votre demande de remboursement pour la réservation {0} a été refusée. Consultez la note ou contactez l’assistance
+2029	Les nouveaux gains d’hôte apparaissent après un paiement vérifié. N’approuvez qu’une fois la réservation terminée
+2030	Le paiement n’est plus encaissé/payé. Actualisez les opérations et vérifiez le dernier état de la transaction
+2031	La commande de paiement n’a pas pu être créée. SmartPark n’a rien débité. Veuillez réessayer
+2032	Le prestataire n’a pas encore encaissé ce paiement. SmartPark confirmera la réservation après vérification
+2033	Ajoutez un numéro valide au format international E.164 dans Mon profil (par exemple +919876543210) avant de vous inscrire
+2034	Débuts de réservation prévus sur les 24 prochaines heures, d’après le même jour/heure UTC des huit semaines précédentes
+2035	{0} a été observée par {1} à {2}. Correspondance : {3} ; confiance {4} %. Vérifiez l’événement avant toute décision d’accès
+2036	Les données SmartPark sont stockées dans MySQL. En local, Docker exécute MySQL et son volume conserve les données
+2037	Si le compte doit être vérifié, un nouveau lien a été envoyé. En local, consultez le terminal de l’API
+2038	Examinez les gains des hôtes, les remboursements et les versements externes. Chaque action est consignée dans l’audit
+2039	Votre accès conducteur est conservé. Les nouvelles annonces sont des brouillons à faire approuver avant publication
+2040	Mode propriétaire activé. Vos annonces doivent passer l’approbation habituelle de l’administrateur
+2041	Archiver {0} ? Il ne sera plus proposé comme établissement actif. L’historique des réservations et finances est conservé
+2042	Recherchez des comptes, vérifiez l’accès et modifiez les infos de base. Mots de passe et rôles ne sont pas exposés ici
+2043	Ouvrez Paramètres et choisissez Clair ou Sombre dans Apparence. Le thème s’applique aussitôt et est mémorisé
+2044	Présentez ce code à un agent autorisé du parking. Gardez-le privé : il donne accès à cette réservation
+2045	Estime les débuts de réservation, pas l’occupation réelle. C’est un indicateur de planification, pas une garantie IA ou capteur
+2046	. Le calibrage de la caméra est possible, mais les clients ne pourront ni trouver ni réserver cet établissement avant son activation
+2047	Confirmez que la réservation est toujours éligible. Le remboursement sera externe et l’entrée bloquée pendant le traitement
+2048	Invitez un ami sur SmartPark. Quand il terminera sa première session payante, vous recevrez tous deux des crédits
+2049	Les avis vérifiés reposent sur des réservations SmartPark terminées. Vous pouvez supprimer avis et lieux enregistrés
+2050	L’examen du paiement de la réservation {0} est enregistré comme remboursé en externe. La réservation n’est ni modifiée ni confirmée
+2051	Vous ne pouvez indiquer qu’un établissement que vous possédez ou gérez, sauf si vous choisissez une de vos réservations
+2052	Configurez des tarifs actifs à l’heure, au jour, à la semaine ou au mois. Les nouvelles règles remplacent celles du même type
+2053	Les outils d’administration exigent le rôle administrateur. Déconnectez-vous puis reconnectez-vous après un changement de rôle
+2054	Tous les gains n’ont pas été réglés dans la base. Vérifiez le virement externe et rapprochez avant de réessayer
+2055	Les problèmes détectés apparaîtront ici : caméras, plaques, dépassements, échecs de barrière et rapprochements
+2056	Seuls les paiements vérifiés et non signalés de réservations terminées peuvent être approuvés. Les autres restent bloqués
+2057	Le paiement a été reçu mais doit être rapproché. Ne repayez pas cette réservation ; contactez l’exploitant ou l’assistance
+2058	Votre remboursement pour la réservation {0} nécessite une vérification. L’entrée reste bloquée pendant le traitement
+2059	Votre demande de remboursement pour la réservation {0} est approuvée. L’établissement le traitera en externe et enregistrera la référence
+2060	Impossible de joindre le prestataire pour vérifier ce paiement. Actualisez la réservation après réception du webhook
+2061	Expliquez pourquoi vous demandez un remboursement intégral. Les demandes sont examinées par l’assistance et non approuvées automatiquement
+2062	En développement, le paiement test est simulé localement sans débit réel. La production exige une vérification du prestataire
+2063	Les demandes portent sur le montant total. Un remboursement n’est finalisé qu’une fois la référence externe vérifiée et enregistrée
+2064	L’accès administrateur est contrôlé par l’API. Mots de passe, jetons, e-mails et rôles ne sont pas modifiables ici
+2065	Les propriétaires demandent tous les gains approuvés et libres d’une devise. Le virement se fait hors SmartPark puis est enregistré ici
+2066	Connectez un fournisseur ANPR compatible au point d’accès sécurisé `/api/vision/service/plate-events`. SmartPark ne fait pas d’OCR lui-même
+2067	Les gains approuvés éligibles peuvent faire l’objet d’un versement. Les virements sont externes et enregistrés par un administrateur
+2068	écriture(s) en attente de règlement. En attente = non approuvée ; payée = référence de virement externe enregistrée
+2069	Seuls les administrateurs, propriétaires et opérateurs désignés peuvent configurer les sources. Le service de vision doit accéder à la caméra
+2070	Les annonces exigent au moins une photo, une place, un tarif horaire actif et les sept jours d’horaire avant l’examen
+2071	Les demandes de versement réservent les gains éligibles. Le virement est effectué en externe et doit être enregistré avec sa référence
+2072	Examinez les plaques candidates d’un fournisseur ANPR configuré. Les correspondances sont des suggestions et n’ouvrent jamais de barrière
+2073	Ouvrez Places de parking. Les administrateurs peuvent créer un établissement, ajouter des zones, générer des places, fixer les tarifs et publier ou suspendre
+2074	Démarrez, suivez et arrêtez les sessions de recharge de vos véhicules. L’énergie et l’état proviennent des données du chargeur, pas de cette illustration
+2075	Le ticket ou la plaque est vérifié, la barrière s’ouvre et la visite est enregistrée. Les résultats reflètent la décision du serveur
+2076	Les détections ne mettent à jour que l’état physique. Blocages, paiements et statut de l’établissement déterminent toujours la réservation
+2077	Les alertes caméras, plaques non appariées, dépassements, échecs de barrière et rapprochements sont générées à partir des données actuelles
+2078	L’assistance a enregistré l’examen du paiement de la réservation {0}. Son statut est inchangé ; contactez l’assistance si besoin
+2079	Les actions sont protégées par des contrôles de rôle côté serveur. Pour retirer un établissement, archivez/désactivez-le afin de conserver l’historique
+2080	Le paiement de la réservation {0} à {1} a été encaissé mais la réservation n’a pas pu être confirmée. Vérifiez le dossier du prestataire
+2081	Le remboursement de la réservation {0} n’a pas abouti. Votre réservation reste active si l’heure prévue n’est pas passée. Contactez l’assistance
+2082	Une demande approuvée par le propriétaire n’est pas encore un abonnement payé ou actif. Encaissement, facturation récurrente et renouvellement automatique ne sont pas encore connectés
+2083	Ce n’est pas un vrai paiement et rien ne sera débité. Utilisez-le uniquement pour tester la confirmation et le ticket QR avant de configurer un prestataire
+2084	Personnalisez l’apparence et le comportement de SmartPark. Thème, langue et accessibilité s’appliquent aussitôt ; enregistrez pour conserver le reste
+2085	Définissez GATE_DEVICE_SERVICE_TOKEN dans l’environnement de l’API et lancez un service compatible. Les demandes en file n’ouvrent ni ne ferment une barrière à elles seules
+2086	Les membres et la flotte servent à la planification. Factures entreprise, facturation des employés et attribution automatique ne sont pas encore connectées
+2087	Demander le versement de tous les gains approuvés en {0} ? Ces montants seront réservés jusqu’à la résolution. SmartPark n’effectue pas le virement
+2088	Vous pouvez aussi réserver en tant que conducteur, y compris une place libre dans votre propre établissement approuvé. Choisissez un véhicule et suivez le parcours habituel
+2089	Si un compte actif correspond à cet e-mail, un code de réinitialisation à six chiffres a été envoyé. Il expire dans 10 minutes. En local, consultez le terminal de l’API
+2090	Utilisez des points dans le sens horaire ou antihoraire, de 0 à 1. (0,0) est en haut à gauche et (1,1) en bas à droite. Exemple : [[0.1,0.1],[0.4,0.1],[0.4,0.5],[0.1,0.5]]
+2092	Ouvrez Détection par caméra, choisissez un établissement, ajoutez une source, associez les places visibles et activez la caméra. Le service de vision et une source valide sont requis
+2093	Les propriétaires peuvent aussi réserver en tant que conducteurs, y compris dans leur propre établissement. Les règles habituelles de disponibilité, compatibilité, réservation et paiement s’appliquent
+2094	Ouvrez Mon profil et utilisez la section Changer le mot de passe. En cas d’oubli, déconnectez-vous et choisissez Mot de passe oublié pour recevoir un code par e-mail
+2095	Les filtres de la boîte sont enregistrés dans ce navigateur. Les SMS exigent un consentement explicite, un numéro international et un expéditeur Twilio configuré. Les codes de récupération restent envoyés par e-mail
+2096	Suspendre un compte bloque sa session à la prochaine requête authentifiée. Les changements sont audités. Rôles et mots de passe ont leurs propres procédures auditées
+2097	SmartPark ne transfère pas d’argent depuis cet écran. Avant de marquer un remboursement ou un versement comme effectué, réalisez-le chez le prestataire/la banque et saisissez sa vraie référence. N’inventez jamais de référence
+2098	Laissez les deux dates vides pour changer le tarif maintenant. Indiquez une date future pour planifier le changement ; l’ancien tarif reste en vigueur jusque-là. Ajoutez une date de fin pour un tarif temporaire
+2099	Confidentialité et sécurité : SmartPark stocke le texte normalisé de la plaque et la confiance, pas les images. Respectez la loi locale pour l’affichage et la conservation. Vérifiez toujours manuellement les événements douteux
+2100	Disponibilités et sessions de recharge sont des données SmartPark, pas un pilotage matériel. Activation, comptage, encaissement et télémétrie nécessitent une intégration à un réseau compatible
+2101	Chaque commande exige un utilisateur authentifié, un accès à l’établissement, un motif et une expiration côté serveur. L’adaptateur doit utiliser son propre jeton et vérifier la sécurité localement avant d’actionner la barrière
+2102	Les crédits de parrainage sont un solde interne SmartPark. Ce n’est pas de l’argent : ils ne peuvent actuellement être ni retirés ni utilisés pour réserver. L’annulation automatique n’est pas encore disponible
+2103	Cette phase enregistre une décision de vérification manuelle ; elle ne collecte pas d’images de pièces d’identité et ne vérifie pas les registres officiels. Les administrateurs suivent la procédure approuvée
+2104	YOLO classe les véhicules dans les polygones associés ; la stabilisation sur plusieurs images évite les clignotements. Une détection « libre » n’est qu’un indice physique ; les règles de réservation et d’établissement priment
+2105	Les gains sont d’abord en attente. Les administrateurs approuvent les gains éligibles une fois la réservation terminée et le paiement vérifié. Demander un versement réserve tous les gains approuvés d’une devise. Le virement est externe et un administrateur enregistre sa référence
+2106	Impossible de charger le pack de langue
+2107	{0} indisponible
+2108	{0} {1} pour cent
+2109	Vous
+2110	Parking
+2111	Tarif : {0}
+2112	Recherche
+2113	Légende de la carte
+2114	Effacer l’itinéraire
+2115	Chargement de la carte
+2116	Ma position
+2117	Carte des parkings
+2118	Affichage de {0}
+2119	{0} par heure
+2120	OpenStreetMap
+2121	Votre position
+2122	Complet
+2123	Parkings à proximité
+2124	Pas de recharge VE
+2125	Lieu recherché
+2126	Voir et réserver
+2127	Recherche de parkings
+2128	Calcul de l’itinéraire
+2129	Établissement SmartPark
+2130	le lieu sélectionné
+2131	Zone de stationnement cartographiée
+2132	Disponibilité inconnue
+2133	Fermer les résultats à proximité
+2134	Capacité cartographiée : {0}
+2136	À moins de {0} km de {1}
+2137	{0} · {1} sur {2} libres
+2138	Votre position actuelle
+2139	Filtrer par disponibilité
+2140	Tous les établissements SmartPark
+2141	disponibilité mise à jour {0}
+2142	Établissements SmartPark à proximité
+2143	Le rayon ne peut pas dépasser 100 km
+2144	Chargement des établissements SmartPark
+2145	Inclure les parkings OpenStreetMap
+2146	Le rayon doit être d’au moins 0,1 km
+2148	Rechercher un quartier, un repère ou une adresse
+2149	Les données SmartPark en direct sont indisponibles
+2150	La latitude doit être comprise entre -90 et 90
+2151	{0} km · environ {1} min en voiture jusqu’à {2}
+2152	Indiquez lat et lng, ou aucun des deux
+2153	Parking OpenStreetMap (hors SmartPark)
+2154	Le service de carte des parkings a renvoyé HTTP {0}
+2155	{0} établissements SmartPark sur la carte{1}
+2156	La longitude doit être comprise entre -180 et 180
+2157	La localisation n’est pas disponible ici
+2158	OpenStreetMap · non géré par SmartPark
+2159	Aucun établissement SmartPark à moins de {0} km.{1}
+2160	La recherche de lieu a renvoyé une position non valide
+2161	{0} places en attente d’une mise à jour du capteur ou du personnel
+2162	La recherche de lieu a renvoyé une réponse inattendue
+2163	Recharge VE · {0} connecteurs disponibles sur {1}
+2164	Le service d’itinéraire a renvoyé un itinéraire non valide
+2166	Aucun itinéraire routier trouvé entre ces points
+2167	Saisissez au moins 3 caractères pour rechercher un lieu
+2168	L’itinéraire nécessite un point de départ et une destination valides
+2169	Certaines tuiles de la carte n’ont pas pu se charger. Vérifiez votre connexion
+2170	Le service de carte des parkings a renvoyé une réponse non valide
+2171	{0} établissements SmartPark à moins de {1} km, les plus proches d’abord
+2172	Cet établissement n’a pas encore de coordonnées sur la carte
+2173	{0} La carte reste disponible sans les données SmartPark en direct
+2174	Une position valide est requise pour trouver des parkings à proximité
+2175	Le service de carte a mis trop de temps à répondre. Veuillez réessayer
+2176	Aucun lieu correspondant. Essayez un autre nom ou une autre adresse
+2177	La recherche de parkings OpenStreetMap est saturée. Réessayez plus tard
+2178	La recherche de parkings OpenStreetMap a renvoyé une réponse inattendue
+2179	La réponse de la carte des parkings ne contenait aucune liste d’emplacements
+2180	{0} parkings OpenStreetMap affichés (disponibilité inconnue)
+2181	La recherche de lieu est temporairement indisponible. Réessayez plus tard
+2182	Partagez votre position ou recherchez un point de départ pour obtenir l’itinéraire
+2183	Estimation du service public de démo OSRM, pas une navigation avec trafic en direct
+2184	Utilisez votre position ou recherchez un lieu, puis cherchez un parking à proximité
+2185	Le service de carte est injoignable. Vérifiez votre connexion et réessayez
+2186	Les parkings OpenStreetMap apparaissent après avoir choisi un lieu et sélectionné À proximité
+2187	Le service d’itinéraire est indisponible pour le moment. Vous pouvez toujours ouvrir l’itinéraire dans votre application de cartes
+2188	Aucun établissement SmartPark dans ce rayon. Augmentez le rayon ci-dessus ou incluez les parkings OpenStreetMap (disponibilité inconnue)
+2190	Données cartographiques © contributeurs OpenStreetMap. La recherche (Nominatim), les parkings cartographiés (Overpass) et les itinéraires (démo OSRM) utilisent des services publics partagés et limités ; utilisez des services hébergés ou auto-hébergés en production. La disponibilité SmartPark provient de ses données ; les lieux OpenStreetMap n’ont pas de disponibilité en direct
+2191	Aucun établissement SmartPark à moins de {0} km.{1}{2}
+2192	{0} établissements SmartPark à moins de {1} km, les plus proches d’abord.{2}

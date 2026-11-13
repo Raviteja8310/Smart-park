@@ -2,7 +2,10 @@ export const supportedLanguages = [
   { value: 'en', label: 'English' },
   { value: 'hi', label: 'हिन्दी' },
   { value: 'kn', label: 'ಕನ್ನಡ' },
-  { value: 'te', label: 'తెలుగు' }
+  { value: 'te', label: 'తెలుగు' },
+  { value: 'es', label: 'Español' },
+  { value: 'fr', label: 'Français' },
+  { value: 'ja', label: '日本語' }
 ];
 
 const translations = {
@@ -27,6 +30,14 @@ const translations = {
   }
 };
 
-export function translate(language, text) {
-  return translations[language]?.[text] || text;
+/**
+ * Kept for existing call sites. Interface text is now translated app-wide by the
+ * runtime in ./i18n/runtime.js (dictionaries in ./locales), so components render
+ * English and the runtime localises it. This avoids two sources of truth.
+ */
+export function translate(_language, text) {
+  return text;
 }
+
+// Legacy navigation dictionary, retained for reference while locales/ is the source of truth.
+export const legacyNavigationTranslations = translations;

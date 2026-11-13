@@ -16,6 +16,7 @@ services/vision/**/__pycache__/
 
 # User-submitted marketplace photos are runtime data, not source assets.
 services/api/uploads/marketplace/
+services/api/uploads/avatars/
 
 # Containerized deployment artifacts and downloaded detector models.
 services/vision/*.pt

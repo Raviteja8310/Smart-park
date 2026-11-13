@@ -330,7 +330,21 @@ router.get('/:bookingId/ticket', requireAuth, asyncHandler(async (req, res) => {
     return fail(res, 409, 'TICKET_EXPIRED', 'This booking ticket has expired. Contact the parking facility if you are still on site.');
   }
   if (!constantTimeStringEqual(ticket.tokenHash, String(booking.qr_token_hash))) {
-    return fail(res, 409, 'TICKET_INVALIDATED', 'This ticket is no longer valid. Contact support for assistance.');
+    // Bookings confirmed before the ticket-signing fix stored a hash for a ticket signed with the
+    // payment id instead of the booking id. Re-issue those (and only those) with the correct ticket.
+    const [payments] = await pool.execute("SELECT id FROM payments WHERE booking_id = ? AND status IN ('paid','captured','succeeded')", [booking.id]);
+    const legacyMatch = payments.some((payment) => {
+      try {
+        const legacy = createBookingTicket({ id: payment.id, end_at: booking.end_at }, env.QR_SIGNING_SECRET, { allowExpired: true });
+        return constantTimeStringEqual(legacy.tokenHash, String(booking.qr_token_hash));
+      } catch { return false; }
+    });
+    if (!legacyMatch) return fail(res, 409, 'TICKET_INVALIDATED', 'This ticket is no longer valid. Contact support for assistance.');
+    await pool.execute('UPDATE bookings SET qr_token_hash = ? WHERE id = ? AND qr_token_hash = ?', [ticket.tokenHash, booking.id, booking.qr_token_hash]);
+    await pool.execute(
+      'INSERT INTO audit_logs (actor_user_id, action, entity_type, entity_id, metadata) VALUES (?, ?, ?, ?, ?)',
+      [req.user.id, 'booking.ticket.reissued', 'booking', booking.id, JSON.stringify({ reason: 'legacy_payment_id_signature' })]
+    );
   }
   const qrDataUrl = await QRCode.toDataURL(ticket.token, {
     errorCorrectionLevel: 'M', margin: 1, width: 320,
@@ -349,6 +363,66 @@ router.get('/:bookingId/ticket', requireAuth, asyncHandler(async (req, res) => {
       expiresAt: ticket.expiresAt,
       qrDataUrl
     }
+  });
+}));
+
+// When is a space free? Upcoming booked windows (times only — never who booked) and the next start
+// time that passes the same rules as booking itself: opening hours / weekly availability, no overlap
+// with active reservations, and the near-term rule when the space is physically occupied.
+const scheduleQuerySchema = z.object({ durationMinutes: z.coerce.number().int().min(30).max(30 * 24 * 60).default(120) });
+const SCHEDULE_STEP_MS = 15 * 60_000;
+const SCHEDULE_HORIZON_MS = 14 * 24 * 60 * 60_000;
+const ceilToStep = (ms) => Math.ceil(ms / SCHEDULE_STEP_MS) * SCHEDULE_STEP_MS;
+
+router.get('/slots/:slotId/schedule', requireAuth, asyncHandler(async (req, res) => {
+  const slotId = idSchema.safeParse(req.params.slotId);
+  if (!slotId.success) return fail(res, 400, 'INVALID_ID', 'The parking space identifier is invalid.');
+  const query = scheduleQuerySchema.safeParse(req.query);
+  if (!query.success) return validationFail(res, query);
+  let slot;
+  try { slot = await getSlotContext(pool, slotId.data, false); } catch (error) {
+    if (error instanceof BookingError) return fail(res, error.status, error.code, error.message);
+    throw error;
+  }
+  const [bookedRows] = await pool.execute(
+    `SELECT start_at, end_at, status FROM bookings
+      WHERE slot_id = ? AND end_at > UTC_TIMESTAMP() AND start_at < UTC_TIMESTAMP() + INTERVAL 14 DAY
+        AND (status IN ('confirmed','checked_in') OR (status IN ('held','pending_payment') AND hold_expires_at > UTC_TIMESTAMP()))
+      ORDER BY start_at LIMIT 100`,
+    [slotId.data]
+  );
+  let scheduleRows = null;
+  if (slot.listing_kind === 'shared_space') {
+    [scheduleRows] = await pool.execute(
+      'SELECT weekday, is_available, opens_at, closes_at FROM parking_availability_rules WHERE parking_lot_id = ? ORDER BY weekday',
+      [slot.parking_lot_id]
+    );
+  }
+  const timeZone = slot.timezone || 'UTC';
+  const fitsSchedule = (start, end) => (scheduleRows
+    ? isWithinWeeklyAvailability(start, end, scheduleRows, timeZone)
+    : isWithinOperatingHours(start, end, slot.opening_time, slot.closing_time, timeZone));
+  const windows = bookedRows.map((row) => ({ start: new Date(row.start_at).getTime(), end: new Date(row.end_at).getTime(), status: row.status }));
+  const durationMs = query.data.durationMinutes * 60_000;
+  const now = Date.now();
+  let candidate = ceilToStep(now + 2 * 60_000);
+  if (slot.physical_state !== 'empty') candidate = Math.max(candidate, ceilToStep(now + 30 * 60_000));
+  let nextAvailable = null;
+  for (let guard = 0; guard < 2000 && candidate < now + SCHEDULE_HORIZON_MS; guard += 1) {
+    const end = candidate + durationMs;
+    const clash = windows.find((window) => window.start < end && window.end > candidate);
+    if (clash) { candidate = Math.max(candidate + SCHEDULE_STEP_MS, ceilToStep(clash.end)); continue; }
+    if (fitsSchedule(new Date(candidate), new Date(end))) { nextAvailable = { startAt: new Date(candidate).toISOString(), endAt: new Date(end).toISOString() }; break; }
+    candidate += SCHEDULE_STEP_MS;
+  }
+  return res.json({
+    slot: { id: slot.slot_id, code: slot.slot_code, physicalState: slot.physical_state, operationalStatus: slot.operational_status },
+    timezone: timeZone,
+    openingTime: slot.opening_time, closingTime: slot.closing_time,
+    occupiedNow: slot.physical_state === 'occupied',
+    booked: windows.map((window) => ({ startAt: new Date(window.start).toISOString(), endAt: new Date(window.end).toISOString(), kind: window.status === 'checked_in' ? 'in_use' : window.status === 'confirmed' ? 'reserved' : 'held' })),
+    durationMinutes: query.data.durationMinutes,
+    nextAvailable
   });
 }));
 

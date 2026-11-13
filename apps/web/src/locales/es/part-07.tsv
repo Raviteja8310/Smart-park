@@ -1,0 +1,170 @@
+1440	El identificador del dispositivo de barrera no es válido
+1441	El webhook de pagos no está configurado
+1442	El identificador del evento de matrícula no es válido
+1443	El contenido del webhook no es JSON válido
+1444	No se pudo calcular el precio de la reserva
+1445	El estado de tu ticket de soporte ahora es {0}
+1446	Una reserva no puede superar los 30 días
+1447	Elige una reserva de tu propia cuenta
+1448	Solicitud de abono mensual enviada para {0}
+1449	Prueba de propiedad o control del inmueble
+1450	Leyendo las notificaciones de tu cuenta
+1451	Reembolso completado registrado y auditado
+1452	Escanea el QR o pega el token decodificado
+1453	Algo salió mal. Inténtalo de nuevo
+1454	La credencial del servicio de barrera no es válida
+1455	El identificador del abono mensual no es válido
+1456	No se encontró la solicitud de abono mensual
+1457	El identificador de la notificación no es válido
+1458	No se encontró el anuncio de plaza compartida
+1459	Un operador autorizado solicitó abrir la barrera
+1460	Cancelar esta solicitud de abono mensual no pagada
+1461	Elige un rango de fechas de {0} días o menos
+1462	¿No recibiste el código? Envía uno nuevo
+1463	Aumenta el tamaño del texto para leer mejor
+1464	Limita el movimiento decorativo y las transiciones
+1465	El nombre debe tener al menos 2 caracteres
+1466	No hay cámaras configuradas para esta instalación
+1467	Ninguna notificación coincide con tus preferencias
+1468	Los descuentos porcentuales no pueden superar el 100%
+1469	Referencia de registro / GST (opcional)
+1470	No se encontró la cámara o está desactivada
+1471	No se encontró el dispositivo o está desactivado
+1472	El cuerpo del webhook debe ser bytes JSON sin procesar
+1473	Esta sesión de carga ya ha finalizado
+1474	No se pudieron cargar las preferencias de notificación
+1475	No tienes acceso a esta instalación
+1476	No se encontró el pedido de pago de prueba local
+1477	Un operador autorizado solicitó cerrar la barrera
+1478	El acceso a la cámara lo gestiona tu navegador
+1479	Elige una zona de esta instalación
+1480	Introduce un correo y una contraseña válidos
+1481	Vista previa de detección de ocupación en vivo para {0}
+1482	Aún no se han creado códigos promocionales
+1483	Indica un nombre o teléfono para actualizar
+1484	Buscar destino, instalación o punto de referencia
+1485	Buscar aparcamientos o destino
+1486	El identificador de la cámara o de la plaza no es válido
+1487	El identificador de la solicitud de pago no es válido
+1488	El identificador de la solicitud de reembolso no es válido
+1489	El identificador del historial de búsqueda no es válido
+1490	El identificador del ticket de soporte no es válido
+1491	No se encontró el vehículo en tu garaje
+1492	La credencial del servicio de visión no es válida
+1493	Este evento del proveedor ya se recibió
+1494	¿Por qué se aprueba esta solicitud de pago al anfitrión?
+1495	¿Por qué se rechaza esta solicitud de pago al anfitrión?
+1496	Tu próxima experiencia de aparcamiento empieza aquí
+1497	Ya existe una promoción con este código
+1498	La reserva debe completarse antes de la aprobación
+1499	No se pudo asignar un código de recomendación único
+1500	Encuentra plazas y gestiona vehículos y reservas
+1501	No hay instalaciones activas en tu ámbito de acceso
+1502	No hay ingresos conciliados en los últimos 30 días
+1503	La reserva en línea no está disponible temporalmente
+1504	Solo las reservas completadas pueden publicar una reseña
+1505	El pago no se ha completado. La retención caduca a las
+1506	Se canceló la retención de la reserva no pagada
+1507	Esta plaza está configurada para vehículos {0}
+1508	Se usa como vehículo preferido para reservar
+1509	Un precio programado no puede empezar en el pasado
+1510	Gestiona instalaciones, disponibilidad y precios
+1511	Ubicación eliminada de lugares guardados
+1512	Solicitud aprobada. El pago sigue pendiente
+1513	Selecciona una fecha y hora de inicio válidas
+1514	Selecciona o crea primero una cuenta de empresa
+1515	Registros de sesiones y costes de energía estimados
+1516	Inicia la cámara para leer el código QR de una reserva
+1517	El identificador del anuncio o de la foto no es válido
+1518	La duración mínima de la reserva es de 30 minutos
+1519	El identificador de la instalación no es válido
+1520	La fecha de inicio del abono debe ser hoy o posterior
+1521	No se encontró el pago en tu cuenta
+1522	La reserva debe estar pagada y confirmada
+1523	No se pudo completar la solicitud de soporte
+1524	No se pudo cargar el script de pago
+1525	Usa fechas desde y hasta con formato AAAA-MM-DD
+1526	{0} en {1} no pudo completar un comando de {2}
+1527	Una solicitud aprobada no es un abono pagado. {0}
+1528	No se pudo completar la solicitud de abono mensual
+1529	Solo se aceptan imágenes JPEG, PNG o WebP
+1530	Comparte tu código para invitar a tu primer amigo
+1531	Tu correo está verificado. Ya puedes iniciar sesión
+1532	Ingresos verificados diarios de los últimos 30 días
+1533	Anuncio enviado para aprobación del administrador
+1534	Solo un reembolso aprobado puede pasar a procesamiento
+1535	Indica un motivo de al menos cinco caracteres
+1536	Indica un identificador de dispositivo registrado válido
+1537	Indica al menos un campo del cargador para actualizar
+1538	Indica al menos un campo del vehículo para actualizar
+1539	Solicitudes, condiciones aprobadas e historial de estado
+1540	El título de la reseña debe tener 120 caracteres o menos
+1541	Se restablecieron los ajustes predeterminados
+1542	Sesión iniciada con una sesión protegida de SmartPark
+1543	Los códigos de plaza deben ser únicos en la solicitud
+1544	El identificador de la empresa o del vehículo no es válido
+1545	No se encontró la instalación publicada
+1546	La acción de reembolso solicitada no está admitida
+1547	No hay saldo de pagos aprobado positivo
+1548	Demasiados intentos. Espera y vuelve a intentarlo
+1549	¿Por qué se aprueba esta solicitud de reembolso del cliente?
+1550	¿Por qué se rechaza esta solicitud de reembolso del cliente?
+1551	Un administrador revisará tu solicitud
+1552	Libro auditado — no es un pago bancario automático
+1553	Elige si quieres recibir notificaciones por SMS
+1554	Instalación enviada para aprobación del administrador
+1555	Las plazas nuevas empiezan con estado físico desconocido
+1556	Este dispositivo no está configurado para controlar la salida
+1557	Este miembro del personal ya tiene esta asignación
+1558	No se pudo cargar tu información de aparcamientos guardados
+1559	No se pudo registrar esta decisión de conciliación
+1560	No puedes quitar tu propio rol de administrador
+1561	Tu vehículo se registró a las {0}, plaza {1}
+1562	Activa de inmediato dentro del periodo de fechas
+1563	Cada plaza solo puede aparecer una vez por lote de eventos
+1564	Salida registrada. La sesión de aparcamiento ha terminado
+1565	¿Olvidaste tu contraseña actual? Cierra sesión y usa
+1566	Solicitud de abono mensual enviada al propietario
+1567	La fecha de fin debe ser posterior a la de inicio
+1568	La hora de fin debe ser posterior a la de inicio
+1569	No se pudo completar la operación financiera
+1570	El script de pago no se inicializó
+1571	El identificador de la solicitud de verificación no es válido
+1572	Este dispositivo no está configurado para controlar la entrada
+1573	Este pago no tiene un importe reembolsable positivo
+1574	No se pudieron cargar tus instalaciones gestionadas
+1575	Usa una contraseña única de al menos 6 caracteres
+1576	No eres miembro de esta cuenta de empresa
+1577	Tu sesión ha caducado. Vuelve a iniciar sesión
+1578	Elige un estado de soporte válido y una nota opcional
+1579	Completa el formulario para solicitar la verificación
+1580	Los propietarios no pueden valorar su propia instalación
+1581	Proveedor aún no configurado en este entorno
+1582	Presupuestos, retenciones, recibos y reembolsos en un solo flujo
+1583	Estado por plaza a partir de sensores y reservas
+1584	La fuente de la cámara contiene un carácter no válido
+1585	El enlace de verificación no es válido o ha caducado
+1586	Esta promoción alcanzó su límite de canjes
+1587	Usa al menos 6 caracteres para tu nueva contraseña
+1588	Solo puedes añadir cargadores a una instalación tuya
+1589	Añade al menos una plaza antes de enviar
+1590	La reserva {0} tiene una solicitud de reembolso pendiente
+1591	Elige una nueva contraseña para tu cuenta de SmartPark
+1592	p. ej., Pago completado pero reserva no confirmada
+1593	Introduce el correo con el que solicitaste el código
+1594	Contraseña actualizada. Inicia sesión con la nueva contraseña
+1595	Respuestas rápidas antes de abrir o actualizar un ticket
+1596	Solicitado desde la página de ganancias del propietario
+1597	La fecha de inicio debe ser igual o anterior a la de fin
+1598	Este código no es válido para la moneda de esta reserva
+1599	Las plazas desconocidas nunca se anuncian como disponibles
+1600	Tus preferencias se guardaron en este navegador
+1601	Ajusta la legibilidad y reduce las distracciones visuales
+1602	Elige un anuncio arriba para solicitar tu primer abono
+1603	Entrada autorizada. El vehículo se ha registrado
+1604	Últimos cuatro dígitos de la referencia del documento (opcional)
+1605	Quitar esta asignación de plaza de la cámara seleccionada
+1606	El texto de la reseña debe tener entre 3 y 1000 caracteres
+1607	Esta referencia externa ya se ha registrado
+1608	No puedes desactivar tu propia cuenta de administrador
+1609	No puedes suspender tu propia cuenta de administrador
