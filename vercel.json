@@ -11,11 +11,8 @@
     },
     "vision": {
       "root": "services/vision",
-      "framework": "fastapi"
-    },
-    "vision-two": {
-      "root": "services/vision/vision",
-      "framework": "fastapi"
+      "framework": "fastapi",
+      "entrypoint": "smartpark_vision.main:app"
     }
   },
   "rewrites": [
@@ -23,6 +20,12 @@
       "source": "/api/(.*)",
       "destination": {
         "service": "api"
+      }
+    },
+    {
+      "source": "/vision/(.*)",
+      "destination": {
+        "service": "vision"
       }
     },
     {
