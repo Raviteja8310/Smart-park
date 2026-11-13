@@ -36,6 +36,8 @@ const envSchema = z.object({
   RAZORPAY_WEBHOOK_SECRET: z.string().default(''),
   QR_SIGNING_SECRET: z.string().min(32).default('local-development-only-smartpark-qr-secret-change-before-deployment'),
   VISION_API_TOKEN: z.string().default(''),
+  // Shared secret Vercel Cron sends as `Authorization: Bearer <CRON_SECRET>`; empty disables /api/internal.
+  CRON_SECRET: z.string().default(''),
   ALLOW_DRIVER_BOOKINGS: z.enum(['true', 'false']).default('false').transform((v) => v === 'true'),
 }).superRefine((value, ctx) => {
   for (const issue of productionConfigIssues(value)) {

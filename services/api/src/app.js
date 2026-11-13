@@ -27,6 +27,7 @@ import financialRouter from './routes/financial.routes.js';
 import engagementRouter from './routes/engagement.routes.js';
 import gateHardwareRouter from './routes/gate-hardware.routes.js';
 import supportRouter from './routes/support.routes.js';
+import internalRouter from './routes/internal.routes.js';
 import { originGuard } from './middleware/origin-guard.js';
 
 const app = express();
@@ -75,6 +76,8 @@ app.use('/api/operations', operationsRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/financial', financialRouter);
 app.use('/api/engagement', engagementRouter);
+// Scheduled jobs for serverless hosting (Vercel Cron); protected by CRON_SECRET.
+app.use('/api/internal', internalRouter);
 // Shared listing photos are public assets; upload permissions are enforced by the API routes.
 app.use('/uploads/marketplace', express.static(fileURLToPath(new URL('../uploads/marketplace/', import.meta.url)), { maxAge: '1d', index: false, dotfiles: 'deny' }));
 
