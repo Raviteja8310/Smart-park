@@ -13,7 +13,7 @@
       "root": "services/vision",
       "framework": "fastapi"
     },
-    "vision-2": {
+    "vision-two": {
       "root": "services/vision/vision",
       "framework": "fastapi"
     }
